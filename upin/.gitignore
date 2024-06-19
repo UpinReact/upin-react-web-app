@@ -19,7 +19,7 @@
 # misc
 .DS_Store
 *.pem
-secretes
+upin-react-web-app/upin/secretes.js
 
 # debug
 npm-debug.log*
