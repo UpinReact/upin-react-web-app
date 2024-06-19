@@ -1,8 +1,9 @@
 'use client'
+import GOOGLE_MAPS_API_KEY from "../../secretes"
 import {APIProvider, Map} from '@vis.gl/react-google-maps';
 export default function Home() {
 
-const GOOGLE_MAPS_API_KEY="AIzaSyBx2yc0Ns_2GkG5mA40H4kAVOLnO_ADJTk";
+
   return (
     <div>
     <APIProvider apiKey={GOOGLE_MAPS_API_KEY}>

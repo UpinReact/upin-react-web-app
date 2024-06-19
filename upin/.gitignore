@@ -19,6 +19,7 @@
 # misc
 .DS_Store
 *.pem
+secretes
 
 # debug
 npm-debug.log*
