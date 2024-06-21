@@ -17,7 +17,11 @@ module.exports = {
 
       'desktop': '1280px',
       // => @media (min-width: 1280px) { ... }
-    }
+    },
+    fontFamily: {
+      sans: ['Inter', 'sans-serif'],
+      montserrat: ['Montserrat', 'sans-serif'],
+    },
   },
   plugins: [],
 }

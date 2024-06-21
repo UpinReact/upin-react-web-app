@@ -4,7 +4,7 @@ import upinLogo from "../../../public/Upin White (cutout content logo).png"
 
 const Header = () => {
   return (
-    <nav className='bg-green-400 flex justify-between items-center w-full shadow-2xl shadow-gray-900 z-30 absolute'>
+    <nav className='bg-green-400 flex justify-between items-center w-full shadow-2xl shadow-gray-900 z-30'>
         <Image src = {upinLogo} alt = "upin main logo" className='px-2 ml-2 shadow-sm'/>
     <div className='flex-1'> 
 
