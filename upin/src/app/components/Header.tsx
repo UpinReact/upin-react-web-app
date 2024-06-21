@@ -1,5 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import upinLogo from "../../../public/Upin White (cutout content logo).png"
 
 const Header = () => {
@@ -12,7 +13,7 @@ const Header = () => {
 
     <div className='flex flex-col items-center ml-[-100px]'>
 
-        <h1 className='font-bold text-4xl text-center mb-3'>Upin</h1>
+        <h1 className='font-bold text-4xl text-center mb-3'><Link href={'/'}>Upin</Link></h1>
         <p className='text-center font-serif'>Create. Join. Connect</p>
         <ul className='flex justify-between px-4 pt-2'>
             <li className='px-5 hover:text-blue-500 pb-3'>Log In</li>
@@ -25,7 +26,7 @@ const Header = () => {
 
     <ul className='flex space-x-4 px-5 mr-12'>
         <li className='hover:text-blue-500 text-lg  font-mono'>News</li>
-        <li className='hover:text-blue-500 text-lg  font-mono'>About</li>
+        <li className='hover:text-blue-500 text-lg  font-mono'> <Link href={"/aboutus"}>About</Link></li>
         <li className='hover:text-blue-500 text-lg  font-mono'>Team</li>
     </ul>
 
