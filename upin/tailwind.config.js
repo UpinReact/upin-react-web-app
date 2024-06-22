@@ -5,6 +5,9 @@ module.exports = {
     "./src/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
+    
+      extends: {backgroundImage: {"upinBackgroundImg" : "url('upin-react-web-app/upin/public/Screen Shot 2020-03-12 at 9.26.39 AM.png"}}
+    ,
     screens: {
       'phone': {'max': '639px'},
       // => @media (max-width: 639px) { ... }

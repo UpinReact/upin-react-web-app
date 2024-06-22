@@ -26,7 +26,7 @@ const Header = () => {
 
     <ul className='flex space-x-4 px-5 mr-12'>
         <li className='hover:text-blue-500 text-lg  font-mono'>News</li>
-        <li className='hover:text-blue-500 text-lg  font-mono'> <Link href={"/aboutus"}>About</Link></li>
+        <li className='hover:text-blue-500 text-lg  font-mono'> <Link href={"/about-us"}>About</Link></li>
         <li className='hover:text-blue-500 text-lg  font-mono'>Team</li>
     </ul>
 
