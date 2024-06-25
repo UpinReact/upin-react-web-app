@@ -1,3 +1,5 @@
+const { colors } = require('@mui/material');
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
@@ -8,6 +10,10 @@ module.exports = {
     
       extends: {backgroundImage: {"upinBackgroundImg" : "url('upin-react-web-app/upin/public/Screen Shot 2020-03-12 at 9.26.39 AM.png"}}
     ,
+    extend:{colors:{
+      upinGreen : "#22d0a5",
+      upinComplimentaryColor : "#D0224D"
+    }}, 
     screens: {
       'phone': {'max': '639px'},
       // => @media (max-width: 639px) { ... }

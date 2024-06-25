@@ -27,7 +27,7 @@ const aboutUs = () => {
           <p className='font-serif text-3xl text-center px-4 font-bold'>We believe we are one and we value the importance of connecting with people in real life.</p>
         </div>
         <div className='flex justify-center px-8'>
-          <div className='border border-black rounded-md bg-green-500 bg-opacity-75 shadow-2xl shadow-gray-70 p-6'>
+          <div className='border border-black rounded-md bg-upinGreen bg-opacity-75 shadow-2xl shadow-gray-70 p-6'>
             <p className='font-serif text-2xl'>
               <span className='font-bold'>Our Mission - </span>
               Upin is 100% fully committed to creating the best platform for keeping your real social life in one place. We create the best experience for hosting and joining local activities by making it more convenient, organized, and safe. Our mission is to create more real-life interaction by being able to create & join gatherings of people anywhere at any time. We are focused on creating more peace and oneness amongst each other by being more openly social. With Upin, you will never feel alone again.
@@ -38,7 +38,7 @@ const aboutUs = () => {
           <SouthOutlinedIcon className='w-20 h-20'/>
         </div>
         <div className='flex justify-center px-8'>
-          <div className='border border-black rounded-md bg-green-500 bg-opacity-75 shadow-2xl shadow-gray-700 p-6'>
+          <div className='border border-black rounded-md bg-upinGreen bg-opacity-75 shadow-2xl shadow-gray-700 p-6'>
             <p className='font-serif text-2xl'><span className='font-bold'>We Value & Provide -</span> Connection, Relationships, Community. Connection is key to growing in a community. It takes strong relationships to have strong community, and with strong community we grow together in power!</p>
           </div>
         </div>
@@ -46,7 +46,7 @@ const aboutUs = () => {
           <SouthOutlinedIcon className='w-20 h-20'/>
         </div>
         <div className='flex justify-center px-8'>
-          <div className='border border-black rounded-md bg-green-500 bg-opacity-75 shadow-2xl shadow-gray-700 p-6 mb-5'>
+          <div className='border border-black rounded-md bg-upinGreen  bg-opacity-75 shadow-2xl shadow-gray-700 p-6 mb-5'>
             <p className='font-serif text-2xl'><span className='font-bold'>Our Philosophy -</span> stands behind living longer & stronger with more loving community & social interaction. We are backed by our philosophy, mission, & life guidelines at <span className='underline'>All Is One Movement.</span></p>
           </div>
         </div>
