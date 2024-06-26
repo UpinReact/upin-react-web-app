@@ -1,18 +1,15 @@
-"use client"
+"use client";
 import React from 'react';
-
-import MyMap from "@/app/components/MyMap"
-import events from "@/app/components/Events"
+import MyMap from './components/MyMap';
 
 
 
 export default function Home() {
-  return ( 
-    <>
-  <div style={{ width: '100vw', height: '100vh' }}>
-      <MyMap events={events}/>
+
+  return (
+    <div>
+      <MyMap  lng = {-117.1611} lat = {32.7157}/>
     </div>
-    </>
   );
-  
 }
+
