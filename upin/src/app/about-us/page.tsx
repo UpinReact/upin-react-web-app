@@ -24,7 +24,7 @@ const aboutUs = () => {
           <h1 className='font-serif text-6xl mr-3 font-extrabold text-black'>About Us</h1>
         </div>
         <div className='flex justify-center mt-5 mb-8'>
-          <p className='font-serif text-3xl text-center px-4 font-bold'>We believe we are one and we value the importance of connecting with people in real life.</p>
+          <p className='font-serif text-3xl text-center px-4 font-bold bg-opacity-75 bg-black text-white'>We believe we are one and we value the importance of connecting with people in real life.</p>
         </div>
         <div className='flex justify-center px-8'>
           <div className='border border-black rounded-md bg-upinGreen bg-opacity-75 shadow-2xl shadow-gray-70 p-6'>

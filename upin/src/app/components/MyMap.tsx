@@ -46,6 +46,7 @@ export default function MyMap({ lng, lat }: MyMapProps) {
     <div>
       {mapLoaded && (
         <>
+        <div>
           <SearchBox
             accessToken={accessToken}
             map={mapInstanceRef.current!}
@@ -53,12 +54,13 @@ export default function MyMap({ lng, lat }: MyMapProps) {
             onResult={handleSearchChange}
             marker={false}
           />
+          </div>
           <EventMarker 
             lat={33.1438} 
             lng={-117.1671} 
             title={"Test1"} 
             description={"This is a test"} 
-            map={mapInstanceRef.current!} 
+            map={mapInstanceRef.current} 
           />
         </>
       )}

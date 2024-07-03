@@ -15,6 +15,8 @@
     "@mapbox/search-js-react": "^1.0.0-beta.21",
     "@mui/icons-material": "^5.15.20",
     "@mui/material": "^5.15.20",
+    "@supabase/ssr": "^0.4.0",
+    "@supabase/supabase-js": "^2.44.2",
     "@types/google-map-react": "^2.1.10",
     "@types/next-auth": "^3.15.0",
     "@vis.gl/react-google-maps": "^1.1.0",
@@ -27,12 +29,13 @@
   },
   "devDependencies": {
     "@types/mapbox-gl": "^3.1.0",
-    "@types/node": "^20",
-    "@types/react": "^18",
+    "@types/next": "^9.0.0",
+    "@types/node": "^20.14.9",
+    "@types/react": "^18.3.3",
     "@types/react-dom": "^18",
     "autoprefixer": "^10.4.19",
     "postcss": "^8.4.38",
     "tailwindcss": "^3.4.4",
-    "typescript": "^5"
+    "typescript": "^5.5.3"
   }
 }
