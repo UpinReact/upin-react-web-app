@@ -107,7 +107,7 @@ export default function AccountForm({ user }: { user: User | null }) {
         <label htmlFor="birthDate">Birthdate</label>
         <input
           id="birthDate"
-          type="url"
+          type="date"
           value={birthDate || ''}
           onChange={(e) => setBirthDate(e.target.value)}
         />
