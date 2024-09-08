@@ -24,7 +24,7 @@ export default function MyMap({ lng, lat }: MyMapProps) {
 
     mapInstanceRef.current = new mapboxgl.Map({
       container: mapContainerRef.current!,
-      style: 'mapbox://styles/mapbox/streets-v12',
+      style: 'mapbox://styles/mapbox/streets-v8',
       center: [lng, lat],
       zoom: 9,
     });
@@ -32,39 +32,50 @@ export default function MyMap({ lng, lat }: MyMapProps) {
     mapInstanceRef.current.on("load", () => {
       setMapLoaded(true);
     });
+
+    // Cleanup on unmount
+    return () => {
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.remove();
+        mapInstanceRef.current = null;
+      }
+    };
   }, [lng, lat]);
 
   const handleSearchChange = (result: any) => {
     if (result && result.center) {
       const [newLng, newLat] = result.center;
       setInputValue(result.place_name);
-      mapInstanceRef.current!.flyTo({ center: [newLng, newLat], zoom: 9 });
+      mapInstanceRef.current!.flyTo({ center: [newLng, newLat], zoom: 9});
     }
   };
 
   return (
-    <div>
-      {mapLoaded && (
-        <>
+    <div className='bg-gray-400 backdrop-filter backdrop-blur-xl bg-opacity-30'>
+      <div className='w-[75%] mx-auto border place-content-center rounded-3xl'>
+    {mapLoaded && (
+      <>
         <div>
           <SearchBox
             accessToken={accessToken}
             map={mapInstanceRef.current!}
-            mapboxgl={mapboxgl}
+            mapboxgl={mapboxgl} 
             onResult={handleSearchChange}
             marker={false}
-          />
-          </div>
-          <EventMarker 
-            lat={33.1438} 
-            lng={-117.1671} 
-            title={"Test1"} 
-            description={"This is a test"} 
-            map={mapInstanceRef.current} 
-          />
-        </>
-      )}
-      <div ref={mapContainerRef} className="w-full h-[35rem]" />
-    </div>
+          />  
+        </div>
+        <EventMarker 
+          lat={lat} 
+          lng={lng} 
+          title={"San Marcos"} 
+          description={"San Marcos, Ca"} 
+          map={mapInstanceRef.current} 
+        /> 
+      </>
+    )}
+    <div ref={mapContainerRef} className="w-full h-[35rem] bg-black" />
+  </div>
+</div>
+
   );
 }

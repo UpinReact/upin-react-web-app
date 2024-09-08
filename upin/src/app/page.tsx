@@ -4,12 +4,15 @@ import MyMap from './components/MyMap';
 
 
 
+
 export default function Home() {
 
   return (
-    <div>
-      <MyMap  lng = {-117.1611} lat = {32.7157}/>
+   
+    <div className='phone:h-auto tablet:h-auto'>
+      <MyMap lng = {-117.1661} lat={33.1434}/>
     </div>
+ 
   );
 }
 

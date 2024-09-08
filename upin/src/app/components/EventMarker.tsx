@@ -1,39 +1,37 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import mapboxgl from 'mapbox-gl';
 
-interface MarkerProps {
-  lat: number;
+interface EventMarkerProps {
   lng: number;
+  lat: number;
   title: string;
   description: string;
   map: mapboxgl.Map | null;
 }
 
-const EventMarker: React.FC<MarkerProps> = ({ lat, lng, title, description, map }) => {
-  const markerRef = useRef<mapboxgl.Marker | null>(null);
-
+const EventMarker: React.FC<EventMarkerProps> = ({ lng, lat, title, description, map }) => {
   useEffect(() => {
-    if (typeof window !== 'undefined' && map && !markerRef.current) {
-      const el = document.createElement('div');
-      el.className = 'marker bg-red-500 w-5 h-5 rounded-full cursor-pointer z-10';
-      el.style.zIndex = '9999';
+    if (!map) return;
 
-      el.addEventListener('click', () => {
-        alert(`${title}: ${description}`);
-      });
+    const popup = new mapboxgl.Popup({ offset: 25 }).setHTML(
+      `<h3>${title}</h3><p>${description}</p>`
+    );
 
-      markerRef.current = new mapboxgl.Marker(el)
-        .setLngLat([lng, lat])
-        .addTo(map);
-    }
+    const marker = new mapboxgl.Marker({ anchor: 'bottom' })
+      .setLngLat([lng, lat])
+      .setPopup(popup)
+      .addTo(map);
 
-    // Clean up marker on component unmount
+    // Update marker position on zoom events
+    map.on('zoom', () => {
+      marker.setLngLat([lng, lat]);
+    });
+
     return () => {
-      if (markerRef.current) {
-    
-      }
+      marker.remove(); // Cleanup on unmount
+      // map.off('zoom'); // Cleanup zoom event listener
     };
-  }, [map, lat, lng, title, description]);
+  }, [map, lng, lat, title, description]);
 
   return null;
 };
