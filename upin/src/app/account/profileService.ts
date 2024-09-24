@@ -45,6 +45,8 @@ export async function getProfile(userEmail: string | undefined): Promise<Profile
       // Fetching the communities the user is a part of
       const communities = await getCommunity(data.id);
      
+     
+      
       
       return {
         ...data,

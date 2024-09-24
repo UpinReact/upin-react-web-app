@@ -21,7 +21,7 @@ const Header = () => {
   }, []);
 
   return (
-    <nav className='bg-upinGreen flex justify-between items-center w-full border border-upinGreen'>
+    <nav className='bg-upinGreen flex justify-between items-center w-full border border-upinGreen z-40'>
       <Lottie animationData={locationLottie} style={{ width: 100, height: 100 }} />
       <div className='flex-1'></div>
       <div className='flex flex-col items-center ml-[-100px] z-10'>

@@ -26,7 +26,7 @@ interface Community {
 }
 
 export default function AccountForm({ user }: { user: User | null }) {
-
+  const [id, setId] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [firstName, setFirstname] = useState<string | null>(null)
   const [lastName, setLastName] = useState<string | null>(null)
@@ -54,6 +54,7 @@ export default function AccountForm({ user }: { user: User | null }) {
         try {
           const profileData = await getProfile(user.email)
           if (profileData) {
+            setId(profileData.id)
             setFirstname(profileData.firstName)
             setLastName(profileData.lastName)
             setBirthDate(profileData.birthDate)
@@ -72,11 +73,13 @@ export default function AccountForm({ user }: { user: User | null }) {
   }, [user])
 
   async function updateProfile({
+    id,
     firstName,
     lastName,
     birthDate,
     interests
   }: {
+    id: number 
     firstName: string | null
     lastName: string | null
     birthDate: string | null
@@ -85,7 +88,9 @@ export default function AccountForm({ user }: { user: User | null }) {
     try {
       setLoading(true)
       const supabase = createClient()
-      const { error } = await supabase.from('userdata').upsert({
+      const {data, error } = await supabase
+      .from('userdata')
+      .update({
         id: user?.id,
         firstName,
         lastName,
@@ -93,9 +98,14 @@ export default function AccountForm({ user }: { user: User | null }) {
         interests,
         updated_at: new Date().toISOString(),
       })
+      .eq('id', id)
+      
+
       if (error) throw error
       alert('Profile updated!')
     } catch (error) {
+      console.log(error);
+      
       alert('Error updating the data!')
     } finally {
       setLoading(false)
@@ -140,6 +150,9 @@ export default function AccountForm({ user }: { user: User | null }) {
             />
           </div>
           <div>
+            <div className=' hidden'>
+              <p>{id}</p>
+            </div>
             <label htmlFor="firstName" className='text-white block mb-1 font-medium'>First Name: </label>
             <input
               id="firstName"
