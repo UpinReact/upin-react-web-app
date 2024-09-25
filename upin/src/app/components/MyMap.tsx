@@ -110,7 +110,7 @@ export default function MyMap() {
         </div>
   
         <div
-          className="h-96 w-full rounded-lg shadow-md overflow-hidden relative"
+          className="h-[40rem]  w-full rounded-lg shadow-2xl overflow-hidden relative"
           ref={mapContainerRef}
         />
       </div>
