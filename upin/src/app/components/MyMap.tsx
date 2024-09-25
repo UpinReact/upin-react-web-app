@@ -4,10 +4,13 @@ import mapboxgl from 'mapbox-gl';
 import { MAPBOX_TOKEN_API } from "@/../../secretes.js";
 import Pins from './Pins';
 import "mapbox-gl/dist/mapbox-gl.css";
+import { motion } from 'framer-motion';
+
+
 
 mapboxgl.accessToken = MAPBOX_TOKEN_API;
-const INITIAL_CENTER = [-74.0242, 40.6941];
-const INITIAL_ZOOM = 10.12;
+const INITIAL_CENTER = [-117.3506,33.1581 ];
+const INITIAL_ZOOM = 9.12;
 
 type Pin = {
   latitude: number;
@@ -22,6 +25,8 @@ export default function MyMap() {
   const [center, setCenter] = useState(INITIAL_CENTER);
   const [zoom, setZoom] = useState(INITIAL_ZOOM);
   const [pins, setPins] = useState<Pin[]>([]);
+
+  
 
   // Fetch pins from database
   useEffect(() => {
@@ -44,7 +49,7 @@ export default function MyMap() {
       container: mapContainerRef.current,
       center: center as [number, number],
       zoom: zoom,
-      style: 'mapbox://styles/mapbox/outdoors-v12', // Choose a Mapbox style
+      style: 'mapbox://styles/mapbox/outdoors-v11', // Choose a Mapbox style
     });
 
     // Wait for the map to load before adding markers
@@ -56,11 +61,17 @@ export default function MyMap() {
         new mapboxgl.Marker()
           .setLngLat([pin.longitude, pin.latitude])
           .setPopup(
-            new mapboxgl.Popup({ offset: 25 }).setHTML(
-`<div class="bg-white p-3 rounded-lg shadow-lg w-60"> <!-- Add a width to control the size -->
-          <h3 class="text-lg font-bold text-upinGreen break-words">${pin.meetupname}</h3>
-          <p class="text-gray-500 whitespace-normal break-words">${pin.description}</p>
-        </div>`
+            new mapboxgl.Popup({ offset: 5 }).setHTML(
+        `<div class="bg-white p-4 rounded-2xl border-slate-400 border-2 shadow-lg shadow-zinc-700">
+            <h3 class="text-2xl font-bold text-upinGreen mb-2 break-words">${pin.meetupname}</h3>
+            <p class="text-sm text-gray-600 leading-tight whitespace-normal mb-3 break-words">${pin.description}</p>
+            <div class="flex justify-between items-center">
+              <a href="#" class="text-upinGreen hover:underline text-sm font-semibold">View More</a>
+              <button class="bg-upinGreen text-white px-3 py-1 rounded-full text-xs hover:bg-opacity-80 focus:outline-none">
+                Join
+              </button>
+            </div>
+          </div>`
               )
           )
           .addTo(mapRef.current!);
@@ -88,20 +99,22 @@ export default function MyMap() {
     });
   };
 
+
+
+
   return (
-    <div>
-      {/* Ensures full viewport height */}
-      <button onClick={handleButtonClick}>Reset</button>
-      <div className="sidebar bg-white" style={{ height: '100%' }}>
-        Longitude: {center[0].toFixed(4)} | Latitude: {center[1].toFixed(4)} | Zoom: {zoom.toFixed(2)}
+    <div className="flex items-center justify-center h-screen min-h-screen bg-gradient-to-r from-green-200 via-yellow-100 to-orange-200">
+      <div className="bg-white p-6 rounded-lg shadow-lg relative w-3/4">
+        <div className="sidebar bg-gray-50 p-4 rounded-lg shadow-inner mb-4">
+          Longitude: {center[0].toFixed(4)} | Latitude: {center[1].toFixed(4)} | Zoom: {zoom.toFixed(2)}
+        </div>
+  
+        <div
+          className="h-96 w-full rounded-lg shadow-md overflow-hidden relative"
+          ref={mapContainerRef}
+        />
       </div>
-      <div
-        className="h-screen w-3/4 absolute left-0 top-15 bg-gray-400"
-        ref={mapContainerRef}
-      />
     </div>
   );
 }
-
-
 

@@ -16,7 +16,7 @@ try{
   .from('pins')
   .select('*')
   if (error )throw error;
-  console.log(pins)
+  // console.log(pins)
   return pins as Pin[];
 
 

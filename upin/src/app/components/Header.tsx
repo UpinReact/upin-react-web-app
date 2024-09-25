@@ -1,12 +1,13 @@
 'use client'
 import React, { useState, useEffect } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
-import upinLogo from "../../../public/Upin White (cutout content logo).png";
-import Lottie from "lottie-react";
+import dynamic from 'next/dynamic';
 import locationLottie from "../../../public/locationLottie.json";
 import { motion } from "framer-motion";
 import { checkLoggedIn } from '../login/actions';
+
+const Lottie = dynamic(() => import('lottie-react'), { ssr: false });
+
 
 const Header = () => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
@@ -15,14 +16,16 @@ const Header = () => {
     async function fetchLoginStatus() {
       const loggedInStatus = await checkLoggedIn();
       setIsLoggedIn(loggedInStatus);
-      
     }
     fetchLoginStatus();
   }, []);
 
+  // Check if we are in the browser environment
+  const isBrowser = typeof window !== 'undefined';
+
   return (
     <nav className='bg-upinGreen flex justify-between items-center w-full border border-upinGreen z-40'>
-      <Lottie animationData={locationLottie} style={{ width: 100, height: 100 }} />
+      {isBrowser && <Lottie animationData={locationLottie} style={{ width: 100, height: 100 }} />}
       <div className='flex-1'></div>
       <div className='flex flex-col items-center ml-[-100px] z-10'>
         <h1 className='font-bold font-montserrat text-4xl text-center mb-3'>
@@ -57,4 +60,5 @@ const Header = () => {
 }
 
 export default Header;
+
 
