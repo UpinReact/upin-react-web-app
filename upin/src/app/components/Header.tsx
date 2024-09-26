@@ -1,16 +1,21 @@
-'use client'
+'use client';
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
-import locationLottie from "../../../public/locationLottie.json";
-import { motion } from "framer-motion";
+import { motion } from 'framer-motion';
 import { checkLoggedIn } from '../login/actions';
+import locationLottie from '../../../public/locationLottie.json';
 
+// Dynamically import Lottie
 const Lottie = dynamic(() => import('lottie-react'), { ssr: false });
-
 
 const Header = () => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [isBrowser, setIsBrowser] = useState(false)
+
+  useEffect(() => {
+    setIsBrowser(true); // Ensure this only runs client-side
+  }, []);
 
   useEffect(() => {
     async function fetchLoginStatus() {
@@ -20,12 +25,21 @@ const Header = () => {
     fetchLoginStatus();
   }, []);
 
-  // Check if we are in the browser environment
-  const isBrowser = typeof window !== 'undefined';
+  // Define fallback in case Lottie fails to load
+  const Fallback = () => <div style={{ width: 100, height: 100 }}>Loading...</div>;
+
+  // Conditionally render Lottie or fallback based on environment
+  const lottieAnimation = typeof window !== 'undefined'
+    ? <Lottie animationData={locationLottie} style={{ width: 100, height: 100 }} />
+    : <Fallback />;
 
   return (
     <nav className='bg-upinGreen flex justify-between items-center w-full border border-upinGreen z-40'>
-      {isBrowser && <Lottie animationData={locationLottie} style={{ width: 100, height: 100 }} />}
+  
+      {isBrowser && (
+        <Lottie animationData={locationLottie} style={{ width: 100, height: 100 }} />
+      )}
+     
       <div className='flex-1'></div>
       <div className='flex flex-col items-center ml-[-100px] z-10'>
         <h1 className='font-bold font-montserrat text-4xl text-center mb-3'>
@@ -60,5 +74,3 @@ const Header = () => {
 }
 
 export default Header;
-
-
