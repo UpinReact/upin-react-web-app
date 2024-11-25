@@ -25,7 +25,7 @@ export async function login(formData: FormData) {
   redirect('/account')
 }
 
-export async function signup(formData: FormData s) {
+export async function signup(formData: FormData ) {
   const supabase = createClient()
   
   // Type-casting for convenience, but validate your inputs in practice
