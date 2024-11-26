@@ -3,39 +3,39 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { motion } from 'framer-motion';
-import { checkLoggedIn } from '../login/actions';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { createClient } from '../../../utils/supabase/client';
 import locationLottie from '../../../public/locationLottie.json';
 
 // Dynamically import Lottie
 const Lottie = dynamic(() => import('lottie-react'), { ssr: false });
 
 const Header = () => {
+  const supabase = createClient() // Initialize Supabase client
+
+
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  const [isBrowser, setIsBrowser] = useState(false)
+  const [isBrowser, setIsBrowser] = useState(false);
 
   useEffect(() => {
     setIsBrowser(true); // Ensure this only runs client-side
   }, []);
 
   useEffect(() => {
-    async function fetchLoginStatus() {
-      const loggedInStatus = await checkLoggedIn();
-      setIsLoggedIn(loggedInStatus);
-    }
+    const fetchLoginStatus = async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      setIsLoggedIn(!!session); // Set logged-in state based on session presence
+    };
+
     fetchLoginStatus();
   }, []);
 
-  // Define fallback in case Lottie fails to load
   const Fallback = () => <div style={{ width: 100, height: 100 }}>Loading...</div>;
-
-  // Conditionally render Lottie or fallback based on environment
-  const lottieAnimation = typeof window !== 'undefined'
-    ? <Lottie animationData={locationLottie} style={{ width: 100, height: 100 }} />
-    : <Fallback />;
 
   return (
     <nav className='bg-upinGreen flex justify-between items-center w-full border border-upinGreen z-40'>
-  
       {isBrowser && (
         <Lottie animationData={locationLottie} style={{ width: 100, height: 100 }} />
       )}
@@ -52,14 +52,23 @@ const Header = () => {
             <li className='px-5 hover:text-white pb-3'><Link href={'sign-up'}>Sign Up</Link></li>
           </ul>
         ) : (
-          <form action="/auth/signout" method="post">
+          <>
+            <form action="/auth/signout" method="post">
+              <motion.button
+                whileHover={{ scale: 1.2 }}
+                className="button text-white hover:bg-red-900 hover:backdrop-filter hover:backdrop-blur-lg hover:bg-opacity-50 hover:border hover:border-red-950 rounded-2xl px-3 m-2"
+              >
+                Sign out
+              </motion.button>
+            </form>
+            {/* Account Button */}
             <motion.button
-              whileHover={{ scale: 1.2 }}
-              className="button text-white hover:bg-red-900 hover:backdrop-filter hover:backdrop-blur-lg hover:bg-opacity-50 hover:border hover:border-red-950 rounded-2xl px-3 m-2"
+              whileHover={{ scale: 1.1 }}
+              className="button text-white bg-upinBlue hover:bg-blue-700 rounded-2xl px-3 m-2"
             >
-              Sign out
+              <Link href="/account">Go to Account</Link>
             </motion.button>
-          </form>
+          </>
         )}
       </div>
       <div className='flex-1 flex justify-end z-10'>
@@ -71,6 +80,6 @@ const Header = () => {
       </div>
     </nav>
   );
-}
+};
 
 export default Header;
