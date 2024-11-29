@@ -1,5 +1,6 @@
 import React from 'react';
 import dynamic from 'next/dynamic';
+import { UserProvider } from './context/UserContext';
 
 // Lazy load the MyMap component
 const MyMap = dynamic(() => import('./components/MyMap'), {
@@ -9,10 +10,12 @@ const MyMap = dynamic(() => import('./components/MyMap'), {
 
 export default function Home() {
   return (
+    
     <div>
-      
+
       <MyMap /> {/* Dynamically loaded MyMap component */}
     </div>
+  
   );
 }
 

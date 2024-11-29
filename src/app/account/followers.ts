@@ -1,6 +1,6 @@
-'use server'
+'use server';
 
-import { createClient } from '../../../utils/supabase/client'
+import { createClient } from '../../../utils/supabase/client';
 
 interface UserProfile {
   id: number;
@@ -11,47 +11,50 @@ interface UserProfile {
   interests: string;
 }
 
-export default async function getFollowers(user_id: number | null): Promise<UserProfile[] | null> {
+export default async function getFollowing(user_id: number | null): Promise<UserProfile[]> {
   if (!user_id) {
-    console.log('No valid user ID provided.');
-    return null;
+    console.warn('No valid user ID provided.');
+    return [];
   }
 
   const supabase = createClient();
-  console.log('Fetching followers for user ID:', user_id);
+  console.info('Fetching following for user ID:', user_id);
 
   try {
-    // Fetch follower IDs from the 'followers' table where 'user_id' is the given user's ID
-    const { data: followerIds, error: followerIdsError } = await supabase
+    // Step 1: Fetch followed IDs from 'followers' table
+    const { data: followedIds, error: followedIdsError } = await supabase
       .from('followers')
-      .select('follower_id')
-      .eq('followed_id', user_id);
+      .select('followed_id')
+      .eq('follower_id', user_id);
 
-    if (followerIdsError) {
-      throw followerIdsError;
+    if (followedIdsError) {
+      console.error('Error fetching followed IDs:', followedIdsError.message);
+      throw followedIdsError;
     }
 
-    if (!followerIds || followerIds.length === 0) {
-      console.log('No followers found.');
+    if (!followedIds || followedIds.length === 0) {
+      console.info('No following found for user ID:', user_id);
       return [];
     }
 
-    // Extract follower IDs into an array
-    const ids = followerIds.map((follower) => follower.follower_id);
+    // Extract followed IDs into an array
+    const ids = followedIds.map((follower) => follower.followed_id);
+    console.info('Following IDs:', ids);
 
-    // Fetch profiles of the followers based on their IDs
+    // Step 2: Fetch profiles of followed users from 'userdata' table
     const { data: profiles, error: profilesError } = await supabase
       .from('userdata')
       .select('*')
       .in('id', ids);
 
     if (profilesError) {
+      console.error('Error fetching profiles of followed users:', profilesError.message);
       throw profilesError;
     }
 
     return profiles || [];
   } catch (error) {
-    console.log('Error fetching followers or profiles:', error);
-    return null;
+    console.error('Error fetching following profiles:', error);
+    return [];
   }
 }

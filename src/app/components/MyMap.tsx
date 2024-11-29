@@ -5,7 +5,7 @@ import { MAPBOX_TOKEN_API } from "@/../../secretes.js";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { fetchPins } from './Pins';
 
-mapboxgl.accessToken = MAPBOX_TOKEN_API;
+mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || MAPBOX_TOKEN_API;
 const INITIAL_CENTER = [-117.3506, 33.1581];
 const INITIAL_ZOOM = 9.12;
 

@@ -2,6 +2,17 @@ import { createClient } from '../../../utils/supabase/client';
 import getFollowing from './following';
 import getFollowers from './followers';
 import getCommunity from './communityFunctions';
+interface Profile {
+  id: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  birthDate: string;
+  interests: string;
+  following: UserProfile[];
+  followers: UserProfile[];
+  community: { id: number; community_name: string }[];
+}
 
 interface UserProfile {
   id: number;
@@ -10,12 +21,18 @@ interface UserProfile {
   email: string;
   birthDate: string;
   interests: string;
-  // Add other fields as needed
 }
 
 interface ProfileData extends UserProfile {
   following: UserProfile[];
   followers: UserProfile[];
+  community: { id: number; community_name: string }[];
+}
+
+
+interface ProfileData extends UserProfile {
+  following: UserProfile[] | null;
+  followers: UserProfile[] | null;
   community: { id: number; community_name: string }[];
 }
 

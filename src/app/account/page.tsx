@@ -7,12 +7,18 @@ export default async function Account() {
   const {
     data: { user },
   } = await supabase.auth.getUser()
+
+  const { data, error } = await supabase
+    .from('userdata')
+    .select('*')
+    .eq('email', user.email)
+    .single()
   
   
 
 
   return (<>
-  <AccountForm user={user} />
+  <AccountForm user={data} />
 
  
   </>)

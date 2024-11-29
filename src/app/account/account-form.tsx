@@ -14,31 +14,48 @@ const Lottie = dynamic(() => import('lottie-react'), {
   ssr: false,  // This ensures that Lottie is only rendered client-side
 });
 
-interface User { 
-  id: number,
-  firstName: string,
-  lastName: string,
-  email: string,
-  birthDate: string,
-  interest: string,
-  following: string,
-  followers: string
+interface UserData {
+  id: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  birthDate: string;
+  interests: string;
+  following: UserProfile[];
+  followers: UserProfile[];
+  community: { id: number; community_name: string }[];
 }
+
+interface UserProfile {
+  id: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  birthDate: string;
+  interests: string;
+}
+
+interface ProfileData extends UserProfile {
+  following: UserProfile[];
+  followers: UserProfile[];
+  community: { id: number; community_name: string }[];
+}
+
 
 interface Community {
   id: number;
   community_name: string;
 }
 
-export default function AccountForm({ user }: { user: User | null }) {
+export default function AccountForm({ user }: { user: UserData | null }) {
   const [id, setId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [firstName, setFirstname] = useState<string | null>(null);
   const [lastName, setLastName] = useState<string | null>(null);
   const [birthDate, setBirthDate] = useState<string | null>(null);
   const [interests, setInterests] = useState<string | null>(null);
-  const [following, setFollowing] = useState<User[] | null>(null);
-  const [followers, setFollowers] = useState<User[] | null>(null);
+  const [following, setFollowing] = useState<UserProfile[] | null>(null);
+  const [followers, setFollowers] = useState<UserProfile[] | null>(null);
   const [communities, setCommunities] = useState<Community[] | null>(null);
 
   useEffect(() => {
@@ -58,7 +75,7 @@ export default function AccountForm({ user }: { user: User | null }) {
         try {
           const profileData = await getProfile(user.email);
           if (profileData) {
-            setId(profileData.id);
+            setId(profileData.id.toString());
             setFirstname(profileData.firstName);
             setLastName(profileData.lastName);
             setBirthDate(profileData.birthDate);

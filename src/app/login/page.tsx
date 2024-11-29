@@ -7,7 +7,6 @@ import Link from 'next/link';
 import loginPic from "../../../public/loginPic.jpg"
 import Image from 'next/image';
 
-
 export default function LoginPage() {
   const [errorMessage, setErrorMessage] = useState<string>('');
   const router = useRouter();
