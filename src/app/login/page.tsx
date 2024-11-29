@@ -4,30 +4,32 @@ import { useState, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import loginPic from "../../../public/loginPic.jpg"
+import loginPic from "../../../public/loginPic.jpg";
 import Image from 'next/image';
 
 export default function LoginPage() {
   const [errorMessage, setErrorMessage] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    
     event.preventDefault();
+    setLoading(true);
+
     const formData = new FormData(event.target as HTMLFormElement);
-    const dataa = {
+    const data = {
       email: formData.get('email') as string,
       password: formData.get('password') as string,
     };
 
-    const response = await login(dataa);
-    
+    const response = await login(data);
+
+    setLoading(false);
+
     if (response.error) {
       setErrorMessage("Email or Password are incorrect");
     } else {
       setErrorMessage('');
-  
-      // redirect to account page
       router.push('/account');
     }
   };
@@ -39,12 +41,12 @@ export default function LoginPage() {
         src={loginPic}
         alt="Login Background"
         fill
-        style={{ objectFit: "cover", objectPosition: "center" }}  
+        style={{ objectFit: "cover", objectPosition: "center" }}
         priority
         quality={75}
         className="absolute top-0 left-0 z-[-1]"
       />
-      
+
       {/* Login Form Container */}
       <div className='bg-upinGreen rounded-3xl p-7 w-11/12 max-w-md backdrop-filter backdrop-blur-3xl border border-green-200 bg-opacity-20 shadow-2xl shadow-gray-700'>
         <h1 className='text-6xl font-montserrat text-center mb-5 text-white'>Log In</h1>
@@ -53,7 +55,9 @@ export default function LoginPage() {
           <input id="email" name="email" type="email" required className="col-span-2 p-2 rounded border border-gray-300" />
           <label htmlFor="password" className='text-2xl text-white'>Password:</label>
           <input id="password" name="password" type="password" required className="col-span-2 p-2 rounded border border-gray-300" />
-          <button type="submit" className='bg-black text-white w-full py-2 rounded-2xl col-span-2 hover:bg-slate-900 backdrop-filter backdrop-blur-xl border border-green-400  bg-opacity-50'>Log in</button>
+          <button type="submit" className='bg-black text-white w-full py-2 rounded-2xl col-span-2 hover:bg-slate-900 backdrop-filter backdrop-blur-xl border border-green-400 bg-opacity-50'>
+            {loading ? 'Logging in...' : 'Log in'}
+          </button>
         </form>
         {errorMessage && <p className='text-red-500 text-center mt-4'>{errorMessage}</p>}
         <div className='flex justify-center mt-4'>

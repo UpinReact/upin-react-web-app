@@ -1,11 +1,11 @@
 "use client";
 import React, { useRef, useEffect, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
-import { MAPBOX_TOKEN_API } from "@/../../secretes.js";
+
 import "mapbox-gl/dist/mapbox-gl.css";
 import { fetchPins } from './Pins';
 
-mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || MAPBOX_TOKEN_API;
+mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
 const INITIAL_CENTER = [-117.3506, 33.1581];
 const INITIAL_ZOOM = 9.12;
 
