@@ -1,7 +1,7 @@
 'use client';
 import React, { Suspense, lazy, useEffect, useState } from 'react';
 import { getProfile } from './profileService';
-import { checkLoggedIn } from '../login/actions';
+import { checkLoggedIn} from '../login/actions';
 import { motion } from "framer-motion";
 import { createClient } from '../../../utils/supabase/client';
 import backImg from '../../../public/background.jpg';
@@ -9,6 +9,7 @@ import Image from 'next/image';
 import sparkles from "../../../public/sparklesLottie.json";
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
+import { supabase } from 'utils/supabase/supabase';
 
 const Lottie = dynamic(() => import('lottie-react'), {
   ssr: false,  // This ensures that Lottie is only rendered client-side
@@ -57,23 +58,28 @@ export default function AccountForm({ user }: { user: UserData | null }) {
   const [following, setFollowing] = useState<UserProfile[] | null>(null);
   const [followers, setFollowers] = useState<UserProfile[] | null>(null);
   const [communities, setCommunities] = useState<Community[] | null>(null);
+  const [session, setSession] = useState(null);
 
   useEffect(() => {
     const checkStatus = async () => {
-      if (user?.email) {
-        await checkLoggedIn(); // Assuming checkLoggedIn is async
+     const session = await checkLoggedIn();
+      setSession(session);
+      if(!session) {
+        window.location.href = '/login';
       }
+      
     };
     
     checkStatus();
-  }, [user]);
-  
+  }, []);
+    
   useEffect(() => {
     if (user?.email) {
       (async () => {
         setLoading(true);
         try {
           const profileData = await getProfile(user.email);
+          console.log(profileData)
           if (profileData) {
             setId(profileData.id.toString());
             setFirstname(profileData.firstName);
@@ -91,7 +97,7 @@ export default function AccountForm({ user }: { user: UserData | null }) {
         }
       })();
     }
-  }, [user]);
+  }, []);
 
   async function updateProfile({
     id,
@@ -110,7 +116,7 @@ export default function AccountForm({ user }: { user: UserData | null }) {
     id = profileData.id;
     try {
       setLoading(true);
-      const supabase = createClient();
+      
       console.log('id:', id);
       const {data, error } = await supabase
       .from('userdata')

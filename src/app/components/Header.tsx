@@ -3,15 +3,14 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { motion } from 'framer-motion';
-import { createClient } from '../../../utils/supabase/client';
+import {supabase} from "@/../utils/supabase/supabase";
 import locationLottie from '../../../public/locationLottie.json';
 
 // Dynamically import Lottie
 const Lottie = dynamic(() => import('lottie-react'), { ssr: false });
 
 const Header = () => {
-  const supabase = createClient() // Initialize Supabase client
-
+  
 
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [isBrowser, setIsBrowser] = useState(false);

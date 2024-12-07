@@ -38,7 +38,7 @@ interface ProfileData extends UserProfile {
 
 export async function getProfile(userEmail: string | undefined): Promise<ProfileData | null> {
   const supabase = createClient();
-  // console.log('Fetching profile data for user:', userEmail);
+  console.log('Fetching profile data for user:', userEmail);
 
   try {
     const { data, error, status } = await supabase

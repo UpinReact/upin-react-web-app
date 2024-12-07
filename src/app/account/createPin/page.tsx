@@ -4,7 +4,7 @@ import React, { useEffect, useRef } from 'react';
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 import "mapbox-gl/dist/mapbox-gl.css"; // Ensure Mapbox styles are loaded
 import "@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css";
-import { MAPBOX_TOKEN_API } from '@/../secretes';
+
 import { createClient } from 'utils/supabase/client';
 
 const AddressInput = ({ onAddressSelect }: { onAddressSelect: (address: string, lat: number, lng: number) => void }) => {
@@ -18,7 +18,7 @@ const AddressInput = ({ onAddressSelect }: { onAddressSelect: (address: string, 
 
       // Initialize the Geocoder if not already initialized
       const geocoder = new MapboxGeocoder({
-        accessToken: MAPBOX_TOKEN_API,
+        accessToken: process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN,
         placeholder: "Enter an address",
         countries: "us",
         types: "address",

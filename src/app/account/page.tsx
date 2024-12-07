@@ -1,25 +1,25 @@
-import AccountForm from './account-form'
-import { createClient } from '../../../utils/supabase/server'
-
-export default async function Account() {
-  const supabase = createClient()
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  const { data, error } = await supabase
-    .from('userdata')
-    .select('*')
-    .eq('email', user.email)
-    .single()
-  
-  
+'use client';
+import { useEffect, useState } from 'react';
+import AccountForm from './account-form';
+import { getAccountData } from 'src/app/login/actions';  // Adjust if needed
 
 
-  return (<>
-  <AccountForm user={data} />
+export default function Account() {
+  const [userData, setUserData] = useState(null);
+  const [error, setError] = useState(null);
 
- 
-  </>)
+  useEffect(() => {
+    const fetchData = async ()=> {
+      const result = await getAccountData();
+    
+      if (result.error) setError(result.error);
+      else setUserData(result.user);
+    }
+    fetchData();
+  }, []);
+
+  if (error) return <div>{error}</div>;
+  if (!userData) return <div>Loading...</div>;
+
+  return <AccountForm user={userData} />;
 }
