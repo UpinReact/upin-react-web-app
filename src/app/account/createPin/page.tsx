@@ -1,11 +1,12 @@
 'use client';
 import Link from 'next/link';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 import "mapbox-gl/dist/mapbox-gl.css"; // Ensure Mapbox styles are loaded
 import "@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css";
+import {supabase} from "utils/supabase/supabase"
 
-import { createClient } from 'utils/supabase/client';
+import { getAccountData } from 'src/app/login/actions';  
 
 const AddressInput = ({ onAddressSelect }: { onAddressSelect: (address: string, lat: number, lng: number) => void }) => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -60,6 +61,19 @@ const CreatePin = () => {
   const selectedAddress = useRef<string>("");
   const selectedLatitude = useRef<number>(0);
   const selectedLongitude = useRef<number>(0);
+  const [userData, setUserData] = useState(null);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async ()=> {
+      const result = await getAccountData();
+      console.log( result);
+    
+      if (result.error) setError(result.error);
+      else setUserData(result.user);
+    }
+    fetchData();
+  }, []);
 
   const handleAddressSelect = (address: string, lat: number, lng: number) => {
     selectedAddress.current = address;
@@ -69,33 +83,54 @@ const CreatePin = () => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+  
+    // Create a FormData object to collect form data
     const formData = new FormData(event.currentTarget);
-
+  
+    // Construct data object for the pin
     const data = {
-      meetupname: formData.get("meetupname"),
-      description: formData.get("description"),
-      location: selectedAddress.current, // Use the selected address
-      latitude: selectedLatitude.current, // Use the selected latitude
-      longitude: selectedLongitude.current, // Use the selected longitude
-      start_date: formData.get("start_date"),
-      end_date: formData.get("end_date"),
+      host_id: formData.get("id") as string, // Ensure correct type
+      meetupname: formData.get("meetupname") as string,
+      description: formData.get("description") as string,
+      location: selectedAddress.current as string, // Type assertion to ensure it's treated as string
+      latitude: selectedLatitude.current as number, // Type assertion for number
+      longitude: selectedLongitude.current as number, // Type assertion for number
+      start_date: formData.get("start_date") as string,
+      end_date: formData.get("end_date") as string,
+      pin_type: formData.get("Public") ? "public" : "private"
     };
 
-    try{
-      const supabase = createClient();
-      const { error } = await supabase.from("pins").insert([data]).single();
-
+    try {
+      const { data: pinData, error: pinError } = await supabase.rpc('add_pin_rpc', {
+        _user_id: userData.id,
+        _pin_type: "event",
+        _pin_title: formData.get("meetupname") as string,
+        _short_description: formData.get("description") as string,
+        _location: selectedAddress.current,
+        _start_date: formData.get("start_date") as string,
+        _end_date: formData.get("end_date") as string,
+        _latitude: selectedLatitude.current,
+        _longitude: selectedLongitude.current,
+        _community_id: null, // Pass community ID (null if not community hosted)
+        _is_community_hosted: false
+    });
+  
+  
       if (error) {
         console.error("Error creating pin:", error.message);
+        alert(`Error: ${error.message}`); // Show error in an alert
       } else {
         console.log("Pin created successfully");
         alert("Pin created successfully");
         window.location.href = "/account"; // Redirect to the account page
       }
-    }catch(error){
-      console.error("Error creating pin:", error.message);
+    } catch (error: any) {
+      // Catch any unexpected errors
+      console.error("Unexpected error creating pin:", error.message);
+      alert(`Unexpected error: ${error.message}`);
     }
   };
+  
 
   return (
     <div>
@@ -106,6 +141,7 @@ const CreatePin = () => {
         </h3>
         <hr className="mb-6" />
         <form onSubmit={handleSubmit} className="space-y-4">
+          <input type="hidden" name="id" value={userData.id} />
           <div className="flex flex-col">
             <label htmlFor="meetupname" className="text-sm font-medium text-gray-700 mb-1">
               Meetup Name:
@@ -170,6 +206,7 @@ const CreatePin = () => {
               type="checkbox" 
               name="Public" 
               id="public" 
+              value={"public"}
             />
             <label htmlFor="public" className="text-sm text-gray-700">
               Public
@@ -180,7 +217,8 @@ const CreatePin = () => {
             <input 
               type="checkbox" 
               name="Private" 
-              id="private" 
+              id="public"
+              value={"private"} 
             />
             <label htmlFor="private" className="text-sm text-gray-700">
               Private

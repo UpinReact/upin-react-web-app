@@ -1,6 +1,7 @@
 "use client";
 import React, { useRef, useEffect, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
+import { throttle, debounce } from 'lodash';
 
 import "mapbox-gl/dist/mapbox-gl.css";
 import { fetchPins } from './Pins';
@@ -86,12 +87,32 @@ export default function MyMap() {
           .addTo(mapRef.current!);
       });
 
-      mapRef.current?.on('move', () => {
-        const mapCenter = mapRef.current!.getCenter();
-        const mapZoom = mapRef.current!.getZoom();
+      const throttledUpdate = throttle((map: mapboxgl.Map) => {
+        const mapCenter = map.getCenter();
+        const mapZoom = map.getZoom();
         setCenter([mapCenter.lng, mapCenter.lat]);
         setZoom(mapZoom);
-      });
+      }, 200); // Throttling to every 200ms.
+
+      const debouncedUpdate = debounce((map: mapboxgl.Map) => {
+        const mapCenter = map.getCenter();
+        const mapZoom = map.getZoom();
+        setCenter([mapCenter.lng, mapCenter.lat]);
+        setZoom(mapZoom);
+      }, 500); // Debouncing with a 500ms delay.
+
+      const onMoveEnd = () => {
+        throttledUpdate(mapRef.current!);
+        debouncedUpdate(mapRef.current!);
+      };
+
+      mapRef.current?.on('moveend', onMoveEnd);
+
+      return () => {
+        mapRef.current?.off('moveend', onMoveEnd);
+        throttledUpdate.cancel();
+        debouncedUpdate.cancel();
+      };
     });
 
     return () => {

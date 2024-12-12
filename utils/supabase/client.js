@@ -1,4 +1,6 @@
 import { createClient as createSupabaseClient } from '@supabase/supabase-js';
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+
 
 const NEXT_PUBLIC_SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const NEXT_PUBLIC_SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -6,6 +8,9 @@ const NEXT_PUBLIC_SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 if (!NEXT_PUBLIC_SUPABASE_URL || !NEXT_PUBLIC_SUPABASE_ANON_KEY) {
   throw new Error('Your project\'s URL and API key are required to create a Supabase client!');
 }
+
+
+export const supabasClient = createClientComponentClient();
 
 const supabaseUrl = NEXT_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = NEXT_PUBLIC_SUPABASE_ANON_KEY;

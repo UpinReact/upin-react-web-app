@@ -3,7 +3,6 @@ import React, { Suspense, lazy, useEffect, useState } from 'react';
 import { getProfile } from './profileService';
 import { checkLoggedIn} from '../login/actions';
 import { motion } from "framer-motion";
-import { createClient } from '../../../utils/supabase/client';
 import backImg from '../../../public/background.jpg';
 import Image from 'next/image';
 import sparkles from "../../../public/sparklesLottie.json";
@@ -67,19 +66,19 @@ export default function AccountForm({ user }: { user: UserData | null }) {
       if(!session) {
         window.location.href = '/login';
       }
-      
     };
-    
     checkStatus();
   }, []);
     
   useEffect(() => {
+  
     if (user?.email) {
+      
       (async () => {
         setLoading(true);
         try {
           const profileData = await getProfile(user.email);
-          console.log(profileData)
+          console.log('profileData:', profileData);
           if (profileData) {
             setId(profileData.id.toString());
             setFirstname(profileData.firstName);
@@ -286,7 +285,7 @@ export default function AccountForm({ user }: { user: UserData | null }) {
           </div>
 
           <div className='bg-upinBlue p-10 rounded-2xl grid gap-1 mt-4 backdrop-filter backdrop-blur-2xl bg-opacity-30 border border-blue-700 shadow-lg shadow-slate-600 transform transition-transform duration-500 ease-in-out hover:-translate-y-2 hover:shadow-hover'>
-            <h3 className='font-montserrat text-2xl text-slate-200 font-extrabold underline mb-5'>Communities</h3>
+            <h3 className='font-montserrat text-2xl text-slate-200 font-extrabold underline mb-5'><Link href={"/account/communities"}>Communities</Link></h3>
             {loading ? (
               <p className='text-white'>Loading communities...</p>
             ) : (
