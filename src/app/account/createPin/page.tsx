@@ -67,10 +67,11 @@ const CreatePin = () => {
   useEffect(() => {
     const fetchData = async ()=> {
       const result = await getAccountData();
-      console.log( result);
-    
+      const user = result.user;
+      const id = user.id;
+      console.log(id);
       if (result.error) setError(result.error);
-      else setUserData(result.user);
+      else setUserData({id});
     }
     fetchData();
   }, []);
@@ -141,7 +142,7 @@ const CreatePin = () => {
         </h3>
         <hr className="mb-6" />
         <form onSubmit={handleSubmit} className="space-y-4">
-          <input type="hidden" name="id" value={userData.id} />
+          <input type="hidden" name="id" value={userData} />
           <div className="flex flex-col">
             <label htmlFor="meetupname" className="text-sm font-medium text-gray-700 mb-1">
               Meetup Name:

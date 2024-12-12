@@ -78,7 +78,7 @@ export default function AccountForm({ user }: { user: UserData | null }) {
         setLoading(true);
         try {
           const profileData = await getProfile(user.email);
-          console.log('profileData:', profileData);
+          // console.log('profileData:', profileData);
           if (profileData) {
             setId(profileData.id.toString());
             setFirstname(profileData.firstName);
