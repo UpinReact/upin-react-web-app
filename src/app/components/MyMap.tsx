@@ -128,8 +128,8 @@ export default function MyMap() {
   };
 
   return (
-    <div className="flex items-center justify-center h-screen min-h-screen bg-gradient-to-r from-green-200 via-yellow-100 to-orange-200">
-      <div className="bg-white p-6 rounded-lg shadow-lg relative w-full md:w-3/4">
+    <div className="flex items-center justify-center h-screen min-h-screen bg-upinGreen">
+      <div className="bg-upinGreen p-6 rounded-lg shadow-slate-800 shadow-md relative w-full md:w-3/4">
         <div className="sidebar bg-gray-50 p-4 rounded-lg shadow-inner mb-4">
           Longitude: {center[0].toFixed(4)} | Latitude: {center[1].toFixed(4)} | Zoom: {zoom.toFixed(2)}
         </div>
