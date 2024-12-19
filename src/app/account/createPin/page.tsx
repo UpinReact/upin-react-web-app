@@ -3,11 +3,9 @@ import Link from 'next/link';
 import React, { useEffect, useRef, useState } from 'react';
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 import "mapbox-gl/dist/mapbox-gl.css";
-// import "@mapbox/mapbox-gl-geocoder/dist/mapbox-geocoder.css";
 import { supabase } from "utils/supabase/supabase";
 import { useRouter } from 'next/navigation';
 import { getAccountData } from 'src/app/login/actions';
-
 
 const AddressInput = ({ onAddressSelect }: { onAddressSelect: (address: string, lat: number, lng: number) => void }) => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -47,7 +45,7 @@ const AddressInput = ({ onAddressSelect }: { onAddressSelect: (address: string, 
     }
   }, [onAddressSelect]);
 
-  return <div ref={containerRef} className="border rounded-md focus:ring-2 focus:ring-blue-500" />;
+  return <div ref={containerRef} className="border rounded-lg shadow-md p-2 bg-white focus:ring-2 focus:ring-upinGreen" />;
 };
 
 const CreatePin = () => {
@@ -84,7 +82,6 @@ const CreatePin = () => {
     const startDate = formData.get("start_date") as string;
     const endDate = formData.get("end_date") as string;
 
-    // Validate date range
     if (new Date(startDate) >= new Date(endDate)) {
       alert("Start date must be before the end date.");
       return;
@@ -134,113 +131,95 @@ const CreatePin = () => {
   };
 
   return (
-    <div>
-      <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-lg">
-        <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">Create a Pin</h1>
-        <h3 className="text-blue-500 text-center font-montserrat">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100">
+      <div className="max-w-lg mx-auto p-8 bg-white rounded-lg shadow-2xl transform hover:scale-105 transition-transform">
+        <h1 className="text-3xl font-bold text-center text-upinGreen mb-6">Create a Pin</h1>
+        <h3 className="text-center text-upinGreen font-semibold mb-4">
           <Link href="/account">Nevermind, take me back to my account</Link>
         </h3>
-        <hr className="mb-6" />
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <input type="hidden" name="id" value={userData?.id || ""} />
-
+        <hr className="mb-6 border-gray-300" />
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div className="flex flex-col">
-            <label htmlFor="meetupname" className="text-sm font-medium text-gray-700 mb-1">
-              Meetup Name:
-            </label>
+            <label htmlFor="meetupname" className="font-medium text-gray-700">Meetup Name:</label>
             <input
               type="text"
               id="meetupname"
               name="meetupname"
-              className="border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="mt-1 p-3 border rounded-lg focus:ring-2 focus:ring-upinGreen"
               required
             />
           </div>
           <div className="flex flex-col">
-            <label htmlFor="description" className="text-sm font-medium text-gray-700 mb-1">
-              Description:
-            </label>
-            <input
-              type="text"
+            <label htmlFor="description" className="font-medium text-gray-700">Description:</label>
+            <textarea
               id="description"
               name="description"
-              className="border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              rows={3}
+              className="mt-1 p-3 border rounded-lg focus:ring-2 focus:ring-upinGreen"
               required
-            />
+            ></textarea>
           </div>
           <div className="flex flex-col">
-            <label htmlFor="location" className="text-sm font-medium text-gray-700 mb-1">
-              Location:
-            </label>
+            <label htmlFor="location" className="font-medium text-gray-700">Location:</label>
             <AddressInput onAddressSelect={handleAddressSelect} />
           </div>
           <div className="flex flex-col">
-            <label htmlFor="start_date" className="text-sm font-medium text-gray-700 mb-1">
-              Start Date:
-            </label>
+            <label htmlFor="start_date" className="font-medium text-gray-700">Start Date:</label>
             <input
               type="datetime-local"
               id="start_date"
               name="start_date"
-              className="border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="mt-1 p-3 border rounded-lg focus:ring-2 focus:ring-upinGreen"
               required
             />
           </div>
           <div className="flex flex-col">
-            <label htmlFor="end_date" className="text-sm font-medium text-gray-700 mb-1">
-              End Date:
-            </label>
+            <label htmlFor="end_date" className="font-medium text-gray-700">End Date:</label>
             <input
               type="datetime-local"
               id="end_date"
               name="end_date"
-              className="border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="mt-1 p-3 border rounded-lg focus:ring-2 focus:ring-upinGreen`"
               required
             />
           </div>
           <div className="flex justify-between items-center">
-            <legend className="text-sm font-medium text-gray-700">
-              Is this Event Public or Private:
-            </legend>
-            <label htmlFor="public" className="flex items-center">
-              <input
-                type="checkbox"
-                name="Public"
-                id="public"
-                value="public"
-                checked={isPublic}
-                onChange={() => {
-                  setIsPublic(!isPublic);
-                  setIsPrivate(false);
-                }}
-                className="mr-2"
-              />
-              Public
-            </label>
-            <label htmlFor="private" className="flex items-center">
-              <input
-                type="checkbox"
-                name="Private"
-                id="private"
-                value="private"
-                checked={isPrivate}
-                onChange={() => {
-                  setIsPrivate(!isPrivate);
-                  setIsPublic(false);
-                }}
-                className="mr-2"
-              />
-              Private
-            </label>
+            <span className="font-medium text-gray-700">Event Type:</span>
+            <div className="flex space-x-4">
+              <label className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  value="public"
+                  checked={isPublic}
+                  onChange={() => {
+                    setIsPublic(!isPublic);
+                    setIsPrivate(false);
+                  }}
+                />
+                <span>Public</span>
+              </label>
+              <label className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  value="private"
+                  checked={isPrivate}
+                  onChange={() => {
+                    setIsPrivate(!isPrivate);
+                    setIsPublic(false);
+                  }}
+                />
+                <span>Private</span>
+              </label>
+            </div>
           </div>
           <button
             type="submit"
-            className={`w-full py-2 px-4 rounded-md transition-colors ${
-              isLoading ? "bg-gray-500 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600 text-white"
+            className={`w-full py-3 px-4 rounded-lg text-white font-semibold transition-all ${
+              isLoading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-upinGreen"
             }`}
             disabled={isLoading}
           >
-            {isLoading ? "Submitting..." : "Submit"}
+            {isLoading ? "Submitting..." : "Create Pin"}
           </button>
         </form>
       </div>

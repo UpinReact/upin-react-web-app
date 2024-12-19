@@ -1,7 +1,6 @@
 'use client';
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css'; // Required CSS
-import 'ag-grid-community/styles/ag-theme-quartz.css'; // Theme CSS
 import { useEffect, useState } from 'react';
 import { ColDef } from 'ag-grid-community';
 import { supabase } from 'utils/supabase/supabase';
@@ -46,19 +45,25 @@ export default function Grid() {
   };
 
   return (
-    <div className="ag-theme-quartz" style={{ height: '100%', width: '100%', minHeight: 400 }}>
+    <div className="ag-grid-wrapper rounded-xl shadow-2xl bg-gradient-to-r from-indigo-500 to-purple-600">
+      {/* Loading State */}
       {loading ? (
-        <p>Loading...</p>
+        <div className="flex justify-center items-center h-full">
+          <span className="text-xl font-bold text-white">Loading Communities...</span>
+        </div>
       ) : (
-        <AgGridReact
-          rowData={rowData}
-          columnDefs={colDefs}
-          pagination={true}
-          paginationPageSize={10}
-          domLayout="autoHeight"
-          rowSelection="single"
-          onGridReady={onGridReady} // Add the onGridReady handler here
-        />
+        <div className="rounded-xl shadow-lg  bg-white p-4">
+          <AgGridReact
+            rowData={rowData}
+            columnDefs={colDefs}
+            pagination={true}
+            paginationPageSize={20}
+            domLayout="autoHeight"
+            rowSelection="single"
+            onGridReady={onGridReady} // Add the onGridReady handler here
+            className="ag-theme-modern"
+          />
+        </div>
       )}
     </div>
   );
