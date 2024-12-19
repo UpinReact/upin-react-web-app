@@ -3,7 +3,7 @@ import { useRouter } from 'next/compat/router'
 
 import React from 'react';
 
-function PinPage() {
+function PinPage({params: { id }}) {
   const router = useRouter();
   console.log(router?.query.id)
   // const { id } = router.query; // Extracting the id from the URL parameters

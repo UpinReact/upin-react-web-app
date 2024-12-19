@@ -49,7 +49,7 @@ export default function SignUpPage() {
     formData.append("gender", gender);
     formData.append("birthdate", birthdate);
     formData.append("bio", bio);
-    formData.append("interests", interests.join(","));
+    formData.append("interests", JSON.stringify(interests));
   
     try {
       const result = await signup(formData);
