@@ -9,6 +9,7 @@ import sparkles from "../../../public/sparklesLottie.json";
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { supabase } from 'utils/supabase/supabase';
+import { useUserData } from "./page"
 
 const Lottie = dynamic(() => import('lottie-react'), {
   ssr: false,  // This ensures that Lottie is only rendered client-side
@@ -47,7 +48,7 @@ interface Community {
   community_name: string;
 }
 
-export default function AccountForm({ user }: { user: UserData | null }) {
+export default function AccountForm() {
   const [id, setId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [firstName, setFirstname] = useState<string | null>(null);
@@ -58,6 +59,9 @@ export default function AccountForm({ user }: { user: UserData | null }) {
   const [followers, setFollowers] = useState<UserProfile[] | null>(null);
   const [communities, setCommunities] = useState<Community[] | null>(null);
   const [session, setSession] = useState(null);
+  
+  const user = useUserData();
+  console.log('userContext:', user); 
 
   useEffect(() => {
     const checkStatus = async () => {

@@ -1,7 +1,10 @@
+'use client'; 
 import React from 'react';
 import dynamic from 'next/dynamic';
-
 import Hero from './components/Hero';
+
+
+ 
 // Lazy load the MyMap component
 const MyMap = dynamic(() => import('./components/MyMap'), {
   loading: () => <div>Loading map...</div>, // Optional loading state
@@ -9,6 +12,7 @@ const MyMap = dynamic(() => import('./components/MyMap'), {
 });
 
 export default function Home() {
+  
   return (
     
     <div>

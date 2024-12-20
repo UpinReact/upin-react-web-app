@@ -4,33 +4,40 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import locationLottie from "../../../public/locationLottie.json";
-import { supabasClient } from "utils/supabase/client";
-import { checkLoggedIn } from "../login/actions";
+import { checkLoggedIn, getAccountData } from "../login/actions";
 import { useRouter } from "next/navigation";
+import {supabase} from "utils/supabase/supabase"
+
+interface User{
+  
+}
+
+ 
 
 // Dynamically import Lottie
 const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
 
-const Header = () => {
+const Header = () => { 
   const router = useRouter();
-  const supabase = supabasClient;
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-
   useEffect(() => {
     const fetchLoginStatus = async () => {
-      const isLoggedIn = await checkLoggedIn();
-      setIsLoggedIn(isLoggedIn);
+      const isLoggedIn = await checkLoggedIn()
+      setIsLoggedIn(isLoggedIn)
     };
+    
     setIsLoading(false);
     fetchLoginStatus();
   }, []);
+  
 
   if (isLoading) {
     return <div>Loading...</div>;
   }
 
   return (
+    
     <nav className="bg-gradient-to-b from-green-900 to-upinGreen text-white w-full p-5 flex flex-wrap items-center justify-between shadow-md">
       {/* Logo & Title */}
       <div className="flex items-center space-x-3">
@@ -100,6 +107,7 @@ const Header = () => {
         )}
       </div>
     </nav>
+   
   );
 };
 
