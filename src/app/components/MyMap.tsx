@@ -148,7 +148,7 @@ export default function MyMap() {
 
       {/* Sidebar Section */}
       <div className="text-center bg-gray-100 p-4 rounded-xl shadow-inner">
-        <p>
+        <p className="text-black">
           Longitude: {center[0].toFixed(4)} | Latitude: {center[1].toFixed(4)} | Zoom: {zoom.toFixed(2)}
         </p>
         <button

@@ -4,9 +4,19 @@ import appleImg from "public/Download_on_the_App_Store_Badge_US-UK_RGB_blk_09291
 import upin from "public/upin.png"
 import Image from 'next/image'
 import Link from 'next/link'
+import bgImg from "public/Screen Shot 2020-03-12 at 9.26.39 AM.png";
 const GetTheApp = () => {
     return (
         <div className="flex justify-center items-center h-screen bg-[#22d0a5] p-4 sm:p-10">
+          <div className="absolute inset-0 top-20 -z-0 w-screem">
+            <Image
+              src={bgImg}
+              layout="fill"
+              objectFit="cover"
+              alt="Background image"
+              className="opacity-10 z-0"
+            />
+      </div>
           <div className="w-full sm:w-2/3 h-auto p-6 sm:p-10 border-2 border-black text-center bg-white backdrop-blur-md rounded-3xl shadow-lg">
             <div className="flex justify-center mt-[-60px] sm:mt-[-90px] mb-10 sm:mb-20">
               <Image

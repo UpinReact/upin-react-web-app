@@ -13,88 +13,96 @@ const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
 
 const Header = () => {
   const router = useRouter();
-  const supabase = supabasClient
+  const supabase = supabasClient;
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchLoginStatus = async () => {
-      const isLoggedIn = await checkLoggedIn()// Set logged-in state based on session presence
-      console.log('isLoggedIn', isLoggedIn);
-      setIsLoggedIn(isLoggedIn);  // Update the logged-in state
+      const isLoggedIn = await checkLoggedIn();
+      setIsLoggedIn(isLoggedIn);
     };
-    setIsLoading(false); // Loading complete
+    setIsLoading(false);
     fetchLoginStatus();
   }, []);
 
   if (isLoading) {
-    return <div>Loading...</div>; // Optionally, show a loading state
+    return <div>Loading...</div>;
   }
 
   return (
-    <nav className="bg-upinGreen flex justify-between items-center w-full border border-upinGreen z-40 p-5">
-      <Lottie animationData={locationLottie} style={{ width: 100, height: 100 }} />
-      <div className="flex-1"></div>
-      <div className="flex flex-col items-center ml-[-100px] z-10">
-        <h1 className="font-bold font-montserrat text-4xl text-center mb-3">
-          <Link href={"/"}>Upin</Link>
-        </h1>
-        <p className="text-center font-montserrat">Create. Join. Connect</p>
-        {isLoggedIn ? (
-          <div className="flex text-center">
-            {/* Sign Out */}
-            <motion.button
-              whileHover={{ scale: 1.2 }}
-              className="button text-white hover:bg-red-900 hover:backdrop-filter hover:backdrop-blur-lg hover:bg-opacity-50 hover:border hover:border-red-950 rounded-2xl px-3 m-2"
-              onClick={async () => {
-                await supabase.auth.signOut(); // Handle sign out
+    <nav className="bg-gradient-to-b from-green-900 to-upinGreen text-white w-full p-5 flex flex-wrap items-center justify-between shadow-md">
+      {/* Logo & Title */}
+      <div className="flex items-center space-x-3">
+        <div className="w-16 h-16">
+          <Lottie animationData={locationLottie} style={{ width: "100%", height: "100%" }} />
+        </div>
+        <div className="text-center">
+          <h1 className="text-3xl md:text-4xl font-montserrat font-bold">
+            <Link href={"/"}>Upin</Link>
+          </h1>
+          <p className="text-sm md:text-base font-light">Create. Join. Connect.</p>
+        </div>
+      </div>
 
-                setIsLoggedIn(false);
-                router.push("/login")
-              }}
-            >
-              Sign out
-            </motion.button>
-            {/* Go to Account */}
+      {/* Navigation Links */}
+      <div className="flex flex-wrap justify-center gap-4 mt-3 md:mt-0">
+        <ul className="flex space-x-4 items-center">
+          <li className="hover:text-yellow-300 text-lg font-montserrat">
+            <Link href={"/about-us"}>About</Link>
+          </li>
+          <li className="hover:text-yellow-300 text-lg font-montserrat">
+            Team
+          </li>
+          <li className="hover:text-yellow-300 text-lg font-montserrat">
+            News
+          </li>
+        </ul>
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          className="bg-upinComplimentaryColor text-white px-5 py-2 rounded-full font-semibold shadow-lg hover:shadow-xl hover:bg-blue-700"
+        >
+          <Link href={"/get-the-app"}>Get the App</Link>
+        </motion.button>
+      </div>
+
+      {/* Auth Section */}
+      <div className="flex items-center gap-4 mt-3 md:mt-0">
+        {isLoggedIn ? (
+          <>
             <motion.button
               whileHover={{ scale: 1.1 }}
-              className="button text-white bg-upinBlue hover:bg-blue-700 rounded-2xl px-3 m-2"
+              className="text-white bg-red-600 hover:bg-red-800 px-4 py-2 rounded-full shadow-md"
+              onClick={async () => {
+                await supabase.auth.signOut();
+                setIsLoggedIn(false);
+                router.push("/login");
+              }}
             >
-              <Link href="/account">Go to Account</Link>
+              Sign Out
             </motion.button>
-          </div>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              className="text-white bg-upinBlue hover:bg-blue-600 px-4 py-2 rounded-full shadow-md"
+            >
+              <Link href="/account">Account</Link>
+            </motion.button>
+          </>
         ) : (
-          <ul className="flex justify-between px-4 pt-2">
-            <li className="px-5 hover:text-white pb-3">
+          <ul className="flex space-x-4">
+            <li className="hover:text-yellow-300">
               <Link href={"/login"}>Log In</Link>
             </li>
-            <li className="px-5 hover:text-white pb-3">
+            <li className="hover:text-yellow-300">
               <Link href={"/sign-up"}>Sign Up</Link>
             </li>
           </ul>
         )}
-      </div>
-      <div className="flex-1 flex justify-end z-10">
-        <ul className="flex space-x-4 px-5 mr-12 items-center">
-          <li className="text-white text-lg font-montserrat">News</li>
-          <li className="text-white text-lg font-montserrat">
-            <Link href={"/about-us"}>About</Link>
-          </li>
-          <li className="text-white text-lg font-montserrat">Team</li>
-          <li className="text-lg font-montserrat">
-            <Link href={"/get-the-app"}>
-              <motion.button
-                whileHover={{ scale: 1.05 }} // Slight scaling on hover for interactivity
-                className="bg-upinComplimentaryColor text-white hover:bg-blue-600 px-6 py-3 rounded-full font-semibold shadow-lg transition duration-300 ease-in-out transform hover:shadow-xl"
-              >
-                Get the App
-              </motion.button>
-            </Link>
-          </li>
-        </ul>
       </div>
     </nav>
   );
 };
 
 export default Header;
+
+

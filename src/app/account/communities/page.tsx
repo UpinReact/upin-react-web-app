@@ -2,6 +2,7 @@ import React from 'react';
 import Image from 'next/image';
 import backImg from 'public/background.jpg';
 import Grid from './Grid';
+import Link from 'next/link';
 
 const Communities = () => {
   return (
@@ -25,6 +26,9 @@ const Communities = () => {
           <h1 className="text-5xl font-extrabold text-gray-800 text-center mb-6">
             Welcome to the Communities
           </h1>
+          <h3 className="text-center text-upinGreen font-semibold mb-4">
+          <Link href="/account">Nevermind, take me back to my account</Link>
+          </h3>
           <p className="text-lg text-gray-700 text-center mb-8">
             Connect, explore, and engage with vibrant communities around the globe. Dive in and discover amazing events, meetups, and groups that match your interests!
           </p>

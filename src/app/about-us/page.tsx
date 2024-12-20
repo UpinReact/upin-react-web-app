@@ -13,14 +13,14 @@ export const metadata: Metadata = {
 
 const aboutUs = () => {
   return (
-    <div className='relative w-full min-h-screen'>
+    <div className='relative w-full min-h-screen bg-upinGreen'>
        
       <Image 
         src={bgImg}
         alt='Image of background'
         layout='fill'
         objectFit='cover'
-        className=' mix-blend-overlay opacity-75'
+        className=' mix-blend-overlay opacity-20'
       />
       <div className='relative z-10 flex flex-col items-center text-black'>
         
