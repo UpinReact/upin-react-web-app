@@ -27,6 +27,13 @@ export async function login(data: dataForm) {
       email: lowerCaseEmail,
       password: data.password,
     });
+    try{
+    setSession(session?.access_token as string, session?.refresh_token as string);
+    
+    }catch(error){
+      console.error('Error setting session:', error.message);
+      return { error: 'Failed to set session.' };
+    }
 
     if (error) {
       console.error('Error:', error.message);
@@ -41,6 +48,18 @@ export async function login(data: dataForm) {
     console.error('Unexpected error during login:', error);
     return { error: 'An unexpected error occurred.' };
   }
+}
+async function setSession(access_token: string, refresh_token: string) {
+  const{data, error} = await supabase.auth.setSession({
+    access_token,
+    refresh_token,
+  });
+  console.log("data while setting session: "+data.user);
+  if (error) {
+    console.error('Error setting session:', error.message);
+    return { error: 'Failed to set session.' };
+  }
+  return { success: true, session: data };
 }
 
 export async function getAccountData() {

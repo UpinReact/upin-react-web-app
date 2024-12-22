@@ -61,7 +61,8 @@ export default function AccountForm() {
   const [session, setSession] = useState(null);
   
   const user = useUserData();
-  console.log('userContext:', user); 
+  
+   
 
   useEffect(() => {
     const checkStatus = async () => {
@@ -82,7 +83,7 @@ export default function AccountForm() {
         setLoading(true);
         try {
           const profileData = await getProfile(user.email);
-          // console.log('profileData:', profileData);
+         
           if (profileData) {
             setId(profileData.id.toString());
             setFirstname(profileData.firstName);
@@ -120,7 +121,7 @@ export default function AccountForm() {
     try {
       setLoading(true);
       
-      console.log('id:', id);
+      // console.log('id:', id);
       const {data, error } = await supabase
       .from('userdata')
       .update({

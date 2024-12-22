@@ -11,13 +11,15 @@ const UserContext = createContext(null);
 export default function Account() {
   const [userData, setUserData] = useState(null);
   const [error, setError] = useState(null);
-
+  localStorage.setItem('user', JSON.stringify(userData)); 
+  const storedUser = JSON.parse(localStorage.getItem('user'));
   useEffect(() => {
     const fetchData = async () => {
       try {
         const result = await getAccountData();
         if (result.error) setError(result.error);
         else setUserData(result.user);
+        
       } catch (err) {
         setError("Failed to fetch user data");
       }
@@ -25,11 +27,12 @@ export default function Account() {
     fetchData();
   }, []);
 
+  
   if (error) return <div>{error}</div>;
   if (!userData) return <div>Loading...</div>;
 
   return (
-    <UserContext.Provider value={userData}>
+    <UserContext.Provider value={storedUser}>
       <AccountForm  />
     </UserContext.Provider>
   );
