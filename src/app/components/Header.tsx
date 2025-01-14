@@ -18,6 +18,7 @@ const Header = () => {
   useEffect(() => {
     const fetchSession = async () => {
       await supabase.auth.getSession().then(({data}) => setSession(data));
+      if (!session) setSession(null)
       setIsLoading(false);
     };
 
