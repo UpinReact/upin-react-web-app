@@ -1,0 +1,33 @@
+name: CI for Development
+
+on:
+  push:
+    branches:
+      - '*'  # This triggers the workflow on every branch push
+  pull_request:
+    branches:
+      - '*'  # This triggers the workflow on pull requests to any branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '21.4.0'  # Use the version you're working with
+
+      - name: Install dependencies
+        run: |
+          npm install
+
+
+      - name: Build and Deploy for Development
+        run: |
+          npm run dev
+          # Replace with whatever command you're using to deploy to your dev environment
+          # Example: npm run deploy:dev
