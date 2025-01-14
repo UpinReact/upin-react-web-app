@@ -34,15 +34,16 @@ const ProfileSection = () => {
     const fetchData = async () => {
      const supabase = await createClient()
       const { data } = await supabase.auth.getUser();
+      console.log("data....."+data.user.email)
       if (!data) {
         alert("Please login to view this page")
         const router = useRouter();
         router.push('/login')
       }
-      
+
 
       const lowerCaseEmail = data.user.email.toLowerCase();
- 
+
       const { data: userData, error: userError } = await supabase
           .from('userdata')
           .select('*')
@@ -54,7 +55,7 @@ const ProfileSection = () => {
           } 
       if (data) { 
         console.log("userData....."+userData.id)
-        
+
         setUserData({
           profilePhotoURL: userData.profilePhotoURL,
           id: userData.id,

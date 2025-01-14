@@ -13,7 +13,6 @@ import getCommunity from './communityFunctions';
 const Motiondiv = dynamic(() => import('./Motiondiv'), { ssr: true });
 const Motionlist = dynamic(() => import('./Motionlist'), { ssr: true });
 const Lottieanimation = dynamic(() => import('./Lottieanimation'), {ssr:true})
-
 import ProfileSection from "./ProfileSection"
 
 interface UserData {
