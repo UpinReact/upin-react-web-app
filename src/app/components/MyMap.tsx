@@ -69,6 +69,7 @@ export default function MyMap() {
       mapRef.current?.resize();
 
       pins.forEach((pin) => {
+        
         const marker = new mapboxgl.Marker()
           .setLngLat([pin.longitude, pin.latitude])
           .setPopup(
@@ -78,7 +79,8 @@ export default function MyMap() {
                 <h3 class="text-2xl font-bold text-upinGreen mb-2 break-words">${pin.meetupname}</h3>
                 <p class="text-sm text-gray-600 leading-tight whitespace-normal mb-3 break-words">${pin.description}</p>
                 <div class="flex justify-between items-center">
-                  <button class="text-upinGreen hover:underline text-sm font-semibold" data-pin-id="${pin.id}">View More</button>
+                  <a class="text-upinGreen hover:underline text-sm font-semibold" data-pin-id="${pin.id}" href= "/Pins/${pin.id}">View More</a>
+                  
                 </div>
               </div>`
             )

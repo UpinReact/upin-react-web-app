@@ -2,7 +2,12 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ['kxtapuebivyoqwkdhphb.supabase.co'], // Add your Supabase storage domain here
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**', // Wildcard to allow all domains
+      },
+    ],
   },
   webpack: (config, { dev }) => {
     if (dev) {

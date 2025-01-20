@@ -96,7 +96,7 @@ export default async function PrivatePage() {
   {/* Background Image */}
   <div className="absolute inset-0 -z-0">
     <Image
-      src={bgImg}
+      src={bgImg || null}
       layout="fill"
       objectFit="cover"
       alt="Background image"

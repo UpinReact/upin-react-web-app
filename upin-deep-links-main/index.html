@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Download Upin</title>
+   <!-- Open Graph Metadata -->
+   <meta property="og:title" content="Download Upin" />
+   <meta property="og:description" content="Join Upin to explore your community and connect with people near you!" />
+   <meta property="og:url" content="" />
+   <meta property="og:image" content="" />
+   <meta property="og:type" content="website" />
+   
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f4f4f4;
+      text-align: center;
+    }
+    h1 {
+      color: #0FBC71;
+      margin-top: 40px;
+    }
+    p {
+      color: #666;
+      max-width: 600px;
+      margin: 20px auto;
+    }
+    .button {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #0FBC71;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+  </style>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+      const currentUrl = window.location.href;
+     const encodedUrl = encodeURIComponent(currentUrl);
+    
+    const appStoreLink = `https://apps.apple.com/us/app/upin/id1341978328?referrer=${encodedUrl}`;
+    const playStoreLink = `https://play.google.com/store/apps/details?id=com.benhavis.upinjtyc832ezysr5qkcjpax&referrer=${encodedUrl}`;
+
+      // Automatic redirection
+      if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+        // Redirect to App Store for iOS users
+        window.location.href = appStoreLink;
+      } else if (/android/i.test(userAgent)) {
+        // Redirect to Play Store for Android users
+        window.location.href = playStoreLink;
+      }
+
+      // Update the button link as a fallback
+      const downloadLink = document.getElementById("download-link");
+      if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+        downloadLink.href = appStoreLink;
+        downloadLink.textContent = "Download on the App Store";
+      } else if (/android/i.test(userAgent)) {
+        downloadLink.href = playStoreLink;
+        downloadLink.textContent = "Download on Google Play";
+      } else {
+        downloadLink.href = "https://upin.co";
+        downloadLink.textContent = "Visit Upin Website";
+      }
+    });
+  </script>
+</head>
+<body>
+  <h1>Welcome to Upin</h1>
+  <p>Redirecting you to the appropriate app store. If the redirection does not happen, click the button below.</p>
+  <a href="#" class="button" id="download-link">Download Upin</a>
+</body>
+</html>
