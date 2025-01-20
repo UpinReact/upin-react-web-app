@@ -97,8 +97,8 @@ export default async function PrivatePage() {
   <div className="absolute inset-0 -z-0">
     <Image
       src={bgImg || null}
-      layout="fill"
-      objectFit="cover"
+      style={{ objectFit: 'cover' }} 
+      
       alt="Background image"
       className="opacity-10"
     />

@@ -15,8 +15,8 @@ const Hero = () => {
       <div className="absolute inset-0 -z-0">
         <Image
           src={bgImg}
-          layout="fill"
-          objectFit="cover"
+          style={{ objectFit: 'cover' }} 
+          // objectFit="cover"
           alt="Background image"
           className="opacity-10 z-0"
         />

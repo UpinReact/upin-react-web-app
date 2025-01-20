@@ -65,7 +65,7 @@ export default function SignUpPage() {
   return (
     <div className="relative flex items-center justify-center w-screen h-screen bg-upinGreen">
       {/* Background Image */}
-      <Image src={bgImg} alt="Background" fill className="absolute opacity-10 object-cover" />
+      <Image src={bgImg} alt="Background" style={{ objectFit: 'cover' }}  className="absolute opacity-10 object-cover" />
 
    
     

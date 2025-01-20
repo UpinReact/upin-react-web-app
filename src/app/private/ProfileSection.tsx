@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { logout } from '../login/actions';
 import { createClient } from 'utils/supabase/client';
 import { useRouter } from 'next/navigation';
+import defaultUserImage from "public/default-avatar-profile-icon-social-media-user-image-gray-avatar-icon-blank-profile-silhouette-illustration-vector.jpg"
 
 interface UserData {
   profilePhotoURL: string;
@@ -82,10 +83,11 @@ const ProfileSection = () => {
           {/* Profile Picture */}
           <div className="relative mb-4">
             <Image 
-              src={userData.profilePhotoURL || null} 
+              src={userData.profilePhotoURL || defaultUserImage} 
               alt="Profile Photo" 
               width={120} 
               height={120} 
+              
               className="rounded-full border-4 border-white shadow-lg object-cover h-64 w-64" 
             />
           </div>
