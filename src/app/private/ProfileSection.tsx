@@ -35,7 +35,7 @@ const ProfileSection = () => {
     const fetchData = async () => {
      const supabase = await createClient()
       const { data } = await supabase.auth.getUser();
-      console.log("data....."+data.user.email)
+      
       if (!data) {
         alert("Please login to view this page")
         const router = useRouter();
@@ -87,7 +87,6 @@ const ProfileSection = () => {
               alt="Profile Photo" 
               width={120} 
               height={120} 
-              
               className="rounded-full border-4 border-white shadow-lg object-cover h-64 w-64" 
             />
           </div>

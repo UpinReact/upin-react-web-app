@@ -1,29 +1,31 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import locationLottie from "../../../public/locationLottie.json";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { supabase } from "utils/supabase/supabase";
+import Lottie from "lottie-react";
 
-// Dynamically import Lottie
-const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
 
 const Header = () => {
-  const router = useRouter();
+
+  const pathname = usePathname();
   const [session, setSession] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    const fetchSession = async () => {
-      await supabase.auth.getSession().then(({data}) => setSession(data));
-      if (!session) setSession(null)
-      setIsLoading(false);
-    };
+  // useEffect(() => {
+  //   const fetchSession = async () => {
+  //     const user = await supabase.auth.getUser();
+  //     setSession(user);
+  //     console.log(user)
+  //     setIsLoading(false);
+  //   };
 
-    fetchSession();
-  }, []);
+  //   fetchSession();
+  // }, [pathname]);
+
+
 
   if (isLoading) return <div>Loading...</div>;
 

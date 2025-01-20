@@ -91,7 +91,7 @@ export default async function PrivatePage() {
   const communities = await getCommunity(userData.id);
   const loading = false;
 
-  return (<div className="relative w-screen min-h-screen bg-upinGreen py-10">
+  return (<div className="relative w-screen h-full min-h-screen bg-upinGreen py-10">
       
   {/* Background Image */}
   <div className="absolute inset-0 -z-0">
@@ -100,7 +100,7 @@ export default async function PrivatePage() {
       style={{ objectFit: 'cover' }} 
       
       alt="Background image"
-      className="opacity-10"
+      className="opacity-10 h-screen"
     />
   </div>
 

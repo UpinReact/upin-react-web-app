@@ -3,32 +3,8 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import {supabase} from "utils/supabase/supabase"
 
-export async function login(formData: FormData) {
-
-  
-  // Type-casting for convenience, but validate your inputs in practice
-  const data = {
-    email: formData.get('email') as string,
-    password: formData.get('password') as string,
-  }
-
-  const { error } = await supabase.auth.signInWithPassword(data)
-
-  if (error) {
-    console.log("Error: " + error)
-    redirect('/error')
-  }
-
-  // Revalidate the path and set the session cookie
-  revalidatePath('/')
-  redirect('/account')
-}
-
-
-
 
 export async function signup(formData: FormData) {
-
 
   // Type-casting for convenience
   const data = {
@@ -87,7 +63,9 @@ export async function signup(formData: FormData) {
     }
 
     console.log("User created successfully!");
-    return { success: true, message: "User created successfully!" };
+    revalidatePath('/', 'layout')
+    redirect('/private')
+    
 
   } catch (err) {
     console.error("Unexpected error:", err);
@@ -98,17 +76,4 @@ export async function signup(formData: FormData) {
 
 
 
-export async function logout() {
- 
-  
-  const { error } = await supabase.auth.signOut()
 
-  if (error) {
-    console.log("Error: " + error)
-    redirect('/error')
-  }
-
-  // Revalidate the path and clear the session cookie
-  revalidatePath('/')
-  redirect('/')
-}
