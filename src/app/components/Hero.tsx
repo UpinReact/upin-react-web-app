@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from 'next/link';
 import React from "react";
 import Image from "next/image";
 import googleImg from "public/GetItOnGooglePlay_Badge_Web_color_English-XvR5LaEp.png";
@@ -15,8 +15,8 @@ const Hero = () => {
       <div className="absolute inset-0 -z-0">
         <Image
           src={bgImg}
-          style={{ objectFit: 'cover' }} 
-          // objectFit="cover"
+          fill 
+          style={{ objectFit: 'cover' }}
           alt="Background image"
           className="opacity-10 z-0"
         />
