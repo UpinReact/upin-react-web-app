@@ -30,15 +30,18 @@ const Communities = () => {
               Nevermind, take me back to my account
             </Link>
           </h3>
-          <p className="text-lg text-gray-700 text-center mb-8">
+          <p className="text-lg text-gray-700 text-center mb-8 w-full">
             Connect, explore, and engage with vibrant communities around the globe. Dive in and discover amazing events, meetups, and groups that match your interests! <br />
             Download the app to view more about our communities and stay updated with the latest events and meetups. <br />
-            To Join a Community and to get the most out of our platform, we recommend downloading the app! <br />
+             <br />
             <br />
-            <Link href="/get-the-app" className="hover:text-blue-500 transition-colors duration-300 text-center font-bold border border-upinGreen rounded-lg p-2 bg-upinGreen text-white">
-              Get The App
-            </Link>
+            
             </p>
+            <div className="flex justify-center">
+              <Link href="/get-the-app" className="hover:text-blue-500 transition-colors duration-300 text-center font-bold border border-upinGreen rounded-lg p-2 bg-upinGreen text-white w-full my-2 ">
+                Get The App
+              </Link>
+            </div>
             
          
           <div className="flex justify-center">
