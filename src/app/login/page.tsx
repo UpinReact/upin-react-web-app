@@ -12,7 +12,7 @@ export default function LoginPage() {
       <div className="absolute inset-0 -z-0">
         <Image
           src={bgImg}
-          style={{ objectFit: 'cover' }} 
+          layout="fill"
           objectFit="cover"
           alt="Background image"
           className="opacity-10"

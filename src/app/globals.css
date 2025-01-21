@@ -8,9 +8,9 @@
 .ag-theme-modern {
     --ag-border-color: #060606; /* Soft border color */
     --ag-header-background-color: #0d19f8; /* Gradient purple header */
-    --ag-row-hover-color: #edf2f7; /* Soft hover effect */
-    --ag-font-family: 'Poppins', sans-serif; /* Modern font */
-    --ag-font-size: 20px; /* Standard font size */
+    --ag-row-hover-color: #acadae; /* Soft hover effect */
+  
+
     --ag-header-font-weight: 200; /* Header weight for emphasis */
     --ag-row-font-weight: 500; /* Regular row font */
     --ag-row-striping-color: #fafafa; /* Subtle row striping */
@@ -18,24 +18,16 @@
     border-radius: 12px; /* Rounded corners for the grid */
     box-shadow: 0 6px 30px rgba(0, 0, 0, 0.1); /* Soft shadow for a clean look */
   }
-  
-  /* Increased row height and padding for a more spacious feel */
-  .ag-theme-modern .ag-row {
-    height: 100px; /* Taller rows for a spacious look */
-    padding: 2px;
-    border-bottom: 1px solid #f0f0f0; /* Soft border between rows */
-  }
-  
   /* Hover effect for rows to make it pop */
   .ag-theme-modern .ag-row:hover {
-    background-color: #f7fafc; /* Light background on hover */
+    background-color: #929292; /* Light background on hover */
     transition: background-color 0.3s ease-in-out;
   }
   
   /* Header customization */
   .ag-theme-modern .ag-header-cell {
      /* Gradient purple header */
-    color: #ffffff; /* White text for contrast */
+    color: #040404; /* White text for contrast */
     font-size: 18px; /* Larger header font */
      /* More padding for a comfortable header */
     text-align: center; /* Centered header text */
@@ -49,10 +41,7 @@
     transition: transform 0.3s ease-in-out;
   }
   
-  /* Add some space around the grid */
-  .ag-grid-wrapper {
-    padding: 2rem;
-  }
+ 
   
   /* Make the grid container responsive */
   @media (max-width: 768px) {
@@ -60,12 +49,6 @@
       padding: 1rem;
     }
   
-    .ag-header-cell {
-      font-size: 14px; /* Smaller text for mobile screens */
-    }
-  
-    .ag-theme-modern .ag-row {
-      height: 60px; /* Smaller rows on smaller screens */
-    }
+    
   }
   

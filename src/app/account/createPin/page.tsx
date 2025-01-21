@@ -6,6 +6,7 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import { supabase } from "utils/supabase/supabase";
 import { useRouter } from 'next/navigation';
 import { getAccountData } from 'src/app/login/actions';
+import { debounce } from '@mui/material';
 
 const AddressInput = ({ onAddressSelect }: { onAddressSelect: (address: string, lat: number, lng: number) => void }) => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -17,6 +18,7 @@ const AddressInput = ({ onAddressSelect }: { onAddressSelect: (address: string, 
       const geocoder = new MapboxGeocoder({
         accessToken: process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN || "",
         placeholder: "Enter an address",
+        debounce: 50,
         countries: "us",
         types: "address",
       });
@@ -24,23 +26,22 @@ const AddressInput = ({ onAddressSelect }: { onAddressSelect: (address: string, 
       geocoder.addTo(containerRef.current);
 
       geocoder.on("result", (event) => {
-        const selectedAddress = event.result.place_name;
+        const selectedAddress = event.result.place_name || '';
         const [longitude, latitude] = event.result.geometry.coordinates; // Extract coordinates
         onAddressSelect(selectedAddress, latitude, longitude);
-      });
-
-      geocoder.on("clear", () => {
-        onAddressSelect("", 0, 0); // Reset on clear
       });
 
       return () => geocoder.clear(); // Cleanup
     }
   }, [onAddressSelect]);
 
-  return <div ref={containerRef} className="border rounded-lg shadow-md p-2 bg-white focus:ring-2 focus:ring-upinGreen" />;
+  return <div ref={containerRef} className="border rounded-lg shadow-md p-5 " style={{height:'100%', width:"100%"}}/>;
 };
-
+interface data{
+  id: number;
+}
 const CreatePin = () => {
+  
   const selectedAddress = useRef<string>("");
   const selectedLatitude = useRef<number>(0);
   const selectedLongitude = useRef<number>(0);
@@ -56,13 +57,13 @@ const CreatePin = () => {
   useEffect(() => {
     const fetchData = async () => {
       const data = await getAccountData();
-     
-      if (error) setError(error);
-      else setUserData({ id: data.user?.id  || '' });
+      setUserData({ id: data.user.id  || '' });
+
     };
     
     fetchData();
   }, []);
+ 
 
   const handleAddressSelect = (address: string, lat: number, lng: number) => {
     selectedAddress.current = address;
@@ -79,56 +80,39 @@ const CreatePin = () => {
       alert("Please select a valid address.");
       return;
     }
-
-    // const formData = new FormData(event.currentTarget);
-    // const startDate = formData.get("start_date") as string;
-    // const endDate = formData.get("end_date") as string;
-    // if (new Date(startDate) >= new Date(endDate)) {
-    //   alert("Start date must be before the end date.");
-    //   return;
-    // }
-
-    // const data = {
-    //   host_id: userData?.id || "",
-    //   meetupname: formData.get("meetupname") as string,
-    //   description: formData.get("description") as string,
-    //   location: selectedAddress.current,
-    //   latitude: selectedLatitude.current,
-    //   longitude: selectedLongitude.current,
-    //   start_date: startDate,
-    //   end_date: endDate,
-    //   pin_type: isPublic ? "public" : "private",
-    // };
-
-    // try {
-    //   setIsLoading(true);
-    //   const { error: pinError } = await supabase.rpc("add_pin_rpc", {
-    //     _user_id: data.host_id,
-    //     _pin_type: data.pin_type,
-    //     _pin_title: data.meetupname,
-    //     _short_description: data.description,
-    //     _location: data.location,
-    //     _start_date: data.start_date,
-    //     _end_date: data.end_date,
-    //     _latitude: data.latitude,
-    //     _longitude: data.longitude,
-    //     _community_id: null,
-    //     _is_community_hosted: false,
-    //   });
-
-    //   if (pinError) {
-    //     console.error("Error creating pin:", pinError.message);
-    //     alert(`Error: ${pinError.message}`);
-    //   } else {
-    //     alert("Pin created successfully");
-    //     router.push("/account");
-    //   }
-    // } catch (error: any) {
-    //   console.error("Unexpected error creating pin:", error.message);
-    //   alert(`Unexpected error: ${error.message}`);
-    // } finally {
-    //   setIsLoading(false);
-    // }
+    else{
+      const form = new FormData(event.currentTarget);
+      const meetupname = form.get("meetupname") as string;
+      const description = form.get("description") as string;
+      const start_date = form.get("start_date") as string;
+      const end_date = form.get("end_date") as string;
+      const isPublic = form.get("isPublic") as string;
+      const isPrivate = form.get("isPrivate") as string;
+      setIsLoading(true);
+      const { data, error } = await supabase
+        .from("pins")
+        .insert([
+          {
+            user_id: userData?.id,
+            meetupname: meetupname,
+            description: description,
+            address: selectedAddress.current,
+            latitude: selectedLatitude.current,
+            longitude: selectedLongitude.current,
+            start_date: start_date,
+            end_date: end_date,
+            isPublic: isPublic,
+            isPrivate: isPrivate,
+          },
+        ]);
+      setIsLoading(false);
+      if (error) {
+        setError(error.message);
+      } else {
+        console.log("Pin created successfully!" + data);
+        router.push("/private");
+      }
+    }
   };
 
   return (
@@ -138,47 +122,49 @@ const CreatePin = () => {
         <h3 className="text-center text-upinGreen font-semibold mb-4">
           <Link href="/private">Nevermind, take me back to my account</Link>
         </h3>
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-10">
         
-            <AddressInput onAddressSelect={handleAddressSelect} />
-            <div>
+            <AddressInput onAddressSelect={handleAddressSelect}  />
+            <div >
               <label>
                 Meetup Name:
-                <input type="text" name="meetupname" required />
+                <input type="text" name="meetupname" required className='border border-upinGreen rounded-lg' />
               </label>
             </div>
-            <div>
+            <div className='flex items-start justify-between'>
               <label>
                 Description:
-                <textarea name="description" required />
+                <textarea name="description" required className='border border-upinGreen rounded-lg' rows={5}  />
               </label>
             </div>
             <div>
               <label>
                 Start Date:
-                <input type="datetime-local" name="start_date" required />
+                <input type="datetime-local" name="start_date" required className='border border-upinGreen rounded-lg p-2 m-1' />
               </label>
             </div>
             <div>
               <label>
                 End Date:
-                <input type="datetime-local" name="end_date" required />
+                <input type="datetime-local" name="end_date" required className='border border-upinGreen rounded-lg p-2 m-1' />
               </label>
             </div>
-            <div>
+            <div className='flex justify-between'>
               <label>
                 <input
                   type="checkbox"
-                  checked={isPublic}
+                  checked={!isPublic}
                   onChange={() => setIsPublic(!isPublic)}
+                  className='m-2'             
                 />
                 Public
               </label>
               <label>
                 <input
                   type="checkbox"
-                  checked={isPrivate}
+                  checked={isPublic}
                   onChange={() => setIsPrivate(!isPrivate)}
+                  className='m-2'
                 />
                 Private
               </label>

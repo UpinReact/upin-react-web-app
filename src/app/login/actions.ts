@@ -8,8 +8,6 @@ import { createClient } from 'utils/supabase/server'
 export async function login(formData: FormData) {
   const supabase = await createClient()
 
- 
-
   // type-casting here for convenience
   // in practice, you should validate your inputs
   const data = {
@@ -28,9 +26,9 @@ export async function login(formData: FormData) {
 }
 export async function getAccountData() {
   const supabase = await createClient()
-    const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-    const lowerCaseEmail = session?.user?.email.toLowerCase();
-    if (sessionError || !session?.user) return { error: 'No session found.' };
+    const { data: { user }, error: sessionError } = await supabase.auth.getUser();
+    const lowerCaseEmail = user.email.toLowerCase();
+    if (sessionError || !user) return { error: 'No session found.' };
  
     const { data: userData, error: userError } = await supabase
       .from('userdata')
@@ -41,6 +39,7 @@ export async function getAccountData() {
         console.error('Error fetching user data:', userError.message);
         return { error: 'Failed to fetch user data.' };
       }
+      
       return { user: userData };
     }
   
