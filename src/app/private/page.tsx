@@ -4,7 +4,7 @@ import bgImg from "public/Screen Shot 2020-03-12 at 9.26.39 AM.png";
 import { createClient } from 'utils/supabase/server'
 import Link from 'next/link';
 import Image from 'next/image';
-import { Suspense } from 'react';
+
 import dynamic from 'next/dynamic';
 import sparkles from "../../../public/sparklesLottie.json";
 import getFollowing from './following';
@@ -12,7 +12,7 @@ import getFollowers from './followers';
 import getCommunity from './communityFunctions';
 const Motiondiv = dynamic(() => import('./Motiondiv'), { ssr: true });
 const Motionlist = dynamic(() => import('./Motionlist'), { ssr: true });
-const Lottieanimation = dynamic(() => import('./Lottieanimation'), {ssr:true})
+
 import ProfileSection from "./ProfileSection"
 
 interface UserData {
@@ -104,6 +104,7 @@ export default async function PrivatePage() {
     />
   </div>
 
+
   {/* Main Content */}
   <Motiondiv
     initial={{ opacity: 0, scale: 0.95 }}
@@ -111,15 +112,7 @@ export default async function PrivatePage() {
     transition={{ duration: 0.5, ease: "easeOut" }}
     className="relative container mx-auto px-4 z-10"
   >
-    <ProfileSection />
-    
-      {/* Middle Section - Animation */}
-      <div className="hidden lg:flex items-center justify-center">
-        <Suspense fallback={<div className="text-white">Loading...</div>}>
-          <Lottieanimation animation={sparkles} style={{ width: 300, height: 300 }} />
-        </Suspense>
-      </div>
-
+    <ProfileSection />    
       {/* Right Section */}
       <div className="lg:col-span-1 space-y-6">
         {/* Following Section */}

@@ -2,12 +2,15 @@
 
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
-
 import { createClient } from 'utils/supabase/server'
 
-export async function login(formData: FormData) {
-  const supabase = await createClient()
 
+
+
+
+export async function login(formData: FormData) {
+  
+  const supabase = await createClient()
   // type-casting here for convenience
   // in practice, you should validate your inputs
   const data = {
@@ -24,6 +27,7 @@ export async function login(formData: FormData) {
   revalidatePath('/', 'layout')
   redirect('/private')
 }
+
 export async function getAccountData() {
   const supabase = await createClient()
     const { data: { user }, error: sessionError } = await supabase.auth.getUser();

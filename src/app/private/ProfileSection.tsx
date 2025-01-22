@@ -1,5 +1,5 @@
 'use client'
-import React, { use, useEffect, useState } from 'react'
+import React, { Suspense, use, useEffect, useState } from 'react'
 import Image from 'next/image';
 import Motionbutton from './Motionbutton';
 import Link from 'next/link';
@@ -7,6 +7,9 @@ import { logout } from '../login/actions';
 import { createClient } from 'utils/supabase/client';
 import { useRouter } from 'next/navigation';
 import defaultUserImage from "public/default-avatar-profile-icon-social-media-user-image-gray-avatar-icon-blank-profile-silhouette-illustration-vector.jpg"
+import googleImg from "public/GetItOnGooglePlay_Badge_Web_color_English-XvR5LaEp.png";
+import appleImg from "public/Download_on_the_App_Store_Badge_US-UK_RGB_blk_092917.svg";
+import Lottieanimation from './Lottieanimation';
 
 interface UserData {
   profilePhotoURL: string;
@@ -29,6 +32,15 @@ const ProfileSection = () => {
     birthDate: '',
     interests: '',
   });
+  const [showPopup, setShowPopup] = useState(false);
+
+  useEffect(() => {
+    const hasSeenPopup = localStorage.getItem('hasSeenPopup');
+    if (!hasSeenPopup) {
+      setShowPopup(true);
+      localStorage.setItem('hasSeenPopup', 'true'); // Save to prevent showing again
+    }
+  }, []);
   
 
   useEffect(() => {
@@ -74,7 +86,8 @@ const ProfileSection = () => {
   }, []);
 
   return (
-  <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+  <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 z-20">
+    
       
       {/* Profile Section */}
       <div className="lg:col-span-1">
@@ -90,7 +103,55 @@ const ProfileSection = () => {
               className="rounded-full border-4 border-white shadow-lg object-cover h-64 w-64" 
             />
           </div>
+          <div>
+      
 
+      {showPopup && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md text-center">
+            <h2 className="text-xl font-bold mb-4">Welcome!</h2>
+            <p>For the best experience we recommend downloading our app on the play store or app store!</p>
+            <div className="flex justify-center gap-8 py-10">
+        {/* Google Play Link */}
+        <Link
+          href="https://play.google.com/store/apps/details?id=com.benhavis.upinjtyc832ezysr5qkcjpax" 
+          
+        >
+          
+            <Image
+              src={googleImg}
+              height={50}
+              width={150}
+              alt="Get it on Google Play"
+            />
+         
+        </Link>
+
+        {/* Apple Store Link */}
+        <Link
+          href="https://apps.apple.com/us/app/upin/id1341978328" 
+          
+        >
+          
+            <Image
+              src={appleImg}
+              height={50}
+              width={150}
+              alt="Download from the App Store"
+            />
+         
+        </Link>
+      </div>
+            <button 
+              onClick={() => setShowPopup(false)} 
+              className="mt-4 bg-blue-500 text-white px-4 py-2 rounded"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
           {/* Create Pin Button */}
           <Link 
             href="/account/createPin"
@@ -181,6 +242,7 @@ const ProfileSection = () => {
           </div>
         </div>
       </div>
+     
     </div>
   );
 };

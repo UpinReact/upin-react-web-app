@@ -1,34 +1,30 @@
-// Correct way to manage Supabase cookies using its built-in methods
+// utils/supabase/server.ts
+'use server'
+import { createServerClient } from '@supabase/ssr'
+import { cookies } from 'next/headers'
 
-import { createServerClient } from '@supabase/ssr';
-import { cookies } from 'next/headers';
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
 export async function createClient() {
-  const cookieStore = await cookies();
+  // Ensure cookies() is inside a request scope (no await here, it's resolved automatically)
+  const cookieStore = cookies()
 
   return createServerClient(supabaseUrl, supabaseAnonKey, {
     cookies: {
-      async get(name) {
-        const cookie = await cookieStore.get(name);
-        return cookie?.value; // Ensure value is correctly fetched
+      async getAll() {
+        const resolvedCookieStore = await cookieStore;
+        return resolvedCookieStore.getAll(); // Correct usage
       },
-      async set(name, value, options = {}) {
+      async setAll(newCookies) {
         try {
-          await cookieStore.set({ name, value, ...options });
+          for (const { name, value, options } of newCookies) {
+            (await cookieStore).set(name, value, { path: '/', httpOnly: true, ...options })
+          }
         } catch (error) {
-          console.error('Error setting cookie:', error);
-        }
-      },
-      async remove(name, options = {}) {
-        try {
-          await cookieStore.set({ name, value: '', expires: new Date(0), ...options });
-        } catch (error) {
-          console.error('Error removing cookie:', error);
+          console.error('Error setting cookies:', error)
         }
       },
     },
-  });
+  })
 }
