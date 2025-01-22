@@ -1,11 +1,9 @@
 'use server'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
-import {supabase} from "utils/supabase/supabase"
-
+import { supabase } from "utils/supabase/supabase"
 
 export async function signup(formData: FormData) {
-
   // Type-casting for convenience
   const data = {
     email: formData.get('email') as string,
@@ -19,7 +17,28 @@ export async function signup(formData: FormData) {
     gender: formData.get("gender") as string,
   }
   const lowerCaseEmail = data.email.toLowerCase();
-  
+
+  // Check if the email already exists
+  try {
+    const { data: existingUser, error: emailError } = await supabase
+      .from("userdata")
+      .select("email")
+      .eq("email", lowerCaseEmail)
+      .single();
+
+    if (emailError) {
+      console.error("Error checking for existing email:", emailError.message);
+      return { success: false, message: emailError.message };
+    }
+
+    if (existingUser) {
+      return { success: false, message: "Email already in use." };
+    }
+  } catch (err) {
+    console.error("Unexpected error checking for existing email:", err);
+    return { success: false, message: "Unexpected error occurred during email check." };
+  }
+
   try {
     // Step 1: Sign up the user with Supabase Auth
     const { data: userData, error } = await supabase.auth.signUp({
@@ -37,7 +56,7 @@ export async function signup(formData: FormData) {
     // Step 2: Insert additional user data into the database
     try {
       const { data: userDataInDB, error: dbError } = await supabase
-        .from("userdata") 
+        .from("userdata")
         .insert([
           {
             email: data.email,
@@ -45,7 +64,7 @@ export async function signup(formData: FormData) {
             lastName: data.lastName,
             phone: data.phone,
             bio: data.bio,
-            gender:data.gender,
+            gender: data.gender,
             birthDate: data.birthdate,
             interests: data.interests,
             userUID: user.id, // user.id is guaranteed to be available here
@@ -56,22 +75,28 @@ export async function signup(formData: FormData) {
         console.error("Database error during user insert:", dbError.message);
         return { success: false, message: dbError.message }; // Handle database insert error
       }
-
     } catch (err) {
       console.error("Unexpected error during DB insert:", err);
       return { success: false, message: "Unexpected error occurred during database insert" };
     }
 
     console.log("User created successfully!");
-    revalidatePath('/', 'layout')
-    redirect('/private')
-    
+
+    try {
+      // Revalidate path and redirect after successful user creation
+      revalidatePath('/', 'layout');
+      redirect('/private');
+    } catch (err) {
+      console.error("Error during revalidation/redirect:", err);
+      return { success: false, message: "Error during revalidation or redirect" };
+    }
 
   } catch (err) {
     console.error("Unexpected error:", err);
-    return { success: false, message: "Unexpected error occurred" };
+    return { success: false, message: "Unexpected error occurred during sign-up process" };
   }
 }
+
 
 
 

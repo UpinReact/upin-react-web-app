@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation';
 import defaultUserImage from "public/default-avatar-profile-icon-social-media-user-image-gray-avatar-icon-blank-profile-silhouette-illustration-vector.jpg"
 import googleImg from "public/GetItOnGooglePlay_Badge_Web_color_English-XvR5LaEp.png";
 import appleImg from "public/Download_on_the_App_Store_Badge_US-UK_RGB_blk_092917.svg";
-import Lottieanimation from './Lottieanimation';
+
 
 interface UserData {
   profilePhotoURL: string;

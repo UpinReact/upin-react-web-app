@@ -69,7 +69,26 @@ export default function MyMap() {
       mapRef.current?.resize();
 
       pins.forEach((pin) => {
-        
+        const userAgent = navigator.userAgent;
+        const isAndroid = /Android/.test(userAgent);
+        const isIOS = /iPad|iPhone|iPod/.test(userAgent);
+
+        let link = `/Pins/${pin.id}`;  // Default web link
+
+        // Check for Android and use the deep link
+        if (isAndroid) {
+          console.log("This is an Android device");
+          link = `upinlink://upin.com/Pins/${pin.id}`;  // Android deep link
+        } 
+        // Check for iOS and use the Universal Link
+        else if (isIOS) {
+          console.log("This is an iOS device");
+          link = `https://upin.com/Pins/${pin.id}`;  // iOS Universal Link
+        } 
+        else {
+          console.log("This is not a mobile device");
+        }
+      
         const marker = new mapboxgl.Marker()
           .setLngLat([pin.longitude, pin.latitude])
           .setPopup(
@@ -79,8 +98,7 @@ export default function MyMap() {
                 <h3 class="text-2xl font-bold text-upinGreen mb-2 break-words">${pin.meetupname}</h3>
                 <p class="text-sm text-gray-600 leading-tight whitespace-normal mb-3 break-words">${pin.description}</p>
                 <div class="flex justify-between items-center">
-                  <a class="text-upinGreen hover:underline text-sm font-semibold" data-pin-id="${pin.id}" href= "/Pins/${pin.id}">View More</a>
-                  
+                  <a class="text-upinGreen hover:underline text-sm font-semibold" data-pin-id="${pin.id}" href="${link}">View More</a>
                 </div>
               </div>`
             )

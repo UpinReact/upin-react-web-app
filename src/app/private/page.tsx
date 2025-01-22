@@ -122,9 +122,9 @@ export default async function PrivatePage() {
           transition={{ delay: 0.2 }}
           className="backdrop-blur-lg bg-yellow-500/40 rounded-2xl p-6 shadow-xl border border-emerald-500/20"
         >
-          <h3 className="text-2xl font-bold text-white mb-4">Following</h3>
+          <h3 className="text-2xl font-bold text-white mb-4">Followers</h3>
           {loading ? (
-            <p className="text-white/70">Loading following...</p>
+            <p className="text-white/70">Loading followers...</p>
           ) : (
             <ul className="space-y-3">
               {following && following.length > 0 ? (
@@ -132,16 +132,17 @@ export default async function PrivatePage() {
                   <Motionlist
                     key={followingUser.id}
                     whileHover={{ scale: 1.02 }}
-                    className="bg-white/5 border border-white/10 rounded-xl p-4 text-white/90"
+                    className="bg-white/5 border border-white/10 rounded-xl p-4 text-white/90 max-w-full sm:max-w-[90%] mx-auto"
                   >
                     <p className="font-medium">{followingUser.firstName} {followingUser.lastName}</p>
-                    <p className="text-sm text-white/70">{followingUser.interests}</p>
+                    {/* <p className="text-sm text-white/70">{followingUser.interests}</p> */}
                   </Motionlist>
                 ))
               ) : (
                 <p className="text-white/70">No following profiles found</p>
               )}
             </ul>
+
           )}
         </Motiondiv> 
 
@@ -152,26 +153,26 @@ export default async function PrivatePage() {
           transition={{ delay: 0.3 }}
           className="backdrop-blur-lg bg-rose-500/30 rounded-2xl p-6 shadow-xl border border-rose-500/20"
         >
-           <h3 className="text-2xl font-bold text-white mb-4">Followers</h3>
+           <h3 className="text-2xl font-bold text-white mb-4">Following</h3>
           {loading ? (
-            <p className="text-white/70">Loading followers...</p>
+            <p className="text-white/70">Loading following...</p>
           ) : (
             <ul className="space-y-3">
-              {followers && followers.length > 0 ? (
-                followers.map((followerUser) => (
-                  <Motionlist
-                    key={followerUser.id}
-                    whileHover={{ scale: 1.02 }}
-                    className="bg-white/5 border border-white/10 rounded-xl p-4 text-white/90"
-                  >
-                    <p className="font-medium">{followerUser.firstName} {followerUser.lastName}</p>
-                    <p className="text-sm text-white/70">{followerUser.interests}</p>
-                  </Motionlist>
-                ))
-              ) : (
-                <p className="text-white/70">No followers found</p>
-              )}
-            </ul> 
+            {followers && followers.length > 0 ? (
+              followers.map((followerUser) => (
+                <Motionlist
+                  key={followerUser.id}
+                  whileHover={{ scale: 1.02 }}
+                  className="bg-white/5 border border-white/10 rounded-xl p-4 text-white/90 text-pretty h-auto max-w-full sm:max-w-[90%] mx-auto"
+                >
+                  <p className="font-medium">{followerUser.firstName} {followerUser.lastName}</p>
+                  {/* <p className="text-sm text-white/70">{followerUser.interests}</p> */}
+                </Motionlist>
+              ))
+            ) : (
+              <p className="text-white/70">No following found</p>
+            )}
+          </ul>
            )} 
         </Motiondiv>
 
@@ -199,7 +200,7 @@ export default async function PrivatePage() {
                   <Motionlist
                     key={community.id}
                     whileHover={{ scale: 1.02 }}
-                    className="bg-white/5 border border-white/10 rounded-xl p-4 text-white/90"
+                    className="bg-white/5 border border-white/10 rounded-xl p-4 text-white/90 text-wrap"
                   >
                     {community.community_name}
                   </Motionlist>

@@ -25,7 +25,8 @@ export default async function getFollowing(user_id: number | null): Promise<User
     const { data: followedIds, error: followedIdsError } = await supabase
       .from('followers')
       .select('followed_id')
-      .eq('follower_id', user_id);
+      .eq('follower_id', user_id)
+      .limit(12);
 
     if (followedIdsError) {
       throw followedIdsError;
