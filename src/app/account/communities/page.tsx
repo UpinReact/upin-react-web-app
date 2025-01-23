@@ -32,8 +32,9 @@ const Communities = () => {
           </h3>
           <p className="text-lg text-gray-700 text-center mb-8 w-full">
             Connect, explore, and engage with vibrant communities around the globe. Dive in and discover amazing events, meetups, and groups that match your interests! <br />
-            Download the app to view more about our communities and stay updated with the latest events and meetups. <br />
+            <span className='font-montserrat font-bold text-balance text-upinGreen'>Download the app to view more about our communities and stay updated with the latest events and meetups.</span> <br />
              <br />
+             <span className='font-montserrat font-semibold text-upinGreen'>Click Below!</span>
             <br />
             
             </p>

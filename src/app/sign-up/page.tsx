@@ -80,7 +80,15 @@ export default function SignUpPage() {
                 {field === "confirmPassword" ? "Confirm Password" : field.replace(/([A-Z])/g, " $1")}:
               </label>
               <input
-                type={field.includes("password") ? "password" : field === "birthdate" ? "date" : "text"}
+                type={
+                  field.includes("password") 
+                    ? "password" 
+                    : field === "birthdate" 
+                      ? "date" 
+                      : field === "phone" 
+                        ? "text" 
+                        : "text"
+                }
                 id={field}
                 name={field}
                 className="p-2 border border-gray-300 rounded-2xl"
@@ -90,7 +98,7 @@ export default function SignUpPage() {
               />
             </div>
           ))}
-
+          
           <fieldset className="col-span-2">
             <legend className="mb-2 text-2xl">Choose your Interests:</legend>
             <div className="grid grid-cols-2 gap-2">
