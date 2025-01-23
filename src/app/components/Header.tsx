@@ -31,7 +31,7 @@ const Header = () => {
   if (isLoading) return <div>Loading...</div>;
 
   return (
-    <nav className="bg-gradient-to-b from-green-900 to-upinGreen text-white w-full p-5 flex flex-wrap items-center justify-between shadow-md">
+    <nav className="bg-gradient-to-b from-green-900 to-upinGreen text-white w-full p-5 flex flex-wrap items-center justify-between shadow-md z-50">
       {/* Logo & Title */}
       <div className="flex items-center space-x-3">
         <div className="w-16 h-16">

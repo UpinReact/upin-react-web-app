@@ -63,15 +63,15 @@ export default function SignUpPage() {
   };
 
   return (
-    <div className="relative flex items-center justify-center w-screen h-screen bg-upinGreen">
+    <div className="relative flex items-center justify-center w-screen h-screen bg-upinGreen -z-0">
       {/* Background Image */}
-      <Image src={bgImg} alt="Background" style={{ objectFit: 'cover' }}  className="absolute opacity-10 object-cover" />
+      <Image src={bgImg} alt="Background" style={{ objectFit: 'cover', pointerEvents:'none' }}  className="absolute opacity-10 object-cover -z-10" />
 
    
     
 
       {/* Form Container */}
-      <div className="relative p-8 bg-upinGreen bg-opacity-20 border border-green-200 rounded-3xl shadow-2xl backdrop-filter backdrop-blur-3xl">
+      <div className="relative p-8 bg-upinGreen bg-opacity-20 border border-green-200 rounded-3xl shadow-2xl backdrop-filter backdrop-blur-3xl z-10">
         <h1 className="mb-6 text-6xl text-center font-montserrat">Sign Up</h1>
         <form onSubmit={handleSubmit} className="grid w-full gap-6 grid-cols-2">
           {["email", "password", "confirmPassword", "firstName", "lastName", "phone", "birthdate"].map((field) => (
@@ -81,13 +81,7 @@ export default function SignUpPage() {
               </label>
               <input
                 type={
-                  field.includes("password") 
-                    ? "password" 
-                    : field === "birthdate" 
-                      ? "date" 
-                      : field === "phone" 
-                        ? "text" 
-                        : "text"
+                  field.includes("password") ? "password" : field === "birthdate" ? "date" : field === "phone" ? "text" : "text"
                 }
                 id={field}
                 name={field}
