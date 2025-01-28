@@ -24,8 +24,8 @@ export default async function getFollowing(user_id: number | null): Promise<User
     // Fetch followed IDs from the 'followers' table where 'follower_id' is the given user's ID
     const { data: followedIds, error: followedIdsError } = await supabase
       .from('followers')
-      .select('followed_id')
-      .eq('follower_id', user_id)
+      .select('follower_id')
+      .eq('followed_id', user_id)
       .limit(12);
 
     if (followedIdsError) {
@@ -38,7 +38,7 @@ export default async function getFollowing(user_id: number | null): Promise<User
     }
 
     // Extract followed IDs into an array
-    const ids = followedIds.map((follower) => follower.followed_id);
+    const ids = followedIds.map((follower) => follower.follower_id);
     console.log('Following IDs:', ids);
 
     // Fetch profiles of the followed users based on their IDs
