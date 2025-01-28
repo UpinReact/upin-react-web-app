@@ -55,8 +55,11 @@ export default function SignUpPage() {
 
     try {
       const result = await signup(submissionData);
-      if (result.success) router.push("/account");
-      else setErrorMessage(result.message || "An error occurred");
+      if (result.success) {
+        router.push("/private");
+      } else {
+        setErrorMessage(result.message || "An error occurred");
+      }
     } catch {
       setErrorMessage("Unexpected error occurred");
     }
@@ -64,13 +67,13 @@ export default function SignUpPage() {
 
   return (
     <div className="relative flex items-center justify-center w-screen h-screen bg-upinGreen -z-0">
-      {/* Background Image */}
-      <Image src={bgImg} alt="Background" style={{ objectFit: 'cover', pointerEvents:'none' }}  className="absolute opacity-10 object-cover -z-10" />
+      <Image 
+        src={bgImg} 
+        alt="Background" 
+        fill 
+        className="absolute opacity-10 object-cover -z-10" 
+      />
 
-   
-    
-
-      {/* Form Container */}
       <div className="relative p-8 bg-upinGreen bg-opacity-20 border border-green-200 rounded-3xl shadow-2xl backdrop-filter backdrop-blur-3xl z-10">
         <h1 className="mb-6 text-6xl text-center font-montserrat">Sign Up</h1>
         <form onSubmit={handleSubmit} className="grid w-full gap-6 grid-cols-2">
@@ -81,11 +84,13 @@ export default function SignUpPage() {
               </label>
               <input
                 type={
-                  field.includes("password") ? "password" : field === "birthdate" ? "date" : field === "phone" ? "text" : "text"
+                  field.includes("password") ? "password" : 
+                  field === "birthdate" ? "date" : 
+                  field === "phone" ? "tel" : "text"
                 }
                 id={field}
                 name={field}
-                className="p-2 border border-gray-300 rounded-2xl"
+                className="w-full p-2 border border-gray-300 rounded-2xl"
                 value={formData[field as keyof typeof formData] || ""}
                 onChange={handleChange}
                 required
@@ -121,6 +126,7 @@ export default function SignUpPage() {
               className="w-full p-2 border border-gray-300 rounded-2xl"
               value={formData.gender}
               onChange={handleChange}
+              required
             >
               <option value="" disabled>
                 Select your gender
@@ -146,7 +152,7 @@ export default function SignUpPage() {
             />
           </div>
 
-          {errorMessage && <p className="col-span-2 p-2 text-center text-red-500 bg-white">{errorMessage}</p>}
+          {errorMessage && <p className="col-span-2 p-2 text-center text-red-500 bg-white rounded-xl">{errorMessage}</p>}
 
           <button
             type="submit"
