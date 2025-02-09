@@ -1,7 +1,7 @@
 import { createClient } from 'utils/supabase/server';
 import bgImg from "public/Screen Shot 2020-03-12 at 9.26.39 AM.png";
 import React from 'react';
-import Image from 'next/image';
+import Image from "next/legacy/image";
 import Link from 'next/link';
 
 interface PinData {

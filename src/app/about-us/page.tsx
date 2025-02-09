@@ -2,7 +2,7 @@ import React from 'react'
 import SouthOutlinedIcon from '@mui/icons-material/SouthOutlined';
 import type { Metadata } from "next";
 import bgImg from "@/../public/Screen Shot 2020-03-12 at 9.26.39 AM.png"
-import Image from 'next/image';
+import Image from "next/legacy/image";
 import Aboutus from './Aboutus';
 
 

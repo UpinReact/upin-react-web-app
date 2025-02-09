@@ -1,6 +1,6 @@
 'use client'
 import React, { Suspense, use, useEffect, useState } from 'react'
-import Image from 'next/image';
+import Image from "next/legacy/image";
 import Motionbutton from './Motionbutton';
 import Link from 'next/link';
 import { logout } from '../login/actions';

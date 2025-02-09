@@ -1,5 +1,5 @@
 import { login } from './actions'
-import Image from 'next/image'
+import Image from "next/legacy/image"
 import bgImg from 'public/Screen Shot 2020-03-12 at 9.26.39 AM.png'
 // import { motion } from 'framer-motion'
 import Link from 'next/link'

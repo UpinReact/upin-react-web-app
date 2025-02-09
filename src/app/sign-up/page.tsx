@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { signup } from "./actions";
 import Link from "next/link";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import { motion } from "framer-motion";
 import bgImg from "public/Screen Shot 2020-03-12 at 9.26.39 AM.png";
 
@@ -73,14 +73,13 @@ Object.entries(formData).forEach(([key, value]) => {
   };
 
   return (
-    <div className="relative flex items-center justify-center w-screen h-screen bg-upinGreen -z-0">
+    (<div className="relative flex items-center justify-center w-screen h-screen bg-upinGreen -z-0">
       <Image 
         src={bgImg} 
         alt="Background" 
-        fill 
+        layout="fill" 
         className="absolute opacity-10 object-cover -z-10" 
       />
-
       <div className="relative p-8 bg-upinGreen bg-opacity-20 border border-green-200 rounded-3xl shadow-2xl backdrop-filter backdrop-blur-3xl z-10">
         <h1 className="mb-6 text-6xl text-center font-montserrat">Sign Up</h1>
         <form onSubmit={handleSubmit} className="grid w-full gap-6 grid-cols-2">
@@ -174,6 +173,6 @@ Object.entries(formData).forEach(([key, value]) => {
           </Link>
         </motion.div>
       </div>
-    </div>
+    </div>)
   );
 }
