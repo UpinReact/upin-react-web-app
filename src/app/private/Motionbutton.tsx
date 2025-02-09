@@ -1,7 +1,7 @@
 'use client'
 import React, { useEffect } from 'react'
 import { motion } from "framer-motion";
-import { logout } from '../login/actions';
+
 
 interface MotionbuttonProps {
   children: React.ReactNode;
@@ -10,6 +10,7 @@ interface MotionbuttonProps {
   whileTap?: any;
   text :string
   action?: any;
+
 }
 
 
@@ -18,7 +19,7 @@ interface MotionbuttonProps {
 export default function Motionbutton ({ text, className, whileHover, whileTap, action } : MotionbuttonProps) {
   return (
     <motion.button  className={className} whileHover={whileHover} whileTap={whileTap} onClick={action} >
-        {text}
+        {text}        
     </motion.button>
   )
 }

@@ -1,11 +1,15 @@
 import { login } from './actions'
 import Image from 'next/image'
 import bgImg from 'public/Screen Shot 2020-03-12 at 9.26.39 AM.png'
-import { motion } from 'framer-motion'
+// import { motion } from 'framer-motion'
 import Link from 'next/link'
 import Motionbutton from '../private/Motionbutton'
 
+
+
 export default function LoginPage() {
+
+  
   return (
     <div className="relative w-screen h-screen flex justify-center items-center bg-upinGreen">
       {/* Background Image */}
@@ -52,14 +56,18 @@ export default function LoginPage() {
 
         {/* Forgot Password and Sign Up */}
         <div className="flex justify-center mt-4">
+          <Link href={"/login/forgot-password"}>
           <Motionbutton
             whileHover={{ scale: 1.2 }} 
             className="rounded-2xl p-2 px-4 m-2 hover:text-white hover:bg-red-700"
             text = "Forgot Password?"
             children = {''}
+            
           >
+            
            
           </Motionbutton>
+          </Link>
           <Link href="/sign-up">
             <Motionbutton
               whileHover={{ scale: 1.2 }} 

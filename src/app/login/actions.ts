@@ -5,9 +5,6 @@ import { redirect } from 'next/navigation'
 import { createClient } from 'utils/supabase/server'
 
 
-
-
-
 export async function login(formData: FormData) {
   
   const supabase = await createClient()
@@ -56,5 +53,31 @@ export async function logout() {
 
   revalidatePath('/', 'layout')
   redirect('/login')
+}
+
+
+export async function sendPasswordResetEmail(formData: FormData) {
+  const supabase = await createClient()
+  const email = formData.get('email') as string;
+  
+  if (!email) {
+    return { success: false, message: "Please provide an email address" };
+  }
+
+  try {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/update-password`,
+    });
+
+    if (error) {
+      console.error("Password reset error:", error.message);
+      return { success: false, message: error.message };
+    }
+
+    return { success: true, message: "Password reset link sent to your email!" };
+  } catch (err) {
+    console.error("Unexpected error:", err);
+    return { success: false, message: "Failed to send reset email" };
+  }
 }
 

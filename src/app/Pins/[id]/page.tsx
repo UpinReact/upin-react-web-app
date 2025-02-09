@@ -31,6 +31,25 @@ async function PinPage({ params }) {
         if (!id) {
             return <div>No ID found</div>;
         }
+        
+if (!id) {
+    return <div>No ID found</div>;
+}
+
+const fetchJoinedUsers = async (pinId) => {
+    const { data, error } = await supabase
+        .rpc('fetch_joined_users', { pin_id_param: pinId });
+        console.log(data)
+
+    if (error) {
+        console.error('Error fetching joined and hosting users:', error);
+        return [];
+    }
+    return data;
+    
+};
+
+fetchJoinedUsers(id).then(data => console.log('Fetched joined users:', data)); // Debugging log
 
         return (
             <div className='relative h-screen w-screen'>

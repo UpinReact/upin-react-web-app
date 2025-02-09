@@ -49,9 +49,16 @@ export default function SignUpPage() {
     }
 
     const submissionData = new FormData();
-    Object.entries({ email, password, ...rest }).forEach(([key, value]) =>
-      submissionData.append(key, typeof value === "string" ? value : JSON.stringify(value))
-    );
+
+Object.entries(formData).forEach(([key, value]) => {
+  if (key === "interests" && Array.isArray(value)) {
+    // Handle interests array
+    value.forEach((interest: string) => submissionData.append("interests", interest));
+  } else {
+    // Handle all other fields
+    submissionData.append(key, String(value)); // Ensure value is always a string
+  }
+});
 
     try {
       const result = await signup(submissionData);
