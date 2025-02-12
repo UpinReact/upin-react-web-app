@@ -28,7 +28,7 @@
     "framer-motion": "^11.16.4",
     "lottie-react": "^2.4.0",
     "mapbox-gl": "^1.13.3",
-    "next": "^15.2.0-canary.46",
+    "next": "^15.0.0",
     "next-auth": "^4.24.8",
     "nookies": "^2.5.2",
     "react": "^18.2.0",

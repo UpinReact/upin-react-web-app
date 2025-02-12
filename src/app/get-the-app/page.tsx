@@ -21,11 +21,10 @@ const GetTheApp = () => {
             <div className="flex justify-center mt-[-60px] sm:mt-[-90px] mb-10 sm:mb-20">
               <Image
                 src={upin}
-
-                height={50}
-                width={50}
+                height={200}
+                width={200}
                 alt="main image of upin"
-                className="w-32 h-32 sm:w-48 sm:h-48 rounded-2xl border-2 border-black shadow-lg shadow-slate-900"
+                className="w-32 h-32 sm:w-48 sm:h-48 rounded-2xl"
               />
             </div>
             <h1 className="font-extrabold text-4xl sm:text-6xl">Upin</h1>
@@ -40,23 +39,23 @@ const GetTheApp = () => {
               >
                 <Image
                   src={googleImg}
-                  height={10}
+                  height={60}
                   alt="get it on google"
-                    width={100}
+                  width={200}
                   className="w-40 sm:w-48"
                 />
               </Link>
             </div>
     
-            <div className="flex justify-center m-5">
+            <div className="flex justify-center m-5 ">
               <Link
                 href="https://apps.apple.com/us/app/upin/id1341978328"
               >
                 <Image
                   src={appleImg}
                   alt="Download from the App Store"
-                  height={10}
-                  width={10}
+                  height={200}
+                  width={200}
                   className="w-40 sm:w-48"
                 />
               </Link>

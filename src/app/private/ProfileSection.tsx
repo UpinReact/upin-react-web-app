@@ -4,7 +4,7 @@ import Image from "next/legacy/image";
 import Motionbutton from './Motionbutton';
 import Link from 'next/link';
 import { logout } from '../login/actions';
-import { createClient } from 'utils/supabase/client';
+import createClient  from 'utils/supabase/client';
 import { useRouter } from 'next/navigation';
 import defaultUserImage from "public/default-avatar-profile-icon-social-media-user-image-gray-avatar-icon-blank-profile-silhouette-illustration-vector.jpg"
 import googleImg from "public/GetItOnGooglePlay_Badge_Web_color_English-XvR5LaEp.png";
@@ -153,12 +153,12 @@ const ProfileSection = () => {
       )}
     </div>
           {/* Create Pin Button */}
-          <Link 
+          {/* <Link 
             href="/account/createPin"
             className="px-4 py-2 bg-yellow-500 hover:bg-upinGreen/90 text-white rounded-lg w-full text-center transition-all"
           >
             Create Pin
-          </Link>
+          </Link> */}
         </div>
           <h2 className="text-3xl font-bold text-white mb-8">Profile</h2>
           <div className="space-y-6">

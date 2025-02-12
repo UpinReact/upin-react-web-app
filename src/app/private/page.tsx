@@ -4,9 +4,7 @@ import bgImg from "public/Screen Shot 2020-03-12 at 9.26.39 AM.png";
 import { createClient } from 'utils/supabase/server'
 import Link from 'next/link';
 import Image from "next/legacy/image";
-
 import dynamic from 'next/dynamic';
-import sparkles from "../../../public/sparklesLottie.json";
 import getFollowing from './following';
 import getFollowers from './followers';
 import getCommunity from './communityFunctions';
