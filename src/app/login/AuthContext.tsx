@@ -1,38 +1,38 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import { checkLoggedIn } from '../login/actions';
+// import React, { createContext, useContext, useEffect, useState } from 'react';
 
-interface AuthContextType {
-  isLoggedIn: boolean;
-  setIsLoggedIn: (value: boolean) => void;
-}
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+// interface AuthContextType {
+//   isLoggedIn: boolean;
+//   setIsLoggedIn: (value: boolean) => void;
+// }
 
-export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+// const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-  useEffect(() => {
-    async function fetchLoginStatus() {
-      const loggedInStatus = await checkLoggedIn();
-      setIsLoggedIn(loggedInStatus);
-    }
-    fetchLoginStatus();
-  }, []);
+// export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+//   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  return (
-    <AuthContext.Provider value={{ isLoggedIn, setIsLoggedIn }}>
-      {children}
-    </AuthContext.Provider>
-  );
-};
+//   useEffect(() => {
+//     async function fetchLoginStatus() {
+//       const loggedInStatus = await checkLoggedIn();
+//       setIsLoggedIn(loggedInStatus);
+//     }
+//     fetchLoginStatus();
+//   }, []);
 
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
-};
+//   return (
+//     <AuthContext.Provider value={{ isLoggedIn, setIsLoggedIn }}>
+//       {children}
+//     </AuthContext.Provider>
+//   );
+// };
+
+// export const useAuth = () => {
+//   const context = useContext(AuthContext);
+//   if (context === undefined) {
+//     throw new Error('useAuth must be used within an AuthProvider');
+//   }
+//   return context;
+// };
 
 
 // 'use client';
