@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import {supabase} from "utils/supabase/supabase"
+import supabase from "utils/supabase/supabase"
 
 const AuthContext = createContext<boolean | null>(null);
 
