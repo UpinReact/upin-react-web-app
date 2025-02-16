@@ -2,7 +2,7 @@
 import { AgGridReact } from 'ag-grid-react';
 import { useEffect, useState } from 'react';
 import { ColDef } from 'ag-grid-community';
-import { supabase } from 'utils/supabase/supabase';
+import  supabase  from 'utils/supabase/supabase';
 import { themeAlpine } from 'ag-grid-community'
 
 export default function Grid() {
