@@ -1,6 +1,6 @@
 "use client";
 import React from 'react';
-import Image from "next/legacy/image";
+import Image from "next/image";
 import Grid from './Grid';
 import Link from 'next/link';
 import bgImg from "public/Screen Shot 2020-03-12 at 9.26.39 AM.png";

@@ -96,7 +96,7 @@ const Header = ({ initialSession }: HeaderProps) => {
             className="text-white bg-upinBlue hover:bg-blue-600 px-4 py-2 rounded-full shadow-md"
             aria-label="Go to account"
           >
-            <Link href="/private/check-pins">Check my pins</Link>
+            <Link href="/private/check-pins">Go to my Pins</Link>
           </motion.button>
           </div>
         ) : (

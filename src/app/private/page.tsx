@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import bgImg from "public/Screen Shot 2020-03-12 at 9.26.39 AM.png";
 import { createClient } from 'utils/supabase/server'
 import Link from 'next/link';
-import Image from "next/legacy/image";
+import Image from "next/image";
 import dynamic from 'next/dynamic';
 import getFollowing from './following';
 import getFollowers from './followers';
