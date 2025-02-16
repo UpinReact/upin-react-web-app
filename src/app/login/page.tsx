@@ -20,10 +20,8 @@ export default function LoginPage() {
     try {
       const result = await login(formData); // Call the server action
 
-      // If the server action returns an error, display it
-      if (result?.error) {
-        setError(result.error);
-      }
+      
+     
     } catch (error) {
       setError("An unexpected error occurred. Please try again.");
       console.error("Login error:", error);
