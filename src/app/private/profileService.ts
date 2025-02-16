@@ -2,7 +2,7 @@
 import getFollowing from './following';
 import getFollowers from './followers';
 import getCommunity from './communityFunctions';
-import {supabase} from "utils/supabase/supabase"
+import supabase from "utils/supabase/supabase"
 
 
 interface Profile {
