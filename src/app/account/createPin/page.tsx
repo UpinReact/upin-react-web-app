@@ -3,7 +3,7 @@ import Link from 'next/link';
 import React, { useEffect, useRef, useState } from 'react';
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 import "mapbox-gl/dist/mapbox-gl.css";
-import { supabase } from "utils/supabase/supabase";
+import  supabase  from "utils/supabase/supabase";
 import { useRouter } from 'next/navigation';
 import { getAccountData } from 'src/app/login/actions';
 import { debounce } from '@mui/material';

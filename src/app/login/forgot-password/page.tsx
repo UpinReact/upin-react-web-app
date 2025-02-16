@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import createClient from "utils/supabase/client";
+import supabase from "utils/supabase/supabase";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
@@ -19,7 +19,7 @@ export default function ForgotPasswordPage() {
     setIsLoading(true);
   
     try {
-      const supabase = await createClient();
+     
       const { error } = await supabase.auth.resetPasswordForEmail(email); // Removed redirectTo
   
       if (error) throw error;
@@ -45,7 +45,7 @@ export default function ForgotPasswordPage() {
     }
   
     try {
-      const supabase = await createClient();
+      
       
       // Sign in using the reset token to authenticate the user session
       const { error: signInError } = await supabase.auth.verifyOtp({

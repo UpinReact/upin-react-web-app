@@ -1,5 +1,5 @@
 'use server';
-import { supabase } from "utils/supabase/supabase";
+import supabase  from "utils/supabase/supabase";
 
 export async function signup(formData: FormData) {
   const data = {

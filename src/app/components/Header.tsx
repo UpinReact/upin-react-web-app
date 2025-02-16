@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import locationLottie from "../../../public/locationLottie.json";
 import { usePathname, useRouter } from "next/navigation";
-import { supabase } from "utils/supabase/supabase";
+import  supabase  from "utils/supabase/supabase";
 
 const Lottie = dynamic(() => import('lottie-react'), { ssr: false });
 
