@@ -1,6 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import createClient from 'utils/supabase/client';
+import {createClient} from 'utils/supabase/client';
 import Image from 'next/image';
 import bgImg from 'public/Screen Shot 2020-03-12 at 9.26.39 AM.png';
 

@@ -225,12 +225,13 @@ const ProfileSection = () => {
                 onClick={() => setShowUpdateModal(true)}
               />
               
-              <form action={logout} className="flex-1">
+              
                 <Motionbutton
                   text="Sign Out"
-                  className="w-full px-6 py-2 bg-red-500/80 hover:bg-red-500/90 text-white rounded-lg shadow-lg"
+                  className=" px-6 py-2 bg-red-500/80 hover:bg-red-500/90 text-white rounded-lg shadow-lg"
+                  onClick={logout}
                 />
-              </form>
+              
             </div>
           </div>
         </div>
