@@ -35,7 +35,7 @@ const Header = ({ initialSession }: HeaderProps) => {
 
   if (isLoading) return (
     <div className="bg-gradient-to-b from-green-900 to-upinGreen text-white w-full p-5 flex justify-center">
-      Loading...
+     <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
     </div>
   );
 

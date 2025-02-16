@@ -122,7 +122,7 @@ export default async function PrivatePage() {
         >
           <h3 className="text-2xl font-bold text-white mb-4">Followers</h3>
           {loading ? (
-            <p className="text-white/70">Loading followers...</p>
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500">Loading Followers</div>
           ) : (
             <ul className="space-y-3">
               {following && following.length > 0 ? (
