@@ -3,7 +3,7 @@ import React, { useRef, useEffect, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import { throttle, debounce } from "lodash";
 import "mapbox-gl/dist/mapbox-gl.css";
-import  createClient  from '../../../utils/supabase/client';
+import { createClient } from 'utils/supabase/client'
 
 // Type definitions
 type Pin = {

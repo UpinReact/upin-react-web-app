@@ -1,4 +1,4 @@
-import { createClient } from '../../../utils/supabase/client';
+import { createClient } from 'utils/supabase/client';
 import getFollowing from './following';
 import getFollowers from './followers';
 import getCommunity from './communityFunctions';

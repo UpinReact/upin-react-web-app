@@ -10,7 +10,7 @@ export const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 
 
-export { createClient };
+export default supabase;
 
 // NEXT_PUBLIC_SUPABASE_URL=supabaseUrl;
 // NEXT_PUBLIC_SUPABASE_ANON_KEY=supabaseAnonKey;

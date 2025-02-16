@@ -4,7 +4,7 @@ import Image from "next/legacy/image";
 import Motionbutton from './Motionbutton';
 import Link from 'next/link';
 import { logout } from '../login/actions';
-import createClient  from 'utils/supabase/client';
+import { createClient } from 'utils/supabase/client'
 import { useRouter } from 'next/navigation';
 import defaultUserImage from "public/default-avatar-profile-icon-social-media-user-image-gray-avatar-icon-blank-profile-silhouette-illustration-vector.jpg"
 import googleImg from "public/GetItOnGooglePlay_Badge_Web_color_English-XvR5LaEp.png";
