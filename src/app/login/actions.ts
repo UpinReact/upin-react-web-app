@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { createClient } from 'utils/supabase/server'
+import { supabase } from 'utils/supabase/supabase'
 
 
 export async function login(formData: FormData) {
@@ -57,7 +58,6 @@ export async function logout() {
 
 
 export async function sendPasswordResetEmail(formData: FormData) {
-  const supabase = await createClient()
   const email = formData.get('email') as string;
   
   if (!email) {

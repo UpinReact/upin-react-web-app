@@ -83,6 +83,7 @@ const Header = ({ initialSession }: HeaderProps) => {
       {/* Auth Section */}
       <div className="flex items-center gap-4 mt-3 md:mt-0">
         {session ? (
+          <div className="flex space-x-4">
           <motion.button
             whileHover={{ scale: 1.05 }}
             className="text-white bg-upinBlue hover:bg-blue-600 px-4 py-2 rounded-full shadow-md"
@@ -90,6 +91,14 @@ const Header = ({ initialSession }: HeaderProps) => {
           >
             <Link href="/private">Go to account</Link>
           </motion.button>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            className="text-white bg-upinBlue hover:bg-blue-600 px-4 py-2 rounded-full shadow-md"
+            aria-label="Go to account"
+          >
+            <Link href="/private/check-pins">Check my pins</Link>
+          </motion.button>
+          </div>
         ) : (
           <ul className="flex space-x-4">
             <li className="hover:text-yellow-300">
