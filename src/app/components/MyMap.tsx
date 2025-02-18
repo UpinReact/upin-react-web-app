@@ -19,7 +19,28 @@ mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN!;
 const INITIAL_CENTER: [number, number] = [-117.3506, 33.1581];
 const INITIAL_ZOOM = 9.12;
 
+// Global function for handling deep links
+declare global {
+  interface Window {
+    handleAppDeepLink: (event: MouseEvent, appLink: string, webLink: string) => void;
+  }
+}
 
+window.handleAppDeepLink = (event, appLink, webLink) => {
+  event.preventDefault();
+  
+  // Try opening app using hidden iframe
+  const iframe = document.createElement('iframe');
+  iframe.style.display = 'none';
+  iframe.src = appLink;
+  document.body.appendChild(iframe);
+  
+  // Fallback to web after 1 second if app not installed
+  setTimeout(() => {
+    document.body.removeChild(iframe);
+    window.location.href = webLink;
+  }, 1000);
+};
 
 export default function MyMap() {
   const mapRef = useRef<mapboxgl.Map | null>(null);
@@ -91,7 +112,6 @@ export default function MyMap() {
       map.remove();
     };
   }, []);
-  
 
   // Update map markers when pins change
   useEffect(() => {
@@ -103,23 +123,20 @@ export default function MyMap() {
 
     pins.forEach((pin) => {
       const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-      let link = isMobile 
-        ? `upin://pin/${pin.id}`
-        : `/pin/${pin.id}`;
-        
-        if (link == undefined){
-          link ='/pin/${pin.id}'
-        }
-      const popup = new mapboxgl.Popup({ offset: 25 })
-        .setHTML(`
-          <div class="bg-white p-4 rounded-2xl border-slate-400 border-2 shadow-lg shadow-zinc-700 max-w-xs">
-            <h3 class="text-xl font-bold text-upinGreen mb-2">${pin.meetupname}</h3>
-            <p class="text-sm text-gray-600 mb-3">${pin.description}</p>
-            <a href="${link}" class="text-upinGreen hover:underline font-semibold onClick = {console.log(${link})}">
-              View Details
-            </a>
-          </div>
-        `);
+      const webLink = `/pin/${pin.id}`;
+      const appLink = `upin://pin/${pin.id}`;
+    
+      const popup = new mapboxgl.Popup({ offset: 25 }).setHTML(`
+        <div class="bg-white p-4 rounded-2xl border-slate-400 border-2 shadow-lg shadow-zinc-700 max-w-xs">
+          <h3 class="text-xl font-bold text-upinGreen mb-2">${pin.meetupname}</h3>
+          <p class="text-sm text-gray-600 mb-3">${pin.description}</p>
+          <a href="${webLink}" 
+             ${isMobile ? `onclick="handleAppDeepLink(event, '${appLink}', '${webLink}')"` : ''}
+             class="text-upinGreen hover:underline font-semibold">
+            View Details
+          </a>
+        </div>
+      `);
 
       const marker = new mapboxgl.Marker()
         .setLngLat([pin.longitude, pin.latitude])
