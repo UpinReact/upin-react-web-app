@@ -104,15 +104,16 @@ export default function MyMap() {
     pins.forEach((pin) => {
       const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
       const link = isMobile 
-        ? `upinlink://upin.com/Pins/${pin.id}`
-        : `/Pins/${pin.id}`;
+        ? `upin://upin.com/pin/${pin.id}`
+        : `/pin/${pin.id}`;
+        
 
       const popup = new mapboxgl.Popup({ offset: 25 })
         .setHTML(`
           <div class="bg-white p-4 rounded-2xl border-slate-400 border-2 shadow-lg shadow-zinc-700 max-w-xs">
             <h3 class="text-xl font-bold text-upinGreen mb-2">${pin.meetupname}</h3>
             <p class="text-sm text-gray-600 mb-3">${pin.description}</p>
-            <a href="${link}" class="text-upinGreen hover:underline font-semibold">
+            <a href="${link}" class="text-upinGreen hover:underline font-semibold onClick = {console.log(${link})}">
               View Details
             </a>
           </div>
