@@ -103,11 +103,13 @@ export default function MyMap() {
 
     pins.forEach((pin) => {
       const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-      const link = isMobile 
-        ? `upin://upin.com/pin/${pin.id}`
+      let link = isMobile 
+        ? `upin://pin/${pin.id}`
         : `/pin/${pin.id}`;
         
-
+        if (link == undefined){
+          link ='/pin/${pin.id}'
+        }
       const popup = new mapboxgl.Popup({ offset: 25 })
         .setHTML(`
           <div class="bg-white p-4 rounded-2xl border-slate-400 border-2 shadow-lg shadow-zinc-700 max-w-xs">
