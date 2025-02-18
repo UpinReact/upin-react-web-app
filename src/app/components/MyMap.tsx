@@ -39,7 +39,7 @@ window.handleAppDeepLink = (event, appLink, webLink) => {
   setTimeout(() => {
     document.body.removeChild(iframe);
     window.location.href = webLink;
-  }, 1000);
+  }, 5000);
 };
 
 export default function MyMap() {
