@@ -19,28 +19,7 @@ mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN!;
 const INITIAL_CENTER: [number, number] = [-117.3506, 33.1581];
 const INITIAL_ZOOM = 9.12;
 
-// Global function for handling deep links
-declare global {
-  interface Window {
-    handleAppDeepLink: (event: MouseEvent, appLink: string, webLink: string) => void;
-  }
-}
 
-window.handleAppDeepLink = (event, appLink, webLink) => {
-  event.preventDefault();
-  
-  // Try opening app using hidden iframe
-  const iframe = document.createElement('iframe');
-  iframe.style.display = 'none';
-  iframe.src = appLink;
-  document.body.appendChild(iframe);
-  
-  // Fallback to web after 1 second if app not installed
-  setTimeout(() => {
-    document.body.removeChild(iframe);
-    window.location.href = webLink;
-  }, 5000);
-};
 
 export default function MyMap() {
   const mapRef = useRef<mapboxgl.Map | null>(null);
@@ -112,6 +91,7 @@ export default function MyMap() {
       map.remove();
     };
   }, []);
+  
 
   // Update map markers when pins change
   useEffect(() => {
@@ -137,6 +117,7 @@ export default function MyMap() {
           </a>
         </div>
       `);
+      
 
       const marker = new mapboxgl.Marker()
         .setLngLat([pin.longitude, pin.latitude])
@@ -168,6 +149,7 @@ export default function MyMap() {
       mapRef.current?.off('moveend', debouncedMove);
     };
   }, []);
+   
 
   return (
     <div className="relative bg-gradient-to-t from-upinGreen to-green-900 p-12 text-white min-h-screen">
