@@ -4,6 +4,7 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import "./globals.css";
 import { createClient } from "utils/supabase/server";
+import { Analytics } from "@vercel/analytics/react"
 
 // const inter = Inter({ subsets: ["latin"] });
 
@@ -32,6 +33,7 @@ export default async function RootLayout({
       <body>
         <Header initialSession={session} />
         {children}
+        <Analytics />
         {/* <Footer /> */}
       </body>
     </html>
