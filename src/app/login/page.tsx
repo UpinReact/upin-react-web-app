@@ -19,11 +19,15 @@ export default function LoginPage() {
 
     try {
       const result = await login(formData); // Call the server action
+      if (result != "success"){
+        setError("Invalid Credentials")
+
+      }
 
       
      
     } catch (error) {
-      setError("An unexpected error occurred. Please try again.");
+     
       console.error("Login error:", error);
     }
   };
