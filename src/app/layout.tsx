@@ -9,62 +9,40 @@ import { Analytics } from "@vercel/analytics/react"
 // const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Upin - Create. Join. Connect.",
-  description: "Upin helps you track events, join communities, and connect with people effortlessly.",
-  keywords: [
+  title: "Upin Web App",
+  description: "Upin Web App",
+  keywords: ["upin", 
+    "app",
     "upin",
     "event tracking",
     "community app",
     "local events",
     "meetups",
     "social networking",
-    "group events",
-    "event planning",
-    "RSVP app",
-    "social gatherings"
-  ],
-
+    "group events",],
   openGraph: {
-    title: "Upin - Create. Join. Connect.",
-    description: "Find and manage events, join communities, and make socializing easier with Upin.",
-    url: "https://upinweb-beta.vercel.app", 
+    title: "Upin Web App",
+    description: "Upin - Create. Join. Connect.",
+    url: "https://upinweb-beta.vercel.app", // Update with the actual URL
     siteName: "Upin",
-    type: "website",
     images: [
       {
-        url: "/upin.png", // Image stored in `public/`
+        url: "/upin.png", // Image for link preview
         width: 1200,
         height: 630,
         alt: "Upin App Preview Image",
       },
     ],
   },
-
   twitter: {
-    card: "summary_large_image", // Ensures a big preview image
-    title: "Upin - Create. Join. Connect.",
-    description: "Upin helps you find and manage events, join communities, and track social gatherings.",
-    images: ["/upin.png"], // Same as Open Graph image
-  },
-
-  robots: {
-    index: true, // Allow search engines to index
-    follow: true, // Allow following links
-  },
-
-  alternates: {
-    canonical: "https://upinweb-beta.vercel.app", // Ensures the correct page is indexed
-  },
-
-  // manifest: "/site.webmanifest", // If your app has a PWA setup
-
-  icons: {
-    icon: "/favicon.ico",
-    apple: "/apple-touch-icon.png",
-    shortcut: "/favicon.ico",
+    card: "summary_large_image", // or "summary" for smaller card
+    title: "Upin Web App",
+    description: "Upin App - Create. Join. Connect.",
+    images: [
+      "/upin.png", // Same image as OG
+    ],
   },
 };
-
 
 export default async function RootLayout({
   children,
