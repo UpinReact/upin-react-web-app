@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Upin Web App",
     description: "Upin - Create. Join. Connect.",
-    url: "https://www.upinapp.com", // Update with the actual URL
+    url: "https://upinweb-beta.vercel.app/", // Update with the actual URL
     siteName: "Upin",
     images: [
       {
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     title: "Upin Web App",
     description: "Upin App - Create. Join. Connect.",
     images: [
-      "https://www.upinapp.com/images/share-image.jpg", // Same image as OG
+      "public/upin.png", // Same image as OG
     ],
   },
 };
