@@ -87,22 +87,24 @@ export default function CommunityPage() {
 
   return (
     <div className="relative min-h-screen flex flex-col items-center justify-start px-4">
-      {/* Background Image */}
-      <Image
-        src={communityData.community_photo_url || bgImg}
-        alt="Background"
-        layout="fill"
-        className="absolute inset-0"
-        priority
-      />
-    
-      {/* Conditional Green Overlay */}
-      {!communityData.community_photo_url && (
-        <div className="absolute inset-0 bg-upinGreen opacity-50"></div>
-      )}
-    
-      {/* Main Content */}
-      <div className="relative z-10 w-full max-w-3xl space-y-8 py-12">
+      {/* Background Image as Banner */}
+      <div className="relative w-full h-[300px] overflow-hidden">
+        <Image
+          src={communityData.community_photo_url || bgImg}
+          alt="Background"
+          layout="fill"
+          objectFit="cover"
+          className="absolute inset-0"
+          priority
+        />
+        {/* Green Overlay if No Custom Image */}
+        {!communityData.community_photo_url && (
+          <div className="absolute inset-0 bg-upinGreen opacity-50"></div>
+        )}
+      </div>
+
+      {/* Main Content (Posts and Community Info Card) */}
+      <div className="relative z-10 w-full max-w-3xl space-y-8 py-12 -mt-24"> {/* Negative margin to overlap the banner */}
         {/* Community Info Card */}
         <div className="bg-white bg-opacity-95 p-6 sm:p-8 rounded-3xl shadow-xl">
           <h1 className="text-3xl font-bold text-upinGreen mb-4">
@@ -115,7 +117,7 @@ export default function CommunityPage() {
             <span className="font-bold">📍 Location:</span> {communityData.city}
           </p>
         </div>
-    
+
         {/* Posts Section */}
         <div className="space-y-6">
           {communityPosts.length > 0 ? (
