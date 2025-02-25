@@ -65,17 +65,29 @@ export default async function RootLayout({
     <html lang="en">
       <head>
        {/* Existing meta tags */}
-          <meta property="og:title" content="Upin Web App" />
-          <meta property="og:description" content="Upin - Create. Join. Connect." />
-          <meta property="og:image" content="https://upinweb-beta.vercel.app/upin.png" />
-          <meta property="og:url" content="https://upinweb-beta.vercel.app" />
+   
+          <title>Upin Web App</title>
+          <meta name="title" content="Upin Web App" />
+          <meta name="description" content="Upin - Create. Join. Connect. Discover local events, build communities, and stay connected with the people and gatherings that matter most. Whether you're organizing meetups or looking for new experiences, Upin makes event tracking effortless.
+          " />
+
+
           <meta property="og:type" content="website" />
-          
-          {/* Twitter metadata */}
-          <meta name="twitter:card" content="summary_large_image" />
-          <meta name="twitter:title" content="Upin Web App" />
-          <meta name="twitter:description" content="Upin - Create. Join. Connect." />
-          <meta name="twitter:image" content="https://upinweb-beta.vercel.app/upin.png" />
+          <meta property="og:url" content="https://upinweb-beta.vercel.app/" />
+          <meta property="og:title" content="Upin Web App" />
+          <meta property="og:description" content="Upin - Create. Join. Connect. Discover local events, build communities, and stay connected with the people and gatherings that matter most. Whether you're organizing meetups or looking for new experiences, Upin makes event tracking effortless.
+          " />
+            <meta property="og:image" content="https://upinweb-beta.vercel.app/upin.png" />
+
+
+          <meta property="twitter:card" content="summary_large_image" />
+          <meta property="twitter:url" content="https://upinweb-beta.vercel.app/" />
+          <meta property="twitter:title" content="Upin Web App" />
+          <meta property="twitter:description" content="Upin - Create. Join. Connect. Discover local events, build communities, and stay connected with the people and gatherings that matter most. Whether you're organizing meetups or looking for new experiences, Upin makes event tracking effortless.
+          " />
+          <meta property="twitter:image" content="https://metatags.io/images/meta-tags.png" />
+
+
         {/* Preconnect for Google Fonts */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
