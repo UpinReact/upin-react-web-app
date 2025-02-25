@@ -195,13 +195,15 @@ export default async function PrivatePage() {
             <ul className="space-y-3">
               {communities && communities.length > 0 ? (
                 communities.map((community) => (
+                  <Link href={`/account/communities/${community.id}`} className='space-y-3'>
                   <Motionlist
                     key={community.id}
                     whileHover={{ scale: 1.02 }}
                     className="bg-white/5 border border-white/10 rounded-xl p-4 text-white/90 text-wrap"
                   >
-                    {community.community_name}
+                  {community.community_name}
                   </Motionlist>
+                  </Link> 
                 ))
               ) : (
                 <p className="text-white/70">No communities found</p>
