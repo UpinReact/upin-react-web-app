@@ -11,7 +11,7 @@ html, body {
 /* Custom styles for the AG-Grid */
 .ag-theme-modern {
     --ag-border-color: #060606; /* Soft border color */
-    --ag-header-background-color: #0d19f8; /* Gradient purple header */
+    --ag-header-background-color: #22d0a5; /* Gradient purple header */
     --ag-row-hover-color: #acadae; /* Soft hover effect */
   
 
@@ -41,6 +41,7 @@ html, body {
   
   /* Add animation to row hover for a smooth scaling effect */
   .ag-theme-modern .ag-row:hover {
+    color: #22d0a5;
     transform: scale(1.03);
     transition: transform 0.3s ease-in-out;
   }

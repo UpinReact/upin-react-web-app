@@ -17,6 +17,7 @@ interface PinData {
 async function PinPage({ params }) {
     const id = (await params).id;
     const supabase = await createClient();
+    
     try {
         const { data: PinData, error } = await supabase
             .from('pins')
@@ -24,68 +25,93 @@ async function PinPage({ params }) {
             .eq('id', id)
             .single();
 
-        if (error) {
-            throw error;
+        if (error) throw error;
+        if (!id) return <div className="text-center text-gray-600">No pin found</div>;
+
+        // Fetch joined users count
+        const { data: joinedUsers, error: joinedError } = await supabase
+            .from("pinparticipants")
+            .select("participant_id")
+            .eq("pin_id", id);
+
+        if (joinedError) {
+            console.error('Error fetching joined users:', joinedError);
+            return <div className="text-center text-red-500">Error fetching participant data</div>;
         }
 
-        if (!id) {
-            return <div>No ID found</div>;
-        }
-        
-if (!id) {
-    return <div>No ID found</div>;
-}
-
-const fetchJoinedUsers = async (pinId) => {
-    const { data, error } = await supabase
-        .rpc('fetch_joined_users', { pin_id_param: pinId });
-        console.log(data)
-
-    if (error) {
-        console.error('Error fetching joined and hosting users:', error);
-        return [];
-    }
-    return data;
-    
-};
-
-fetchJoinedUsers(id).then(data => console.log('Fetched joined users:', data)); // Debugging log
+        const joinedCount = joinedUsers.length;
 
         return (
-            <div className='relative h-screen w-screen'>
+            <div className="relative min-h-screen flex items-center justify-center px-4">
+                {/* Background */}
                 <Image 
                     src={bgImg} 
-                    alt='Background' 
-                    layout='fill' 
-                    objectFit='cover' 
-                    className='absolute inset-0 opacity-50' 
+                    alt="Background" 
+                    layout="fill" 
+                    objectFit="cover" 
+                    className="absolute inset-0 opacity-40" 
                 />
-                <div className='absolute inset-0 bg-upinGreen opacity-60'></div>
-                <div className='relative flex items-center justify-center h-full'>
-                    <div className='bg-white bg-opacity-90 p-10 rounded-3xl shadow-2xl max-w-4xl w-full text-center'>
-                        <p>To join a pin and get the most out of our platform, we recommend downloading our app!<br />
-                        </p>
-                        <div className="flex justify-center">
-                            <Link href="/get-the-app" className="hover:text-blue-500 transition-colors duration-300 text-center font-bold border border-upinGreen rounded-lg p-2 bg-upinGreen text-white w-full my-2 ">
-                                Get The App
-                            </Link>
-                        </div>
-                        <h1 className='text-4xl font-bold text-upinGreen mb-4'>{PinData.meetupname}</h1>
-                        <p className='text-lg text-gray-700 mb-4'>{PinData.description}</p>
-                        <p className='text-md text-gray-600 mb-4'> <span className='font-bold'>Location: </span> {PinData.location}</p>
+                <div className="absolute inset-0 bg-upinGreen opacity-50"></div>
+
+                {/* Main Card */}
+                <div className="relative bg-white bg-opacity-95 p-8 rounded-3xl shadow-xl max-w-3xl w-full sm:max-w-md text-center">
+                    <h1 className="text-3xl font-bold text-upinGreen mb-4">{PinData.meetupname}</h1>
+                    <p className="text-lg text-gray-700 mb-4">{PinData.description}</p>
+                    
+                    {/* Location */}
+                    <p className="text-md text-gray-600 mb-2">
+                        <span className="font-bold">📍 Location:</span> {PinData.location}
+                    </p>
+
+                    {/* End Date */}
+                    <p className="text-md text-gray-600 mb-2">
+                        <span className="font-bold"> End Date:</span> {PinData.end_date}
+                    </p>
+
+                    {/* Joined Users */}
+                    <div className="mt-4">
+                        <span className="inline-block bg-upinGreen text-white px-5 py-2 rounded-full text-md font-semibold shadow-md">
+                            {joinedCount > 0 ? `${joinedCount} Joined` : "Be the first to join!"}
+                        </span>
+                    </div>
+
+                    {/* Image */}
+                    <div className="mt-6 flex justify-center">
                         {!PinData.mainphotourl ? (
-                            <p className='text-gray-500'>Upin Photo Placeholder</p>
+                            <p className="text-gray-500 italic">Upin Photo Placeholder</p>
                         ) : (
-                            <Image src={PinData.mainphotourl} alt='Pin Image' width={600} height={400} className='rounded-lg mx-auto' />
+                            <Image 
+                                src={PinData.mainphotourl} 
+                                alt="Pin Image" 
+                                width={500} 
+                                height={350} 
+                                className="rounded-lg shadow-lg w-full max-w-xs sm:max-w-md"
+                            />
                         )}
-                        <p className='text-md font-semibold mt-4'>Is this still active? <span className='text-upinGreen'>{!PinData.is_ended ? "Yes" : "No"}</span></p>
+                    </div>
+
+                    {/* Event Status */}
+                    <p className="text-md font-semibold mt-4">
+                        Is this still active?  
+                        <span className={`ml-1 ${!PinData.is_ended ? "text-green-500" : "text-red-500"}`}>
+                            {!PinData.is_ended ? "Yes ✅" : "No ❌"}
+                        </span>
+                    </p>
+
+                    {/* Call to Action */}
+                    <div className="mt-6">
+                        <Link href="/get-the-app">
+                            <span className="inline-block hover:bg-opacity-90 transition-all duration-300 text-center font-bold border border-upinGreen rounded-lg px-6 py-3 bg-upinGreen text-white shadow-md">
+                                📲 Get The App
+                            </span>
+                        </Link>
                     </div>
                 </div>
             </div>
         );
     } catch (e) {
         console.log(e);
-        return <div>Error loading pin data</div>;
+        return <div className="text-center text-red-500">Error loading pin data</div>;
     }
 }
 

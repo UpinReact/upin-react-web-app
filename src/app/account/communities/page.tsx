@@ -15,14 +15,14 @@ const Communities = () => {
           fill
           style={{ objectFit: 'cover' }} 
           alt="Background image"
-          className="opacity-10"
+          className="opacity-20"  // Reduced opacity for better readability
         />
       </div>
 
       {/* Content Section */}
-      <div className="flex flex-col items-center justify-center min-h-screen px-6 md:px-12 desktop:px-72 py-10 relative z-10">
-        <div className="bg-white bg-opacity-70 rounded-3xl p-10 md:p-14 w-full max-w-4xl shadow-lg">
-          <h1 className="text-5xl font-extrabold text-gray-800 text-center mb-6">
+      <div className="flex flex-col items-center justify-center min-h-screen px-6 phone:px-8 md:px-12 py-10 relative z-10">
+        <div className="bg-white bg-opacity-80 rounded-3xl p-8 md:p-10 w-full max-w-3xl shadow-lg">
+          <h1 className="text-4xl phone:text-3xl font-extrabold text-gray-800 text-center mb-6">
             Welcome to the Communities
           </h1>
           <h3 className="text-center text-upinGreen font-semibold mb-4">
@@ -36,16 +36,17 @@ const Communities = () => {
              <br />
              <span className='font-montserrat font-semibold text-upinGreen'>Click Below!</span>
             <br />
-            
-            </p>
-            <div className="flex justify-center">
-              <Link href="/get-the-app" className="hover:text-blue-500 transition-colors duration-300 text-center font-bold border border-upinGreen rounded-lg p-2 bg-upinGreen text-white w-full my-2 ">
-                Get The App
-              </Link>
-            </div>
-            
-         
-          <div className="flex justify-center">
+          </p>
+          
+          {/* Get the App Button */}
+          <div className="flex justify-center mb-6">
+            <Link href="/get-the-app" className="hover:text-blue-500 transition-colors duration-300 text-center font-bold border border-upinGreen rounded-lg p-3 bg-upinGreen text-white w-full max-w-xs my-2 ">
+              Get The App
+            </Link>
+          </div>
+          
+          {/* Grid Section */}
+          <div className="flex justify-center w-full">
             <Grid />
           </div>
         </div>

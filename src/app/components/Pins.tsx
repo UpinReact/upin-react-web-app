@@ -20,6 +20,7 @@ export async function fetchPins(): Promise<Pin[]> {
     const { data, error }: SupabaseResponse = await supabase
       .from('pins')
       .select('*')
+      .eq("is_ended", "FALSE")
       .limit(100);
 
       console.log('Fetched pins:', data); // Debugging log
