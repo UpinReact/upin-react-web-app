@@ -12,6 +12,28 @@ export const metadata: Metadata = {
   title: "Upin",
   description: "Upin App",
   keywords: ["upin", "app"],
+  openGraph: {
+    title: "Upin Web App",
+    description: "Upin - Create. Join. Connect.",
+    url: "https://www.upinapp.com", // Update with the actual URL
+    siteName: "Upin",
+    images: [
+      {
+        url: "public/upin.png", // Image for link preview
+        width: 1200,
+        height: 630,
+        alt: "Upin App Preview Image",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image", // or "summary" for smaller card
+    title: "Upin Web App",
+    description: "Upin App - Create. Join. Connect.",
+    images: [
+      "https://www.upinapp.com/images/share-image.jpg", // Same image as OG
+    ],
+  },
 };
 
 export default async function RootLayout({
