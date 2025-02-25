@@ -85,7 +85,7 @@ export default async function RootLayout({
           <meta property="twitter:title" content="Upin" />
           <meta property="twitter:description" content="Upin - Create. Join. Connect. Discover local events, build communities, and stay connected with the people and gatherings that matter most. Whether you're organizing meetups or looking for new experiences, Upin makes event tracking effortless.
           " />
-          <meta property="twitter:image" content="https://metatags.io/images/meta-tags.png" />
+          <meta property="og:image" content="https://upinweb-beta.vercel.app/upin.png" />
 
 
         {/* Preconnect for Google Fonts */}
