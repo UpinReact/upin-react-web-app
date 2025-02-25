@@ -9,7 +9,7 @@ import { Analytics } from "@vercel/analytics/react";
 // const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Upin Web App",
+  title: "Upin",
   description: "Upin - Create. Join. Connect.",
   keywords: [
     "upin",
@@ -66,15 +66,15 @@ export default async function RootLayout({
       <head>
        {/* Existing meta tags */}
    
-          <title>Upin Web App</title>
-          <meta name="title" content="Upin Web App" />
+          <title>Upin</title>
+          <meta name="title" content="Upin" />
           <meta name="description" content="Upin - Create. Join. Connect. Discover local events, build communities, and stay connected with the people and gatherings that matter most. Whether you're organizing meetups or looking for new experiences, Upin makes event tracking effortless.
           " />
 
 
           <meta property="og:type" content="website" />
           <meta property="og:url" content="https://upinweb-beta.vercel.app/" />
-          <meta property="og:title" content="Upin Web App" />
+          <meta property="og:title" content="Upin" />
           <meta property="og:description" content="Upin - Create. Join. Connect. Discover local events, build communities, and stay connected with the people and gatherings that matter most. Whether you're organizing meetups or looking for new experiences, Upin makes event tracking effortless.
           " />
             <meta property="og:image" content="https://upinweb-beta.vercel.app/upin.png" />
@@ -82,7 +82,7 @@ export default async function RootLayout({
 
           <meta property="twitter:card" content="summary_large_image" />
           <meta property="twitter:url" content="https://upinweb-beta.vercel.app/" />
-          <meta property="twitter:title" content="Upin Web App" />
+          <meta property="twitter:title" content="Upin" />
           <meta property="twitter:description" content="Upin - Create. Join. Connect. Discover local events, build communities, and stay connected with the people and gatherings that matter most. Whether you're organizing meetups or looking for new experiences, Upin makes event tracking effortless.
           " />
           <meta property="twitter:image" content="https://metatags.io/images/meta-tags.png" />
