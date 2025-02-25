@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     siteName: "Upin",
     images: [
       {
-        url: "/upin.png", // Full URL to the image
+        url: "/upin.png", 
         width: 1200,
         height: 630,
         alt: "Upin App Preview Image",
