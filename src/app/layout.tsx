@@ -21,35 +21,35 @@ export const metadata: Metadata = {
     "social networking",
     "group events",
   ],
-  openGraph: {
-    title: "Upin Web App",
-    description: "Upin - Create. Join. Connect.",
-    url: "https://upinweb-beta.vercel.app", // Update with your actual URL
-    siteName: "Upin",
-    images: [
-      {
-        url: "/upin.png", 
-        width: 1200,
-        height: 630,
-        alt: "Upin App Preview Image",
-      },
-    ],
-    locale: "en_US",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Upin Web App",
-    description: "Upin - Create. Join. Connect.",
-    images: [
-      {
-        url: "https://upinweb-beta.vercel.app/upin.png", // Full URL to the image
-        width: 1200,
-        height: 630,
-        alt: "Upin App Preview Image",
-      },
-    ],
-  },
+  // openGraph: {
+  //   title: "Upin Web App",
+  //   description: "Upin - Create. Join. Connect.",
+  //   url: "https://upinweb-beta.vercel.app", // Update with your actual URL
+  //   siteName: "Upin",
+  //   images: [
+  //     {
+  //       url: "/upin.png", 
+  //       width: 1200,
+  //       height: 630,
+  //       alt: "Upin App Preview Image",
+  //     },
+  //   ],
+  //   locale: "en_US",
+  //   type: "website",
+  // },
+  // twitter: {
+  //   card: "summary_large_image",
+  //   title: "Upin Web App",
+  //   description: "Upin - Create. Join. Connect.",
+  //   images: [
+  //     {
+  //       url: "https://upinweb-beta.vercel.app/upin.png", // Full URL to the image
+  //       width: 1200,
+  //       height: 630,
+  //       alt: "Upin App Preview Image",
+  //     },
+  //   ],
+  // },
   metadataBase: new URL("https://upinweb-beta.vercel.app"), // Base URL for metadata
 };
 
@@ -64,6 +64,18 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <head>
+       {/* Existing meta tags */}
+          <meta property="og:title" content="Upin Web App" />
+          <meta property="og:description" content="Upin - Create. Join. Connect." />
+          <meta property="og:image" content="https://upinweb-beta.vercel.app/upin.png" />
+          <meta property="og:url" content="https://upinweb-beta.vercel.app" />
+          <meta property="og:type" content="website" />
+          
+          {/* Twitter metadata */}
+          <meta name="twitter:card" content="summary_large_image" />
+          <meta name="twitter:title" content="Upin Web App" />
+          <meta name="twitter:description" content="Upin - Create. Join. Connect." />
+          <meta name="twitter:image" content="https://upinweb-beta.vercel.app/upin.png" />
         {/* Preconnect for Google Fonts */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
