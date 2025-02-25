@@ -9,17 +9,17 @@ import { Analytics } from "@vercel/analytics/react"
 // const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Upin",
-  description: "Upin App",
+  title: "Upin Web App",
+  description: "Upin Web App",
   keywords: ["upin", "app"],
   openGraph: {
     title: "Upin Web App",
     description: "Upin - Create. Join. Connect.",
-    url: "https://upinweb-beta.vercel.app/", // Update with the actual URL
+    url: "https://upinweb-beta.vercel.app", // Update with the actual URL
     siteName: "Upin",
     images: [
       {
-        url: "public/upin.png", // Image for link preview
+        url: "/upin.png", // Image for link preview
         width: 1200,
         height: 630,
         alt: "Upin App Preview Image",
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     title: "Upin Web App",
     description: "Upin App - Create. Join. Connect.",
     images: [
-      "public/upin.png", // Same image as OG
+      "/upin.png", // Same image as OG
     ],
   },
 };
