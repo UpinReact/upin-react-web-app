@@ -8,6 +8,7 @@ import upin from "public/upin.png";
 import { createClient } from 'utils/supabase/client';
 import { AuthSessionMissingError } from '@supabase/supabase-js';
 import Link from 'next/link';
+import { MdCameraFront } from "react-icons/md";
 
 interface CommunityData {
   id: number;
@@ -38,6 +39,7 @@ export default function CommunityPage() {
   const [error, setError] = useState<string | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false); // This should be a boolean state
   const [userId, setUserId] = useState(null)
+  const [fileType, setFileType] = useState("media_url");
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -159,6 +161,12 @@ export default function CommunityPage() {
     }
   };
 
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setFileType(file.type.startsWith("image/") ? "media_url" : "video_url");
+    }
+  };
   return (
     <div className="relative min-h-screen flex flex-col items-center justify-start px-4 bg-gray-100">
       {/* Background Image as Banner */}
@@ -198,13 +206,27 @@ export default function CommunityPage() {
             <form className="bg-white p-4 rounded-lg shadow-lg space-y-4" onSubmit={handleSubmit}>
                 <label htmlFor="content" className="font-semibold text-lg">Create Post</label>
                 <input type="hidden" name="user_id" id= "uer_id" value = {userId} />
+                
                 <textarea
                   id="content"
                   name="content"
                   rows={4}
-                  className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-upinGreen"
+                  className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 bg-slate-100 focus:ring-upinGreen"
                   placeholder="What's on your mind?"
                 />
+                  <label htmlFor="file_input" className="flex items-center gap-2 cursor-pointer">
+                    <MdCameraFront className="text-gray-600 text-xl" />
+                    Upload Picture or Video
+                    <input
+                      type="file"
+                      accept="image/*, video/*"
+                      name={fileType}
+                      id="file_input"
+                      className="hidden"
+                      onChange={handleFileChange}
+                    />
+                  </label>
+                    
                 <button
                   type="submit"
                   className="w-full py-2 bg-upinGreen text-white rounded-lg hover:bg-upinGreen/90 transition-colors"
