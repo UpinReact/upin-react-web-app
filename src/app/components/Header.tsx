@@ -70,9 +70,9 @@ const Header = ({ initialSession }: HeaderProps) => {
           <li className="hover:text-yellow-300 text-lg font-montserrat">
             <Link href="/team">Team</Link>
           </li>
-          <li className="hover:text-yellow-300 text-lg font-montserrat">
+          {/* <li className="hover:text-yellow-300 text-lg font-montserrat">
             <Link href="/news">News</Link>
-          </li>
+          </li> */}
         </ul>
         <motion.button
           whileHover={{ scale: 1.05 }}
