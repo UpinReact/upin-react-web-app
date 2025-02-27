@@ -48,25 +48,38 @@ export default function MyMap() {
   }, []);
 
   // Fetch pins from Supabase
-  useEffect(() => {
-    const supabase = createClient();
-    
-    const fetchPins = async () => {
-      try {
-        const { data, error } = await supabase
-          .from('pins')
-          .select('*')
-          .limit(100);
+  // Fetch pins within a 50-mile radius
+useEffect(() => {
+  const supabase = createClient();
 
-        if (error) throw error;
-        setPins(data || []);
-      } catch (error) {
-        console.error("Error fetching pins:", error);
-      }
-    };
+const R = 3960; // Earth's radius in miles
+const latDiff = 25 / R * (180 / Math.PI);
+const lngDiff = 25 / (R * Math.cos(center[1] * (Math.PI / 180))) * (180 / Math.PI);
 
-    fetchPins();
-  }, []);
+const fetchPins = async () => {
+  try {
+    const { data, error } = await supabase
+      .from("pins")
+      .select("*")
+      .gte("end_date", new Date().toISOString())
+      .gte("latitude", center[1] - latDiff)
+      .lte("latitude", center[1] + latDiff)
+      .gte("longitude", center[0] - lngDiff)
+      .lte("longitude", center[0] + lngDiff)
+      .gte("end_date", new Date().toISOString())
+      .limit(100);
+
+    if (error) throw error;
+    setPins(data || []);
+  } catch (error) {
+    console.error("Error fetching pins:", error);
+  }
+};
+
+
+  fetchPins(); // Fetch only when user location is available
+}, [center]);
+
 
   // Initialize map
   useEffect(() => {
@@ -178,19 +191,19 @@ export default function MyMap() {
         />
       </div>
 
-      <div className="text-center bg-gray-100 p-4 rounded-xl shadow-inner">
-        <p className="text-black mb-2">
+      {/* <div className="text-center bg-gray-100 p-4 rounded-xl shadow-inner">
+        {/* <p className="text-black mb-2">
           Longitude: {center[0].toFixed(4)} | 
           Latitude: {center[1].toFixed(4)} | 
           Zoom: {zoom.toFixed(2)}
-        </p>
-        <button
+        </p> */}
+        {/* <button
           onClick={() => mapRef.current?.flyTo({ center: INITIAL_CENTER, zoom: INITIAL_ZOOM })}
           className="mt-2 px-6 py-2 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-700 transition-colors"
         >
           Reset View
-        </button>
-      </div>
+        </button> */}
+      {/* </div>  */}
     </div>
   );
 }

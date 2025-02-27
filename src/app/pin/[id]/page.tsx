@@ -62,10 +62,28 @@ async function PinPage({ params }) {
                     <p className="text-md text-gray-600 mb-2">
                         <span className="font-bold">📍 Location:</span> {PinData.location}
                     </p>
+                    {/*Start date */}
+                    <p className="text-md text-gray-600 mb-2">
+                        <span className="font-bold">Start Date:</span> {new Date(PinData.start_date).toLocaleString("en-US", {
+                            month: "2-digit",
+                            day: "2-digit",
+                            year: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            hour12: true, // For AM/PM format
+                        })}
+                    </p>
 
                     {/* End Date */}
                     <p className="text-md text-gray-600 mb-2">
-                        <span className="font-bold"> End Date:</span> {PinData.end_date}
+                        <span className="font-bold">End Date:</span> {new Date(PinData.end_date).toLocaleString("en-US", {
+                            month: "2-digit",
+                            day: "2-digit",
+                            year: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            hour12: true, // For AM/PM format
+                        })}
                     </p>
 
                     {/* Joined Users */}
@@ -94,7 +112,7 @@ async function PinPage({ params }) {
                     <p className="text-md font-semibold mt-4">
                         Is this still active?  
                         <span className={`ml-1 ${!PinData.is_ended ? "text-green-500" : "text-red-500"}`}>
-                            {!PinData.is_ended ? "Yes ✅" : "No ❌"}
+                        {new Date(PinData.end_date) >= new Date() ? "Yes ✅" : "No ❌"}
                         </span>
                     </p>
 

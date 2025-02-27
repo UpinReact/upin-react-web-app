@@ -24,7 +24,8 @@ const CheckPins = () => {
       const { data: pins, error: pinsError } = await supabase
         .from('pins')
         .select('*')
-        .in('id', pinIds);
+        .in('id', pinIds)
+        .gt('end_date', new Date().toISOString()); // Only select pins where end_date is in the future
 
       if (pinsError) throw pinsError;
 
