@@ -3,6 +3,7 @@ import bgImg from "public/Screen Shot 2020-03-12 at 9.26.39 AM.png";
 import React from 'react';
 import Image from "next/legacy/image";
 import Link from 'next/link';
+import { FaLocationArrow } from "react-icons/fa";
 
 interface PinData {
     id: number;
@@ -59,10 +60,13 @@ async function PinPage({ params }) {
                     <p className="text-lg text-gray-700 mb-4">{PinData.description}</p>
                     
                     {/* Location */}
-                    <p className="text-md text-gray-600 mb-2">
-                        <span className="font-bold">📍 Location:</span> {PinData.location}
+                    <p className="text-md text-gray-600 mb-2 flex items-center justify-center gap-2">
+                    <span className="font-bold flex items-center gap-1 text-upinGreen">
+                        <FaLocationArrow className="text-lg" /> Location:
+                    </span> 
+                    <span className="text-gray-700">{PinData.location}</span>
                     </p>
-                    {/*Start date */}
+                     {/*Start date */}
                     <p className="text-md text-gray-600 mb-2">
                         <span className="font-bold">Start Date:</span> {new Date(PinData.start_date).toLocaleString("en-US", {
                             month: "2-digit",
