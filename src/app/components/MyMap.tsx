@@ -7,6 +7,7 @@ import { createClient } from 'utils/supabase/client'
 import yellowPin from "public/yellowpin.png"
 import greenPin from "public/greenpin.png"
 import redPin from "public/redpin.png"
+import SmartSearchBar from "./SmartSearchBar"
 
 // Type definitions
 type Pin = {
@@ -131,8 +132,12 @@ useEffect(() => {
 // Determine link based on device type
 const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
+
 let link = isMobile ? `upin://pin/${pin.id}` : `/pin/${pin.id}`;
 
+
+function openLink(e: React.MouseEvent<HTMLAnchorElement>, pinId){
+  e.preventDefault()
 // Try opening the deep link only on mobile
 if (isMobile) {
   const newTab = window.open(link, "_blank");
@@ -141,34 +146,11 @@ if (isMobile) {
   setTimeout(() => {
     if (!newTab || newTab.closed || newTab.location.href === "about:blank") {
       // Deep link failed, fallback to the web link
-      window.location.href = `/pin/${pin.id}`;
+      window.location.href = `/pin/${pinId}`;
     }
   }, 500); // Adjust the delay as needed
 } 
-
-
-
-  
-    
-    const openDeepLink = (pinId: string) => {
-      const deepLink = `upin://pin/${pinId}`;
-      const fallbackLink = `/pin/${pinId}`;
-    
-      // Try opening the deep link
-      const timeout = setTimeout(() => {
-        window.location.href = fallbackLink; // Fallback if app doesn’t open
-      }, 1500); // Adjust delay as needed
-    
-      // Open the deep link
-      window.location.href = deepLink;
-    
-      // If user leaves the page, clear the fallback (means deep link worked)
-      window.addEventListener("visibilitychange", () => {
-        if (document.visibilityState === "hidden") {
-          clearTimeout(timeout);
-        }
-      });
-    };
+}
 
 
     // Create a custom pin element
@@ -192,9 +174,9 @@ if (isMobile) {
             <h3 class="text-xl font-bold text-upinGreen mb-2">${pin.meetupname}</h3>
             <p class="text-sm text-gray-600 mb-3">${pin.description}</p>
              
-            <a href="${link}" class="text-upinGreen hover:underline font-semibold">
-              View Details
-            </a>
+            <a href="${link}"  class="text-upinGreen hover:underline font-semibold">
+            View Details
+          </a>
            
           </div>
         `)
@@ -241,6 +223,7 @@ if (isMobile) {
         <h1 className="text-4xl font-extrabold drop-shadow-lg">
           Discover Pins Near You
         </h1>
+        <SmartSearchBar />
         <p className="text-lg">
           Explore meetups, events, and communities nearby
         </p>
