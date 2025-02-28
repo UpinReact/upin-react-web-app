@@ -1,4 +1,4 @@
-'use client';
+'use client'
 import { useState, useEffect } from 'react';
 import Image from "next/legacy/image";
 import { useParams } from 'next/navigation';
@@ -9,6 +9,7 @@ import { createClient } from 'utils/supabase/client';
 import { AuthSessionMissingError } from '@supabase/supabase-js';
 import Link from 'next/link';
 import { MdCameraFront } from "react-icons/md";
+import { MdDelete } from "react-icons/md";
 
 interface CommunityData {
   id: number;
@@ -100,6 +101,25 @@ export default function CommunityPage() {
     fetchData();
   }, [id]);
 
+  const handleDeletePost = async (postId: number) => {
+    try {
+      const { error } = await supabase
+        .from('communityposts')
+        .delete()
+        .eq('id', postId)
+        .eq('user_id', userId); // Only delete if the logged-in user is the post creator
+
+      if (error) {
+        throw error;
+      }
+
+      setCommunityPosts(communityPosts.filter(post => post.id !== postId)); // Update the UI to remove the post
+    } catch (err) {
+      console.error("Error deleting post:", err);
+      alert("Failed to delete post");
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -125,35 +145,33 @@ export default function CommunityPage() {
       </div>
     );
   }
-  if(!userId){
-    console.log("this error is authsessionmissionerror"+AuthSessionMissingError)
-    return(
+  
+  if (!userId) {
+    console.log("this error is authsessionmissionerror" + AuthSessionMissingError);
+    return (
       <div>
-      <div className='flex justify-center items-center h-screen'>
-        
-        <p className='font-extrabold text-gray-600'>Please Log in to view community posts</p>
-        <div className='m-1'>
-          <Link href={"/login"} className='border-2 bg-upinGreen text-black rounded-2xl p-3'>Login</Link>
+        <div className='flex justify-center items-center h-screen'>
+          <p className='font-extrabold text-gray-600'>Please Log in to view community posts</p>
+          <div className='m-1'>
+            <Link href={"/login"} className='border-2 bg-upinGreen text-black rounded-2xl p-3'>Login</Link>
+          </div>
+        </div>
       </div>
-      </div>
-       
-     </div>
-    )
+    );
   }
 
   const handleSubmit = async (event: React.FormEvent) => {
-    // event.preventDefault();
     const form = event.target as HTMLFormElement;
     const content = (form.elements.namedItem('content') as HTMLTextAreaElement).value;
-  
+
     const formData = {
       content: content,
       media_url: null, // Add media URL if available
       video_url: null, // Add video URL if available
     };
-  
+
     const result = await PostToCommunity(userId, id, formData);
-  
+
     if (result.success) {
       alert("Post created successfully!");
     } else {
@@ -167,6 +185,7 @@ export default function CommunityPage() {
       setFileType(file.type.startsWith("image/") ? "media_url" : "video_url");
     }
   };
+
   return (
     <div className="relative min-h-screen flex flex-col items-center justify-start px-4 bg-gray-100">
       {/* Background Image as Banner */}
@@ -183,10 +202,9 @@ export default function CommunityPage() {
           <div className="absolute inset-0 bg-upinGreen opacity-50"></div>
         )}
       </div>
-      if
 
       {/* Main Content (Posts and Community Info Card) */}
-      <div className="relative z-10 w-full max-w-3xl space-y-8 py-12 -mt-16"> {/* Negative margin to overlap the banner */}
+      <div className="relative z-10 w-full max-w-3xl space-y-8 py-12 -mt-16">
         {/* Community Info Card */}
         <div className="bg-white bg-opacity-95 p-6 sm:p-8 rounded-3xl shadow-xl">
           <h1 className="text-3xl font-bold text-upinGreen mb-4">
@@ -199,41 +217,40 @@ export default function CommunityPage() {
             <span className="font-bold">📍 Location:</span> {communityData.city}
           </p>
         </div>
-        
 
         {isLoggedIn && (
           <div className="z-20 w-full max-w-3xl mt-6">
             <form className="bg-white p-4 rounded-lg shadow-lg space-y-4" onSubmit={handleSubmit}>
-                <label htmlFor="content" className="font-semibold text-lg">Create Post</label>
-                <input type="hidden" name="user_id" id= "uer_id" value = {userId} />
-                
-                <textarea
-                  id="content"
-                  name="content"
-                  rows={4}
-                  className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 bg-slate-100 focus:ring-upinGreen"
-                  placeholder="What's on your mind?"
+              <label htmlFor="content" className="font-semibold text-lg">Create Post</label>
+              <input type="hidden" name="user_id" id="user_id" value={userId} />
+
+              <textarea
+                id="content"
+                name="content"
+                rows={4}
+                className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 bg-slate-100 focus:ring-upinGreen"
+                placeholder="What's on your mind?"
+              />
+              <label htmlFor="file_input" className="flex items-center gap-2 cursor-pointer">
+                <MdCameraFront className="text-gray-600 text-xl" />
+                Upload Picture or Video
+                <input
+                  type="file"
+                  accept="image/*, video/*"
+                  name={fileType}
+                  id="file_input"
+                  className="hidden"
+                  onChange={handleFileChange}
                 />
-                  <label htmlFor="file_input" className="flex items-center gap-2 cursor-pointer">
-                    <MdCameraFront className="text-gray-600 text-xl" />
-                    Upload Picture or Video
-                    <input
-                      type="file"
-                      accept="image/*, video/*"
-                      name={fileType}
-                      id="file_input"
-                      className="hidden"
-                      onChange={handleFileChange}
-                    />
-                  </label>
-                    
-                <button
-                  type="submit"
-                  className="w-full py-2 bg-upinGreen text-white rounded-lg hover:bg-upinGreen/90 transition-colors"
-                >
-                  Post
-                </button>
-              </form>
+              </label>
+
+              <button
+                type="submit"
+                className="w-full py-2 bg-upinGreen text-white rounded-lg hover:bg-upinGreen/90 transition-colors"
+              >
+                Post
+              </button>
+            </form>
           </div>
         )}
 
@@ -273,10 +290,20 @@ export default function CommunityPage() {
                   </span>
                 </div>
                 <p className="mt-4 text-gray-800">{post.content}</p>
+                {post.user_id === userId && (
+                  <button
+                  className="text-red-500 hover:text-red-700 mt-4"
+                  onClick={() => handleDeletePost(post.id)}
+                >
+                  <MdDelete className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10" />
+                  Delete Post
+                </button>
+                
+                )}
               </div>
             ))
           ) : (
-            <div className="text-center text-gray-600 py-8 font-extrabold">No posts yet. Be the first to post!</div>
+            <div className="text-center text-lg text-gray-600">No posts yet!</div>
           )}
         </div>
       </div>
