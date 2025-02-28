@@ -32,10 +32,11 @@ export default function SmartSearchBar() {
     try {
       const limit = 3; // Limit the number of results per request
       const { data, error } = await supabase
-        .from("pins")
-        .select("*")
-        .or(`meetupname.ilike.%${searchQuery}%,location.ilike.%${searchQuery}%`)
-        .range(offset, offset + limit - 1); // Use range for pagination
+      .from("pins")
+      .select("*")
+      .or(`meetupname.ilike.%${searchQuery}%,location.ilike.%${searchQuery}%`)
+      .gte("end_date", new Date().toISOString())  // Filter for future end dates
+      .range(offset, offset + limit - 1); // Use range for pagination
 
       if (error) {
         console.error("Error fetching pins:", error);
