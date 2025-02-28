@@ -110,57 +110,60 @@ const fetchPins = async () => {
   }, []);
   
 
-  // Update map markers when pins change
-  useEffect(() => {
-    if (!mapRef.current || !pins.length) return;
+ // Update map markers when pins change
+useEffect(() => {
+  if (!mapRef.current || !pins.length) return;
 
-    // Clear existing markers
-    markersRef.current.forEach(marker => marker.remove());
-    markersRef.current = [];
+  // Clear existing markers
+  markersRef.current.forEach(marker => marker.remove());
+  markersRef.current = [];
 
-    pins.forEach((pin) => {
-      const now = new Date();
-      const endDate = new Date(pin.end_date);
-      const diffDays = Math.ceil((endDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-    
-      let pinImage = greenPin; // Default: green
-      if (diffDays <= 1) pinImage = redPin; // Expires today, tomorrow, or already expired
-      else if (diffDays <= 3) pinImage = yellowPin; // 2-3 days left
-     
-    
-      // Create a custom pin element
-      const pinElement = document.createElement("div");
-      pinElement.className = "w-8 h-8"; // Adjust size if needed
-    
-      // Add an image inside the custom marker
-      const img = document.createElement("img");
-      img.src = pinImage.src; // Use the imported image
-      img.alt = "Pin";
-      img.className = "w-full h-full"; // Ensure it fills the container
-    
-      pinElement.appendChild(img);
-    
-      const marker = new mapboxgl.Marker(pinElement)
-        .setLngLat([pin.longitude, pin.latitude])
-        .setPopup(
-          new mapboxgl.Popup({ offset: 25 }).setHTML(`
-            <div class="bg-white p-4 rounded-2xl border-gray-400 border-2 shadow-lg">
-              <h3 class="text-xl font-bold text-upinGreen mb-2">${pin.meetupname}</h3>
-              <p class="text-sm text-gray-600 mb-3">${pin.description}</p>
-              <a href="/pin/${pin.id}" class="text-upinGreen hover:underline font-semibold">
-                View Details
-              </a>
-            </div>
-          `)
-        )
-        .addTo(mapRef.current!);
-    
-      markersRef.current.push(marker);
-    });
-    
-    
-    
-  }, [pins]);
+  pins.forEach((pin) => {
+    // Determine pin color based on expiration date
+    const now = new Date();
+    const endDate = new Date(pin.end_date);
+    const diffDays = Math.ceil((endDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+
+    let pinImage = greenPin; // Default: green
+    if (diffDays <= 1) pinImage = redPin; // Expires today, tomorrow, or already expired
+    else if (diffDays <= 3) pinImage = yellowPin; // 2-3 days left
+
+    // Determine link based on device type
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    let link = isMobile ? `upin://pin/${pin.id}` : `/pin/${pin.id}`;
+
+    // Create a custom pin element
+    const pinElement = document.createElement("div");
+    pinElement.className = "w-8 h-8"; // Adjust size if needed
+
+    // Add an image inside the custom marker
+    const img = document.createElement("img");
+    img.src = pinImage.src; // Use the correct pin color
+    img.alt = "Pin";
+    img.className = "w-full h-full"; // Ensure it fills the container
+
+    pinElement.appendChild(img);
+
+    const marker = new mapboxgl.Marker(pinElement)
+      .setLngLat([pin.longitude, pin.latitude])
+      .setPopup(
+        new mapboxgl.Popup({ offset: 25 }).setHTML(`
+          <div class="bg-white p-4 rounded-2xl border-gray-400 border-2 shadow-lg">
+            <h3 class="text-xl font-bold text-upinGreen mb-2">${pin.meetupname}</h3>
+            <p class="text-sm text-gray-600 mb-3">${pin.description}</p>
+            <a href="${link}" class="text-upinGreen hover:underline font-semibold">
+              View Details
+            </a>
+          </div>
+        `)
+      )
+      .addTo(mapRef.current!);
+
+    markersRef.current.push(marker);
+  });
+
+}, [pins]);
+
 
   // Map movement handlers
   useEffect(() => {
