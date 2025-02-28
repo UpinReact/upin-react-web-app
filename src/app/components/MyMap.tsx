@@ -4,6 +4,9 @@ import mapboxgl from "mapbox-gl";
 import { throttle, debounce } from "lodash";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { createClient } from 'utils/supabase/client'
+import yellowPin from "public/yellowpin.png"
+import greenPin from "public/greenpin.png"
+import redPin from "public/redpin.png"
 
 // Type definitions
 type Pin = {
@@ -12,6 +15,7 @@ type Pin = {
   longitude: number;
   meetupname: string;
   description: string;
+  end_date: string
 };
 
 // Map configuration
@@ -115,34 +119,47 @@ const fetchPins = async () => {
     markersRef.current = [];
 
     pins.forEach((pin) => {
-      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-      let link = isMobile 
-        ? `upin://pin/${pin.id}`
-        : `/pin/${pin.id}`;
-        
-        if (link == undefined){
-          link ='/pin/${pin.id}'
-        }
-      const popup = new mapboxgl.Popup({ offset: 25 })
-        .setHTML(`
-          <div class="bg-white p-4 rounded-2xl border-slate-400 border-2 shadow-lg shadow-zinc-700 max-w-xs">
-            <h3 class="text-xl font-bold text-upinGreen mb-2">${pin.meetupname}</h3>
-            <p class="text-sm text-gray-600 mb-3">${pin.description}</p>
-            <a href="${link}" class="text-upinGreen hover:underline font-semibold onClick = {console.log(${link})}">
-              View Details
-            </a>
-          </div>
-        `);
-
-      
-
-      const marker = new mapboxgl.Marker()
+      const now = new Date();
+      const endDate = new Date(pin.end_date);
+      const diffDays = Math.ceil((endDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+    
+      let pinImage = greenPin; // Default: green
+      if (diffDays <= 1) pinImage = redPin; // Expires today, tomorrow, or already expired
+      else if (diffDays <= 3) pinImage = yellowPin; // 2-3 days left
+     
+    
+      // Create a custom pin element
+      const pinElement = document.createElement("div");
+      pinElement.className = "w-8 h-8"; // Adjust size if needed
+    
+      // Add an image inside the custom marker
+      const img = document.createElement("img");
+      img.src = pinImage.src; // Use the imported image
+      img.alt = "Pin";
+      img.className = "w-full h-full"; // Ensure it fills the container
+    
+      pinElement.appendChild(img);
+    
+      const marker = new mapboxgl.Marker(pinElement)
         .setLngLat([pin.longitude, pin.latitude])
-        .setPopup(popup)
+        .setPopup(
+          new mapboxgl.Popup({ offset: 25 }).setHTML(`
+            <div class="bg-white p-4 rounded-2xl border-gray-400 border-2 shadow-lg">
+              <h3 class="text-xl font-bold text-upinGreen mb-2">${pin.meetupname}</h3>
+              <p class="text-sm text-gray-600 mb-3">${pin.description}</p>
+              <a href="/pin/${pin.id}" class="text-upinGreen hover:underline font-semibold">
+                View Details
+              </a>
+            </div>
+          `)
+        )
         .addTo(mapRef.current!);
-
+    
       markersRef.current.push(marker);
     });
+    
+    
+    
   }, [pins]);
 
   // Map movement handlers
@@ -190,6 +207,20 @@ const fetchPins = async () => {
           className="relative w-full h-[40rem] rounded-xl shadow-lg border-4 border-white overflow-hidden"
         />
       </div>
+      <div className="flex justify-center mt-4 space-x-6">
+  <div className="flex items-center space-x-2">
+    <img src="/greenpin.png" alt="Green Pin" className="w-6 h-6" />
+    <span>3+ days left</span>
+  </div>
+  <div className="flex items-center space-x-2">
+    <img src="/yellowpin.png" alt="Yellow Pin" className="w-6 h-6" />
+    <span>2-3 days left</span>
+  </div>
+  <div className="flex items-center space-x-2">
+    <img src="/redpin.png" alt="Red Pin" className="w-6 h-6" />
+    <span>Expires today</span>
+  </div>
+</div>
 
       {/* <div className="text-center bg-gray-100 p-4 rounded-xl shadow-inner">
         {/* <p className="text-black mb-2">
