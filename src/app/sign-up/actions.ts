@@ -3,15 +3,15 @@ import supabase  from "utils/supabase/supabase";
 
 export async function signup(formData: FormData) {
   const data = {
-    email: formData.get('email') as string,
-    firstName: formData.get('firstName') as string,
-    lastName: formData.get('lastName') as string,
-    password: formData.get('password') as string,
-    phone: formData.get('phone') as string,
-    interests: formData.getAll('interests') as string[], // Use getAll for arrays
-    birthdate: formData.get('birthdate') as string,
-    bio: formData.get('bio') as string,
-    gender: formData.get('gender') as string,
+    email: formData.get("email") as string,
+    firstName: formData.get("firstName") as string,
+    lastName: formData.get("lastName") as string,
+    password: formData.get("password") as string,
+    phone: formData.get("phone") as string,
+    interests: formData.getAll("interests") as string[], // Use getAll for arrays
+    birthdate: formData.get("birthdate") as string,
+    bio: formData.get("bio") as string,
+    gender: formData.get("gender") as string,
   };
 
   const lowerCaseEmail = data.email.toLowerCase();
@@ -75,7 +75,15 @@ export async function signup(formData: FormData) {
       return { success: false, message: "Failed to save user data." };
     }
 
-    return { success: true };
+    // Check if the user is authenticated and get user session
+    const { data: user, error: sessionError } = await supabase.auth.getUser();
+    
+    if (sessionError || !user) {
+      console.error("Session error:", sessionError?.message);
+      return { success: false, message: "Session creation failed." };
+    }
+
+    return { success: true, user };
 
   } catch (err) {
     console.error("Signup process error:", err);

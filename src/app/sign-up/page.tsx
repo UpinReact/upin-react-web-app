@@ -7,6 +7,7 @@ import Link from "next/link";
 import Image from "next/legacy/image";
 import { motion } from "framer-motion";
 import bgImg from "public/Screen Shot 2020-03-12 at 9.26.39 AM.png";
+import supabase from "utils/supabase/supabase";
 
 export default function SignUpPage() {
   const [formData, setFormData] = useState({
@@ -22,7 +23,10 @@ export default function SignUpPage() {
     interests: [] as string[],
   });
   const [errorMessage, setErrorMessage] = useState("");
+  const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false); // State to toggle confirm password visibility
   const router = useRouter();
+  
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -49,20 +53,18 @@ export default function SignUpPage() {
     }
 
     const submissionData = new FormData();
-
-Object.entries(formData).forEach(([key, value]) => {
-  if (key === "interests" && Array.isArray(value)) {
-    // Handle interests array
-    value.forEach((interest: string) => submissionData.append("interests", interest));
-  } else {
-    // Handle all other fields
-    submissionData.append(key, String(value)); // Ensure value is always a string
-  }
-});
+    Object.entries(formData).forEach(([key, value]) => {
+      if (key === "interests" && Array.isArray(value)) {
+        value.forEach((interest: string) => submissionData.append("interests", interest));
+      } else {
+        submissionData.append(key, String(value));
+      }
+    });
 
     try {
       const result = await signup(submissionData);
       if (result.success) {
+        
         router.push("/private");
       } else {
         setErrorMessage(result.message || "An error occurred");
@@ -72,8 +74,15 @@ Object.entries(formData).forEach(([key, value]) => {
     }
   };
 
+  const clearInput = (field: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: "",
+    }));
+  };
+
   return (
-    (<div className="relative flex items-center justify-center w-screen h-screen bg-upinGreen -z-0">
+    <div className="relative flex items-center justify-center w-screen bg-upinGreen -z-0">
       <Image 
         src={bgImg} 
         alt="Background" 
@@ -82,25 +91,126 @@ Object.entries(formData).forEach(([key, value]) => {
       />
       <div className="relative p-8 bg-upinGreen bg-opacity-20 border border-green-200 rounded-3xl shadow-2xl backdrop-filter backdrop-blur-3xl z-10">
         <h1 className="mb-6 text-6xl text-center font-montserrat">Sign Up</h1>
-        <form onSubmit={handleSubmit} className="grid w-full gap-6 grid-cols-2">
+        <form onSubmit={handleSubmit} className="grid w-auto gap-6 grid-cols-2">
           {["email", "password", "confirmPassword", "firstName", "lastName", "phone", "birthdate"].map((field) => (
-            <div key={field}>
+            <div key={field} className="relative">
               <label htmlFor={field} className="text-2xl capitalize">
                 {field === "confirmPassword" ? "Confirm Password" : field.replace(/([A-Z])/g, " $1")}:
               </label>
-              <input
-                type={
-                  field.includes("password") ? "password" : 
-                  field === "birthdate" ? "date" : 
-                  field === "phone" ? "tel" : "text"
-                }
-                id={field}
-                name={field}
-                className="w-full p-2 border border-gray-300 rounded-2xl"
-                value={formData[field as keyof typeof formData] || ""}
-                onChange={handleChange}
-                required
-              />
+              <div className="relative">
+                <input
+                  type={
+                    field === "password" || field === "confirmPassword"
+                      ? field === "password"
+                        ? showPassword ? "text" : "password"
+                        : showConfirmPassword ? "text" : "password"
+                      : field === "birthdate" ? "date" 
+                      : field === "phone" ? "tel" 
+                      : "text"
+                  }
+                  id={field}
+                  name={field}
+                  className="w-full p-2 border border-gray-300 rounded-2xl pr-10"
+                  value={formData[field as keyof typeof formData] || ""}
+                  onChange={handleChange}
+                  required
+                />
+                {(field === "password" || field === "confirmPassword") && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (field === "password") setShowPassword(!showPassword);
+                      if (field === "confirmPassword") setShowConfirmPassword(!showConfirmPassword);
+                    }}
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500"
+                  >
+                    {field === "password" ? (
+                      showPassword ? (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-6 w-6"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                          />
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                          />
+                        </svg>
+                      ) : (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-6 w-6"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"
+                          />
+                        </svg>
+                      )
+                    ) : showConfirmPassword ? (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-6 w-6"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                        />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                        />
+                      </svg>
+                    ) : (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-6 w-6"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"
+                        />
+                      </svg>
+                    )}
+                  </button>
+                )}
+                {formData[field as keyof typeof formData] && field !== "password" && field !== "confirmPassword" && (
+                  <button
+                    type="button"
+                    onClick={() => clearInput(field)}
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500"
+                  >
+                    X
+                  </button>
+                )}
+              </div>
             </div>
           ))}
           
@@ -173,6 +283,8 @@ Object.entries(formData).forEach(([key, value]) => {
           </Link>
         </motion.div>
       </div>
-    </div>)
+    </div>
   );
 }
+
+
