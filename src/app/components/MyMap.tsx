@@ -128,9 +128,48 @@ useEffect(() => {
     if (diffDays <= 1) pinImage = redPin; // Expires today, tomorrow, or already expired
     else if (diffDays <= 3) pinImage = yellowPin; // 2-3 days left
 
-    // Determine link based on device type
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    let link = isMobile ? `upin://pin/${pin.id}` : `/pin/${pin.id}`;
+// Determine link based on device type
+const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+let link = isMobile ? `upin://pin/${pin.id}` : `/pin/${pin.id}`;
+
+// Try opening the deep link only on mobile
+if (isMobile) {
+  const newTab = window.open(link, "_blank");
+
+  // Check if the deep link failed after a short delay
+  setTimeout(() => {
+    if (!newTab || newTab.closed || newTab.location.href === "about:blank") {
+      // Deep link failed, fallback to the web link
+      window.location.href = `/pin/${pin.id}`;
+    }
+  }, 500); // Adjust the delay as needed
+} 
+
+
+
+  
+    
+    const openDeepLink = (pinId: string) => {
+      const deepLink = `upin://pin/${pinId}`;
+      const fallbackLink = `/pin/${pinId}`;
+    
+      // Try opening the deep link
+      const timeout = setTimeout(() => {
+        window.location.href = fallbackLink; // Fallback if app doesn’t open
+      }, 1500); // Adjust delay as needed
+    
+      // Open the deep link
+      window.location.href = deepLink;
+    
+      // If user leaves the page, clear the fallback (means deep link worked)
+      window.addEventListener("visibilitychange", () => {
+        if (document.visibilityState === "hidden") {
+          clearTimeout(timeout);
+        }
+      });
+    };
+
 
     // Create a custom pin element
     const pinElement = document.createElement("div");
@@ -143,6 +182,7 @@ useEffect(() => {
     img.className = "w-full h-full"; // Ensure it fills the container
 
     pinElement.appendChild(img);
+    
 
     const marker = new mapboxgl.Marker(pinElement)
       .setLngLat([pin.longitude, pin.latitude])
@@ -151,9 +191,11 @@ useEffect(() => {
           <div class="bg-white p-4 rounded-2xl border-gray-400 border-2 shadow-lg">
             <h3 class="text-xl font-bold text-upinGreen mb-2">${pin.meetupname}</h3>
             <p class="text-sm text-gray-600 mb-3">${pin.description}</p>
+             
             <a href="${link}" class="text-upinGreen hover:underline font-semibold">
               View Details
             </a>
+           
           </div>
         `)
       )

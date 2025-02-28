@@ -25,6 +25,7 @@ const Communities = () => {
           <h1 className="text-4xl phone:text-3xl font-extrabold text-gray-800 text-center mb-6">
             Welcome to the Communities
           </h1>
+          <h2>Here are Communties near you ! </h2>
           <h3 className="text-center text-upinGreen font-semibold mb-4">
             <Link href="/private" className="hover:text-blue-500 transition-colors duration-300">
               Nevermind, take me back to my account
