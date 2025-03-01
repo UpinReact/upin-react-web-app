@@ -7,8 +7,8 @@ import Link from 'next/link'
 import bgImg from "public/Screen Shot 2020-03-12 at 9.26.39 AM.png";
 const GetTheApp = () => {
     return (
-        <div className="flex justify-center items-center h-screen bg-[#22d0a5] p-4 sm:p-10">
-          <div className="absolute inset-0 top-20 -z-0 w-screem">
+      <div className="relative flex justify-center  bg-upinGreen p-24 h-screen w-screen">
+          <div className="absolute inset-0 top-20 -z-0 w-screen">
             <Image
               src={bgImg}
               layout="fill"
@@ -17,18 +17,18 @@ const GetTheApp = () => {
               className="opacity-10 z-0"
             />
       </div>
-          <div className="w-full sm:w-2/3 h-auto p-6 sm:p-10 border-2 border-black text-center bg-white backdrop-blur-md rounded-3xl shadow-lg">
-            <div className="flex justify-center mt-[-60px] sm:mt-[-90px] mb-10 sm:mb-20">
+          <div className="tablet:w-1/3 phone:w-full h-auto p-2 phone:p-10 border-2 border-slate-200 text-center bg-white/40 backdrop-blur-md rounded-3xl shadow-lg">
+            <div className="flex justify-center mt-[-60px] phone:mt-[-90px] mb-10 phone:mb-20">
               <Image
                 src={upin}
                 height={200}
                 width={200}
                 alt="main image of upin"
-                className="w-32 h-32 sm:w-48 sm:h-48 rounded-2xl"
+                className="w-32 h-32 phone:w-48 phone:h-48 rounded-2xl"
               />
             </div>
-            <h1 className="font-extrabold text-4xl sm:text-6xl">Upin</h1>
-            <p className="mt-4 text-xl sm:text-2xl">
+            <h1 className="font-extrabold text-4xl phone:text-6xl">Upin</h1>
+            <p className="mt-4 text-xl phone:text-2xl">
               Create. Join. Connect.
             </p>
            
@@ -42,7 +42,7 @@ const GetTheApp = () => {
                   height={60}
                   alt="get it on google"
                   width={200}
-                  className="w-40 sm:w-48"
+                  className="w-40 phone:w-48"
                 />
               </Link>
             </div>
@@ -56,7 +56,7 @@ const GetTheApp = () => {
                   alt="Download from the App Store"
                   height={200}
                   width={200}
-                  className="w-40 sm:w-48"
+                  className="w-40 phone:w-48"
                 />
               </Link>
             </div>
