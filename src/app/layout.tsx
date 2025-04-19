@@ -5,6 +5,7 @@ import Footer from "./components/Footer";
 import "./globals.css";
 import { createClient } from "utils/supabase/server";
 import { Analytics } from "@vercel/analytics/react";
+import OpenInAppBanner from "./components/OpenInApp";
 
 // const inter = Inter({ subsets: ["latin"] });
 
@@ -108,6 +109,7 @@ export default async function RootLayout({
 
       <body>
         <Header initialSession={session} />
+        <OpenInAppBanner link={'/user/${user_id}'}/>
         {children}
         <Analytics />
         {/* <Footer /> */}

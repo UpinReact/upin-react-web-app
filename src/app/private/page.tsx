@@ -77,7 +77,8 @@ export default async function PrivatePage() {
                 {data.length > 0 ? (
                   data.map(({ id, firstName, lastName }) => (
                     <Motionlist key={id} whileHover={{ scale: 1.02 }} className="bg-white/5 border border-gray-50 rounded-xl p-4 text-white/90">
-                      <p className="font-medium">{firstName} {lastName}</p>
+                      <Link href={`private/followers/${id}`} className="font-medium">
+                      {firstName} {lastName}</Link>
                     </Motionlist>
                   ))
                 ) : (
