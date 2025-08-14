@@ -1,65 +1,69 @@
-'use client';
+'use client'
 import Link from 'next/link';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
-import "mapbox-gl/dist/mapbox-gl.css"; // Ensure Mapbox styles are loaded
-import "@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css";
-
-import { createClient } from 'utils/supabase/client';
+import "mapbox-gl/dist/mapbox-gl.css";
+import  supabase  from "utils/supabase/supabase";
+import { useRouter } from 'next/navigation';
+import { getAccountData } from 'src/app/login/actions';
+import { debounce } from '@mui/material';
 
 const AddressInput = ({ onAddressSelect }: { onAddressSelect: (address: string, lat: number, lng: number) => void }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const geocoderRef = useRef<MapboxGeocoder | null>(null);
 
   useEffect(() => {
     if (containerRef.current) {
-      // Clear the container to prevent duplicates
-      containerRef.current.innerHTML = "";
+      containerRef.current.innerHTML = ""; // Clear previous instance
 
-      // Initialize the Geocoder if not already initialized
       const geocoder = new MapboxGeocoder({
-        accessToken: process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN,
+        accessToken: process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN || "",
         placeholder: "Enter an address",
+        debounce: 50,
         countries: "us",
         types: "address",
       });
 
-      geocoder.addTo(containerRef.current); // Add Geocoder to the container
-      geocoderRef.current = geocoder; // Store reference
+      geocoder.addTo(containerRef.current);
 
-      // Handle result events
       geocoder.on("result", (event) => {
-        const selectedAddress = event.result.place_name;
-        const { coordinates } = event.result.geometry;
-        const [longitude, latitude] = coordinates;
-        console.log("Selected Address:", selectedAddress);
-        console.log("Latitude:", latitude, "Longitude:", longitude);
-        onAddressSelect(selectedAddress, latitude, longitude); // Pass the selected address and coordinates to the parent
+        const selectedAddress = event.result.place_name || '';
+        const [longitude, latitude] = event.result.geometry.coordinates; // Extract coordinates
+        onAddressSelect(selectedAddress, latitude, longitude);
       });
 
-      // Handle clear events
-      geocoder.on("clear", () => {
-        console.log("Address input cleared");
-        onAddressSelect("", 0, 0); // Clear the address and coordinates
-      });
-
-      // Cleanup on unmount
-      return () => {
-        if (geocoderRef.current) {
-          geocoderRef.current.clear(); // Remove Geocoder input
-          geocoderRef.current = null; // Reset reference
-        }
-      };
+      return () => geocoder.clear(); // Cleanup
     }
   }, [onAddressSelect]);
 
-  return <div ref={containerRef} className="border rounded-md focus:ring-2 focus:ring-blue-500" />;
+  return <div ref={containerRef} className="border rounded-lg shadow-md p-5 " style={{height:'100%', width:"100%"}}/>;
 };
-
+interface data{
+  id: number;
+}
 const CreatePin = () => {
+  
   const selectedAddress = useRef<string>("");
   const selectedLatitude = useRef<number>(0);
   const selectedLongitude = useRef<number>(0);
+  const [userData, setUserData] = useState<{ id: string } | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [isPublic, setIsPublic] = useState(false);
+  const [isPrivate, setIsPrivate] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const router = useRouter();
+
+  // Fetch user data on mount
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await getAccountData();
+      setUserData({ id: data.user.id  || '' });
+
+    };
+    
+    fetchData();
+  }, []);
+ 
 
   const handleAddressSelect = (address: string, lat: number, lng: number) => {
     selectedAddress.current = address;
@@ -67,134 +71,108 @@ const CreatePin = () => {
     selectedLongitude.current = lng;
   };
 
+    
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-
-    const data = {
-      meetupname: formData.get("meetupname"),
-      description: formData.get("description"),
-      location: selectedAddress.current, // Use the selected address
-      latitude: selectedLatitude.current, // Use the selected latitude
-      longitude: selectedLongitude.current, // Use the selected longitude
-      start_date: formData.get("start_date"),
-      end_date: formData.get("end_date"),
-    };
-
-    try{
-      const supabase = createClient();
-      const { error } = await supabase.from("pins").insert([data]).single();
-
+    console.log(`Selected Address: ${selectedAddress.current}, Latitude: ${selectedLatitude.current}, Longitude: ${selectedLongitude.current}`);
+    if (!selectedAddress.current || !selectedLatitude.current || !selectedLongitude.current) {
+      alert("Please select a valid address.");
+      return;
+    }
+    else{
+      const form = new FormData(event.currentTarget);
+      const meetupname = form.get("meetupname") as string;
+      const description = form.get("description") as string;
+      const start_date = form.get("start_date") as string;
+      const end_date = form.get("end_date") as string;
+      const isPublic = form.get("isPublic") as string;
+      const isPrivate = form.get("isPrivate") as string;
+      setIsLoading(true);
+      const { data, error } = await supabase
+        .from("pins")
+        .insert([
+          {
+            user_id: userData?.id,
+            meetupname: meetupname,
+            description: description,
+            address: selectedAddress.current,
+            latitude: selectedLatitude.current,
+            longitude: selectedLongitude.current,
+            start_date: start_date,
+            end_date: end_date,
+            isPublic: isPublic,
+            isPrivate: isPrivate,
+          },
+        ]);
+      setIsLoading(false);
       if (error) {
-        console.error("Error creating pin:", error.message);
+        setError(error.message);
       } else {
-        console.log("Pin created successfully");
-        alert("Pin created successfully");
-        window.location.href = "/account"; // Redirect to the account page
+        console.log("Pin created successfully!" + data);
+        router.push("/private");
       }
-    }catch(error){
-      console.error("Error creating pin:", error.message);
     }
   };
 
   return (
-    <div>
-      <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-lg">
-        <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">Create a Pin</h1>
-        <h3 className="text-blue-500 text-center font-montserrat">
-          <Link href={"/account"}>Nevermind, take me back to my account</Link>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100">
+      <div className="max-w-lg mx-auto p-8 bg-white rounded-lg shadow-2xl">
+        <h1 className="text-3xl font-bold text-center text-upinGreen mb-6">Create a Pin</h1>
+        <h3 className="text-center text-upinGreen font-semibold mb-4">
+          <Link href="/private">Nevermind, take me back to my account</Link>
         </h3>
-        <hr className="mb-6" />
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="flex flex-col">
-            <label htmlFor="meetupname" className="text-sm font-medium text-gray-700 mb-1">
-              Meetup Name:
-            </label>
-            <input
-              type="text"
-              id="meetupname"
-              name="meetupname"
-              className="border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-          </div>
-          <div className="flex flex-col">
-            <label htmlFor="description" className="text-sm font-medium text-gray-700 mb-1">
-              Description:
-            </label>
-            <input
-              type="text"
-              id="description"
-              name="description"
-              className="border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-          </div>
-          <div className="flex flex-col">
-            <label htmlFor="location" className="text-sm font-medium text-gray-700 mb-1">
-              Location:
-            </label>
-            <AddressInput onAddressSelect={handleAddressSelect} />
-          </div>
-          <div className="flex flex-col">
-            <label htmlFor="start_date" className="text-sm font-medium text-gray-700 mb-1">
-              Start Date:
-            </label>
-            <input
-              type="datetime-local"
-              id="start_date"
-              name="start_date"
-              className="border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-          </div>
-          <div className="flex flex-col">
-            <label htmlFor="start_date" className="text-sm font-medium text-gray-700 mb-1">
-              End Date:
-            </label>
-            <input
-              type="datetime-local"
-              id="end_date"
-              name="end_date"
-              className="border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-          </div>
-          <div className="flex  justify-between">
-          <legend className="text-sm font-medium text-gray-700">
-            Is this Event Public or Private:
-          </legend>
-          
-          <div className="flex items-center gap-2">
-            <input 
-              type="checkbox" 
-              name="Public" 
-              id="public" 
-            />
-            <label htmlFor="public" className="text-sm text-gray-700">
-              Public
-            </label>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <input 
-              type="checkbox" 
-              name="Private" 
-              id="private" 
-            />
-            <label htmlFor="private" className="text-sm text-gray-700">
-              Private
-            </label>
-          </div>
-        </div>
-
-          <button
-            type="submit"
-            className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition-colors"
-          >
-            Submit
-          </button>
-        </form>
+        <form onSubmit={handleSubmit} className="space-y-10">
+        
+            <AddressInput onAddressSelect={handleAddressSelect}  />
+            <div >
+              <label>
+                Meetup Name:
+                <input type="text" name="meetupname" required className='border border-upinGreen rounded-lg' />
+              </label>
+            </div>
+            <div className='flex items-start justify-between'>
+              <label>
+                Description:
+                <textarea name="description" required className='border border-upinGreen rounded-lg' rows={5}  />
+              </label>
+            </div>
+            <div>
+              <label>
+                Start Date:
+                <input type="datetime-local" name="start_date" required className='border border-upinGreen rounded-lg p-2 m-1' />
+              </label>
+            </div>
+            <div>
+              <label>
+                End Date:
+                <input type="datetime-local" name="end_date" required className='border border-upinGreen rounded-lg p-2 m-1' />
+              </label>
+            </div>
+            <div className='flex justify-between'>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={!isPublic}
+                  onChange={() => setIsPublic(!isPublic)}
+                  className='m-2'             
+                />
+                Public
+              </label>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={isPublic}
+                  onChange={() => setIsPrivate(!isPrivate)}
+                  className='m-2'
+                />
+                Private
+              </label>
+            </div>
+            <button type="submit" disabled={isLoading}>
+              {isLoading ? "Creating..." : "Create Pin"}
+            </button>
+          </form>
       </div>
     </div>
   );

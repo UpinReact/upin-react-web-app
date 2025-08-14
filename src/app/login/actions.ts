@@ -1,111 +1,85 @@
-'use server';
-// src/services/authService.ts
-import {supabase}  from  "../../../utils/supabase/supabase";
-import { cookies } from 'next/headers'; // Only for Next.js environment
-import { revalidatePath} from 'next/cache';
-import { redirect } from "next/navigation";
+'use server'
 
-interface dataForm {
-  email: string;
-  password: string;
-}
+import { revalidatePath } from 'next/cache'
+import { redirect } from 'next/navigation'
+import { createClient } from 'utils/supabase/server'
+import  supabase  from 'utils/supabase/supabase'
 
-function validateForm({ email, password }: dataForm): string | null {
-  if (!email || !password) return 'Email and password are required.';
-  if (!/\S+@\S+\.\S+/.test(email)) return 'Invalid email format.';
-  if (password.length < 6) return 'Password must be at least 6 characters.';
-  return null;
-}
 
-export async function login(data: dataForm) {
-  const errorMessage = validateForm(data);
-  if (errorMessage) return { error: errorMessage };
-
-  try {
-    const lowerCaseEmail = data.email.toLowerCase();
-    const { data: { session }, error } = await supabase.auth.signInWithPassword({
-      email: lowerCaseEmail,
-      password: data.password,
-    });
-
-    if (error) {
-      console.error('Error:', error.message);
-      return { error: 'Invalid email or password.' };
-    }
-
-    if (!session) {
-      return { error: 'Session could not be created.' };
-    }
-    return { success: true, session };
-  } catch (error) {
-    console.error('Unexpected error during login:', error);
-    return { error: 'An unexpected error occurred.' };
+export async function login(formData: FormData) {
+  
+  const supabase = await createClient()
+  // type-casting here for convenience
+  // in practice, you should validate your inputs
+  const data = {
+    email: formData.get('email') as string,
+    password: formData.get('password') as string,
   }
+
+  const { error } = await supabase.auth.signInWithPassword(data)
+
+  if (error) {
+    return error.message;
+    
+  }
+
+  revalidatePath('/', 'layout')
+  redirect('/private')
+
 }
 
 export async function getAccountData() {
-  const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-  const lowerCaseEmail = session?.user?.email.toLowerCase();
-  if (sessionError || !session?.user) return { error: 'No session found.' };
-  try{
-  const { data: userData, error: userError } = await supabase
-    .from('userdata')
-    .select('*')
-    .eq('email', lowerCaseEmail)
-    .single();
-    if (userError) {
-      console.error('Error fetching user data:', userError.message);
-      return { error: 'Failed to fetch user data.' };
+  const supabase = await createClient()
+    const { data: { user }, error: sessionError } = await supabase.auth.getUser();
+    const lowerCaseEmail = user.email.toLowerCase();
+    if (sessionError || !user) return { error: 'No session found.' };
+ 
+    const { data: userData, error: userError } = await supabase
+      .from('userdata')
+      .select('*')
+      .eq('email', lowerCaseEmail)
+      .single();
+      if (userError) {
+        console.error('Error fetching user data:', userError.message);
+        return { error: 'Failed to fetch user data.' };
+      }
+      
+      return { user: userData };
     }
-    return { user: userData };
-  }catch(error){
-    console.error('Error fetching user data:', error);
-    return { error: 'Failed to fetch user data.' };
-  }
-}
-export async function signup(formData: FormData) {
-  const email = formData.get('email') as string;
-  const password = formData.get('password') as string;
+  
 
-  const errorMessage = validateForm({ email, password });
-  if (errorMessage) return { error: errorMessage };
+export async function logout() {
+  const supabase = await createClient()
+
+  await supabase.auth.signOut()
+  console.log("successfully logged out")
+
+  revalidatePath('/', 'layout')
+  redirect('/login')
+}
+
+
+export async function sendPasswordResetEmail(formData: FormData) {
+  const email = formData.get('email') as string;
+  
+  if (!email) {
+    return { success: false, message: "Please provide an email address" };
+  }
 
   try {
-    const { data: { session }, error } = await supabase.auth.signUp({
-      email,
-      password,
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/update-password`,
     });
 
     if (error) {
-      console.error('Error:', error.message);
-      return { error: 'Failed to sign up.' };
+      console.error("Password reset error:", error.message);
+      return { success: false, message: error.message };
     }
 
-    // Store session token in cookies or handle it appropriately
-    if (session?.access_token) {
-      cookies().set('auth-token', session.access_token, {
-        httpOnly: true,
-        secure: true,
-        path: '/',
-      });
-    }
-
-    revalidatePath('/');
-    redirect('/account');
-    return { success: true,session };
-  } catch (error) {
-    console.error('Unexpected error during signup:', error);
-    return { error: 'An unexpected error occurred.' };
+    return { success: true, message: "Password reset link sent to your email!" };
+  } catch (err) {
+    console.error("Unexpected error:", err);
+    return { success: false, message: "Failed to send reset email" };
   }
 }
 
-
-export async function checkLoggedIn() {
-  try {
-    const { data } = await supabase.auth.getSession();
-    return !!data.session;
-  } catch (error) {
-    console.error('Error checking login status:', error);
-    return false;
-  }
-}

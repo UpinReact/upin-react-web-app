@@ -3,3 +3,57 @@
 @tailwind utilities;  
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+html, body {
+  overflow-x: hidden;
+}
+
+/* Custom styles for the AG-Grid */
+.ag-theme-modern {
+    --ag-border-color: #060606; /* Soft border color */
+    --ag-header-background-color: #22d0a5; /* Gradient purple header */
+    --ag-row-hover-color: #acadae; /* Soft hover effect */
+  
+
+    --ag-header-font-weight: 200; /* Header weight for emphasis */
+    --ag-row-font-weight: 500; /* Regular row font */
+    --ag-row-striping-color: #fafafa; /* Subtle row striping */
+    
+    border-radius: 12px; /* Rounded corners for the grid */
+    box-shadow: 0 6px 30px rgba(0, 0, 0, 0.1); /* Soft shadow for a clean look */
+  }
+  /* Hover effect for rows to make it pop */
+  .ag-theme-modern .ag-row:hover {
+    background-color: #929292; /* Light background on hover */
+    transition: background-color 0.3s ease-in-out;
+  }
+  
+  /* Header customization */
+  .ag-theme-modern .ag-header-cell {
+     /* Gradient purple header */
+    color: #040404; /* White text for contrast */
+    font-size: 18px; /* Larger header font */
+     /* More padding for a comfortable header */
+    text-align: center; /* Centered header text */
+    border-radius: 10px; /* Rounded header corners */
+    font-weight: 600;
+  }
+  
+  /* Add animation to row hover for a smooth scaling effect */
+  .ag-theme-modern .ag-row:hover {
+    color: #22d0a5;
+    transform: scale(1.03);
+    transition: transform 0.3s ease-in-out;
+  }
+  
+ 
+  
+  /* Make the grid container responsive */
+  @media (max-width: 768px) {
+    .ag-grid-wrapper {
+      padding: 1rem;
+    }
+  
+    
+  }
+  

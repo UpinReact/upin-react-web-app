@@ -1,257 +1,290 @@
 "use client";
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { signup } from "./actions";
 import Link from "next/link";
-import Image from "next/image";
-import signUpPic from "../../../public/pic.jpg";
+import Image from "next/legacy/image";
 import { motion } from "framer-motion";
-import Lottie from "lottie-react";
-import arrowDown from "../../../public/arrowDown.json";
+import bgImg from "public/Screen Shot 2020-03-12 at 9.26.39 AM.png";
+import supabase from "utils/supabase/supabase";
 
 export default function SignUpPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [gender, setGender] = useState("");
-  const [birthdate, setBirthdate] = useState("");
-  const [bio, setBio] = useState("");
-  const [interests, setInterests] = useState<string[]>([]);
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+    confirmPassword: "",
+    firstName: "",
+    lastName: "",
+    phone: "",
+    gender: "",
+    birthdate: "",
+    bio: "",
+    interests: [] as string[],
+  });
   const [errorMessage, setErrorMessage] = useState("");
+  const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false); // State to toggle confirm password visibility
   const router = useRouter();
+  
 
-  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
-    setInterests(prev =>
-      event.target.checked ? [...prev, value] : prev.filter(item => item !== value)
-    );
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setFormData((prev) => ({
+      ...prev,
+      interests: e.target.checked
+        ? [...prev.interests, value]
+        : prev.interests.filter((interest) => interest !== value),
+    }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-  
-    // Validate passwords
+    const { email, password, confirmPassword, ...rest } = formData;
+
     if (password !== confirmPassword) {
       setErrorMessage("Passwords do not match");
       return;
     }
-  
-    // Create a FormData object
-    const formData = new FormData();
-    formData.append("email", email);
-    formData.append("password", password);
-    formData.append("firstName", firstName);
-    formData.append("lastName", lastName);
-    formData.append("phone", phone);
-    formData.append("gender", gender);
-    formData.append("birthdate", birthdate);
-    formData.append("bio", bio);
-    formData.append("interests", interests.join(","));
-  
+
+    const submissionData = new FormData();
+    Object.entries(formData).forEach(([key, value]) => {
+      if (key === "interests" && Array.isArray(value)) {
+        value.forEach((interest: string) => submissionData.append("interests", interest));
+      } else {
+        submissionData.append(key, String(value));
+      }
+    });
+
     try {
-      const result = await signup(formData);
-  
+      const result = await signup(submissionData);
       if (result.success) {
-        router.push("/account");
+        
+        router.push("/private");
       } else {
         setErrorMessage(result.message || "An error occurred");
       }
-    } catch (error) {
+    } catch {
       setErrorMessage("Unexpected error occurred");
-      console.error(error);
     }
   };
-  
+
+  const clearInput = (field: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: "",
+    }));
+  };
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center">
-      {/* Background Image */}
-      <Image
-        src={signUpPic}
-        alt="Background picture"
-        fill
-        style={{ objectFit: "cover", objectPosition: "center" }}
-        className="absolute inset-0 z-[-1]"
+    <div className="relative flex items-center justify-center w-screen bg-upinGreen -z-0">
+      <Image 
+        src={bgImg} 
+        alt="Background" 
+        layout="fill" 
+        className="absolute opacity-10 object-cover -z-10" 
       />
-
-      {/* Lottie Animations */}
-      <Lottie
-        animationData={arrowDown}
-        style={{ width: 300, height: 500 }}
-        className="absolute top-1/4 left-10 transform -translate-y-1/2"
-      />
-      <Lottie
-        animationData={arrowDown}
-        style={{ width: 300, height: 500 }}
-        className="absolute top-1/4 right-10 transform -translate-y-1/2"
-      />
-
-      {/* Sign Up Form Container */}
-      <div className="relative w-auto h-auto my-20 bg-upinGreen rounded-3xl p-7 shadow-2xl shadow-slate-400 backdrop-filter backdrop-blur-3xl border border-green-200 bg-opacity-20">
-        <h1 className="font-montserrat text-center mb-5 text-6xl">Sign Up</h1>
-        <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-6 w-full">
-          <label htmlFor="email" className="text-2xl">
-            Email:
-          </label>
-          <input
-            id="email"
-            name="email"
-            type="email"
-            required
-            className="rounded-2xl p-2 border border-gray-300"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-
-          <label htmlFor="password" className="text-2xl">
-            Password:
-          </label>
-          <input
-            id="password"
-            name="password"
-            type="password"
-            required
-            className="rounded-2xl p-2 border border-gray-300"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-
-          <label htmlFor="confirmPassword" className="text-2xl">
-            Confirm Password:
-          </label>
-          <input
-            type="password"
-            name="confirmPassword"
-            id="confirmPassword"
-            required
-            className="rounded-2xl p-2 border border-gray-300"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-          />
-
-          <label htmlFor="firstName" className="text-2xl">
-            First Name:
-          </label>
-          <input
-            type="text"
-            name="firstName"
-            id="firstName"
-            className="rounded-2xl p-2 border border-gray-300"
-            value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
-          />
-
-          <label htmlFor="lastName" className="text-2xl">
-            Last Name:
-          </label>
-          <input
-            type="text"
-            name="lastName"
-            id="lastName"
-            className="rounded-2xl p-2 border border-gray-300"
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
-          />
-
-          <label htmlFor="phone" className="text-2xl">
-            Phone Number:
-          </label>
-          <input
-            type="tel"
-            name="phone"
-            id="phone"
-            className="rounded-2xl p-2 border border-gray-300"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-          />
-
-          <legend className="text-2xl col-span-2">Choose your Interests:</legend>
-          <div className="grid grid-cols-2 gap-2 col-span-2">
-            {["Music", "Movies", "Gaming", "Chilling", "Literature", "Other"].map((interest) => (
-              <div key={interest}>
+      <div className="relative p-8 bg-upinGreen bg-opacity-20 border border-green-200 rounded-3xl shadow-2xl backdrop-filter backdrop-blur-3xl z-10">
+        <h1 className="mb-6 text-6xl text-center font-montserrat">Sign Up</h1>
+        <form onSubmit={handleSubmit} className="grid w-auto gap-6 grid-cols-2">
+          {["email", "password", "confirmPassword", "firstName", "lastName", "phone", "birthdate"].map((field) => (
+            <div key={field} className="relative">
+              <label htmlFor={field} className="text-2xl capitalize">
+                {field === "confirmPassword" ? "Confirm Password" : field.replace(/([A-Z])/g, " $1")}:
+              </label>
+              <div className="relative">
                 <input
-                  type="checkbox"
-                  id={interest}
-                  name="interests"
-                  value={interest}
-                  onChange={handleCheckboxChange}
+                  type={
+                    field === "password" || field === "confirmPassword"
+                      ? field === "password"
+                        ? showPassword ? "text" : "password"
+                        : showConfirmPassword ? "text" : "password"
+                      : field === "birthdate" ? "date" 
+                      : field === "phone" ? "tel" 
+                      : "text"
+                  }
+                  id={field}
+                  name={field}
+                  className="w-full p-2 border border-gray-300 rounded-2xl pr-10"
+                  value={formData[field as keyof typeof formData] || ""}
+                  onChange={handleChange}
+                  required
                 />
-                <label htmlFor={interest} className="px-2">{interest}</label>
+                {(field === "password" || field === "confirmPassword") && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (field === "password") setShowPassword(!showPassword);
+                      if (field === "confirmPassword") setShowConfirmPassword(!showConfirmPassword);
+                    }}
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500"
+                  >
+                    {field === "password" ? (
+                      showPassword ? (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-6 w-6"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                          />
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                          />
+                        </svg>
+                      ) : (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-6 w-6"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"
+                          />
+                        </svg>
+                      )
+                    ) : showConfirmPassword ? (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-6 w-6"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                        />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                        />
+                      </svg>
+                    ) : (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-6 w-6"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"
+                        />
+                      </svg>
+                    )}
+                  </button>
+                )}
+                {formData[field as keyof typeof formData] && field !== "password" && field !== "confirmPassword" && (
+                  <button
+                    type="button"
+                    onClick={() => clearInput(field)}
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500"
+                  >
+                    X
+                  </button>
+                )}
               </div>
-            ))}
+            </div>
+          ))}
+          
+          <fieldset className="col-span-2">
+            <legend className="mb-2 text-2xl">Choose your Interests:</legend>
+            <div className="grid grid-cols-2 gap-2">
+              {["Music", "Movies", "Gaming", "Chilling", "Literature", "Other"].map((interest) => (
+                <label key={interest} className="flex items-center">
+                  <input
+                    type="checkbox"
+                    name="interests"
+                    value={interest}
+                    checked={formData.interests.includes(interest)}
+                    onChange={handleCheckboxChange}
+                  />
+                  <span className="ml-2">{interest}</span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+
+          <div className="col-span-2">
+            <label htmlFor="gender" className="text-2xl">
+              Select Gender:
+            </label>
+            <select
+              id="gender"
+              name="gender"
+              className="w-full p-2 border border-gray-300 rounded-2xl"
+              value={formData.gender}
+              onChange={handleChange}
+              required
+            >
+              <option value="" disabled>
+                Select your gender
+              </option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="prefer not to say">Prefer not to say</option>
+            </select>
           </div>
 
-          <label htmlFor="gender" className="text-2xl col-span-2">
-            Select Gender:
-          </label>
-          <select
-            id="gender"
-            name="gender"
-            className="rounded-2xl p-2 border border-gray-300 col-span-2"
-            value={gender}
-            onChange={(e) => setGender(e.target.value)}
-          >
-            <option value="" disabled>Select your gender</option>
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-            <option value="prefer not to say">Prefer not to say</option>
-          </select>
-
-          <label htmlFor="birthdate" className="text-2xl">
-            Birthdate:
-          </label>
-          <input
-            type="date"
-            name="birthdate"
-            id="birthdate"
-            className="rounded-2xl p-2 border border-gray-300"
-            value={birthdate}
-            onChange={(e) => setBirthdate(e.target.value)}
-          />
-
-          <div className="flex col-span-2">
-            <label htmlFor="bio" className="text-2xl col-span-2 mr-20">
+          <div className="flex flex-col col-span-2">
+            <label htmlFor="bio" className="mb-2 text-2xl">
               Add a bio:
             </label>
             <textarea
-              name="bio"
               id="bio"
-              cols={60}
-              rows={2}
+              name="bio"
+              rows={3}
+              className="p-2 border border-gray-300 rounded-2xl"
+              value={formData.bio}
+              onChange={handleChange}
               placeholder="Just something small..."
-              className="rounded-2xl p-2 border border-gray-300"
-              value={bio}
-              onChange={(e) => setBio(e.target.value)}
             />
           </div>
 
-          {errorMessage && (
-            <p className="text-red-500 font-extrabold border bg-white text-center col-span-2">{errorMessage}</p>
-          )}
+          {errorMessage && <p className="col-span-2 p-2 text-center text-red-500 bg-white rounded-xl">{errorMessage}</p>}
 
           <button
             type="submit"
-            className="bg-black text-white w-full py-2 rounded-2xl col-span-2 hover:bg-slate-900 backdrop-filter backdrop-blur-xl border border-green-400 bg-opacity-50"
+            className="col-span-2 py-2 font-bold text-white bg-black rounded-2xl hover:bg-slate-900 backdrop-blur-xl"
           >
             Sign up
           </button>
         </form>
-        <motion.button
-          whileHover={{ scale: 1.2 }}
-          className="rounded-2xl m-2 hover:text-black"
-        >
-          <Link
-            href={"/login"}
-            className="block text-center mt-4 p-5 underline"
-          >
+        <motion.div whileHover={{ scale: 1.1 }} className="mt-4">
+          <Link href="/login" className="block text-center underline">
             Already have an account? Login
           </Link>
-        </motion.button>
+        </motion.div>
       </div>
     </div>
   );
 }
+
 

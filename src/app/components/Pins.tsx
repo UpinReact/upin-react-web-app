@@ -19,8 +19,11 @@ export async function fetchPins(): Promise<Pin[]> {
   try {
     const { data, error }: SupabaseResponse = await supabase
       .from('pins')
-      .select('*');
+      .select('*')
+      .lte("end_date", new Date().toISOString())
+      .limit(100);
 
+      console.log('Fetched pins:', data); // Debugging log
     if (error) {
       throw new Error(`Error fetching pins: ${error.message}`);
     }

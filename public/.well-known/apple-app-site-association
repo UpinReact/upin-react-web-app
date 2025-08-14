@@ -1,0 +1,19 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "9TTV7G6YM8.com.aio.upin",
+        "paths": [
+          "/home",
+          "/profile",
+          "/settings",
+          "/pin/*",
+          "/community/*",
+          "/notifications",
+          "*"
+        ]
+      }
+    ]
+  }
+}

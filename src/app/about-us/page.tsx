@@ -2,7 +2,7 @@ import React from 'react'
 import SouthOutlinedIcon from '@mui/icons-material/SouthOutlined';
 import type { Metadata } from "next";
 import bgImg from "@/../public/Screen Shot 2020-03-12 at 9.26.39 AM.png"
-import Image from 'next/image';
+import Image from "next/legacy/image";
 import Aboutus from './Aboutus';
 
 
@@ -13,14 +13,14 @@ export const metadata: Metadata = {
 
 const aboutUs = () => {
   return (
-    <div className='relative w-full min-h-screen'>
+    <div className='relative w-full min-h-screen bg-upinGreen'>
        
       <Image 
         src={bgImg}
         alt='Image of background'
         layout='fill'
         objectFit='cover'
-        className=' mix-blend-overlay opacity-75'
+        className=' mix-blend-overlay opacity-20'
       />
       <div className='relative z-10 flex flex-col items-center text-black'>
         
