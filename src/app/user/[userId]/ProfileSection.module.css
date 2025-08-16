@@ -1,0 +1,372 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: #f0f2f5;
+}
+
+.loadingText {
+  color: #333;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+/* Cover Photo */
+.coverCard {
+  margin-bottom: 16px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: 12px;
+}
+
+/* Profile Info Card */
+.profileInfoCard {
+  margin-top: -100px;
+  margin-bottom: 24px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.profileContent {
+  padding: 100px 24px 24px;
+  position: relative;
+}
+
+.avatar {
+  position: absolute;
+  top: -75px;
+  left: 0;
+  border: 4px solid white;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.profileActions {
+  position: absolute;
+  top: -75px;
+  right: 0;
+}
+
+.editButton, .followButton, .unfollowButton {
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+.followButton {
+  background: #1877f2;
+  border-color: #1877f2;
+}
+
+.followButton:hover {
+  background: #166fe5;
+  border-color: #166fe5;
+}
+
+.unfollowButton {
+  background: #42b883;
+  border-color: #42b883;
+}
+
+.unfollowButton:hover {
+  background: #369870;
+  border-color: #369870;
+}
+
+.profileInfo {
+  margin-top: 16px;
+}
+
+.userName {
+  margin: 0 0 8px 0;
+  color: #1c1e21;
+}
+
+.bio {
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 16px;
+}
+
+.connectionStats {
+  margin-bottom: 16px;
+}
+
+/* Main Content */
+.mainContent {
+  margin-top: 24px;
+}
+
+/* Interests Section */
+.interestsCard {
+  margin-bottom: 24px;
+  border-radius: 12px;
+}
+
+.interestsContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.interestRow {
+  display: flex;
+  justify-content: flex-start;
+  width: 100%;
+  margin-bottom: 12px;
+  gap: 12px;
+}
+
+.interestTag {
+  display: flex;
+  align-items: center;
+  border-radius: 25px;
+  padding: 12px 20px;
+  flex: 1;
+  max-width: calc(50% - 6px);
+  justify-content: center;
+  font-weight: 600;
+  font-size: 16px;
+  color: white;
+  transition: transform 0.2s ease;
+  border: none;
+}
+
+.interestTag:hover {
+  transform: translateY(-1px);
+}
+
+.rankedInterestTag {
+  background-color: #fdd835;
+  gap: 8px;
+}
+
+.regularInterestTag {
+  background-color: #22DFA7;
+}
+
+.rankedInterestNumContainer {
+  width: 24px;
+  height: 24px;
+  border-radius: 12px;
+  background-color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.rankedInterestText {
+  color: #dba32a;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.interestText {
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.noInterests {
+  font-style: italic;
+  text-align: center;
+  padding: 2rem;
+}
+
+/* Info Card */
+.infoCard {
+  margin-bottom: 24px;
+  border-radius: 12px;
+}
+
+.infoItem {
+  text-align: center;
+  padding: 16px;
+  background: #fafafa;
+  border-radius: 8px;
+}
+
+.infoIcon {
+  font-size: 20px;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+.infoLabel {
+  font-size: 12px;
+  text-transform: uppercase;
+  display: block;
+}
+
+.infoValue {
+  font-weight: 600;
+  font-size: 16px;
+  color: #1c1e21;
+  margin-top: 4px;
+}
+
+/* Badges Card */
+.badgesCard {
+  border-radius: 12px;
+}
+
+.helpIcon {
+  color: #52c41a;
+}
+
+.noBadges {
+  font-style: italic;
+  text-align: center;
+  display: block;
+  padding: 2rem 1rem;
+}
+
+/* Modal Styles */
+.editModal .ant-modal-content {
+  border-radius: 12px;
+}
+
+.form {
+  margin-top: 24px;
+}
+
+.input {
+  border-radius: 8px;
+  border: 2px solid #e0e0e0;
+  transition: border-color 0.2s ease;
+}
+
+.input:focus {
+  border-color: #2ecc71;
+  box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.1);
+}
+
+.cancelButton {
+  background: #95a5a6;
+  border-color: #95a5a6;
+  color: white;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+.cancelButton:hover {
+  background: #7f8c8d;
+  border-color: #7f8c8d;
+}
+
+.saveButton {
+  background: #2ecc71;
+  border-color: #2ecc71;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+.saveButton:hover {
+  background: #27ae60;
+  border-color: #27ae60;
+}
+
+/* App Modal */
+.appModal .ant-modal-content {
+  border-radius: 12px;
+}
+
+.appModalContent {
+  text-align: center;
+  padding: 20px 0;
+}
+
+.popupText {
+  font-size: 16px;
+  margin-bottom: 24px;
+}
+
+.appLinks {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.popupButton {
+  background: #3498db;
+  border-color: #3498db;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+.popupButton:hover {
+  background: #2980b9;
+  border-color: #2980b9;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    padding: 0 8px;
+  }
+  
+  .profileContent {
+    padding: 80px 16px 16px;
+  }
+  
+  .avatar {
+    width: 120px !important;
+    height: 120px !important;
+    top: -60px;
+  }
+  
+  .profileActions {
+    top: -60px;
+    right: 16px;
+  }
+  
+  .userName {
+    font-size: 1.5rem;
+  }
+  
+  .interestRow {
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .interestTag {
+    min-width: 80%;
+    max-width: 80%;
+  }
+  
+  .appLinks {
+    flex-direction: column;
+    gap: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .profileContent {
+    padding: 70px 12px 12px;
+  }
+  
+  .avatar {
+    width: 100px !important;
+    height: 100px !important;
+    top: -50px;
+  }
+  
+  .profileActions {
+    top: -50px;
+    right: 12px;
+  }
+  
+  .interestTag {
+    min-width: 90%;
+    max-width: 90%;
+  }
+}
