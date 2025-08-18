@@ -53,8 +53,8 @@
   right: 0;
 }
 
-.editButton, .followButton, .unfollowButton {
-  border-radius: 6px;
+.editButton, .followButton, .followingButton {
+  border-radius: 1rem;
   font-weight: 600;
 }
 
@@ -68,12 +68,13 @@
   border-color: #166fe5;
 }
 
-.unfollowButton {
-  background: #42b883;
-  border-color: #42b883;
+.followingButton {
+  background: #22DFA7;
+  border-color: white;
+  color: white;
 }
 
-.unfollowButton:hover {
+.followingButton:hover {
   background: #369870;
   border-color: #369870;
 }
