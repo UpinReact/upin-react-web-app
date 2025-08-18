@@ -3,24 +3,26 @@
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-
 export async function createClient() {
-  // Ensure cookies() is inside a request scope (no await here, it's resolved automatically)
-  const cookieStore = cookies()
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+  if (!supabaseUrl || !supabaseAnonKey) {
+    throw new Error('Missing Supabase environment variables')
+  }
+
+  const cookieStore = await cookies()
 
   return createServerClient(supabaseUrl, supabaseAnonKey, {
     cookies: {
-      async getAll() {
-        const resolvedCookieStore = await cookieStore;
-        return resolvedCookieStore.getAll(); // Correct usage
+      getAll() {
+        return cookieStore.getAll()
       },
-      async setAll(newCookies) {
+      setAll(cookiesToSet) {
         try {
-          for (const { name, value, options } of newCookies) {
-            (await cookieStore).set(name, value, { path: '/', httpOnly: true, ...options })
-          }
+          cookiesToSet.forEach(({ name, value, options }) =>
+            cookieStore.set(name, value, { path: '/', httpOnly: true, ...options })
+          )
         } catch (error) {
           console.error('Error setting cookies:', error)
         }
