@@ -1,0 +1,169 @@
+/* Container */
+.page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px 20px 80px;
+}
+
+/* Responsive layout: sidebar card + room for future content */
+.layout {
+  display: grid;
+  grid-template-columns: 420px 1fr;
+  gap: 28px;
+}
+@media (max-width: 1024px) {
+  .layout { grid-template-columns: 1fr; }
+}
+
+/* Card */
+.card {
+  background: #fff;
+  border: 1px solid #e8ecea;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+}
+
+/* Top strip — subtle, not a giant banner */
+.topStrip {
+  background: #13c191;
+  color: #fff;
+  border-radius: 12px;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Name + avatar */
+.identity {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 16px;
+  align-items: center;
+  margin: 16px 0 8px;
+}
+.avatar {
+  width: 96px;
+  height: 96px;
+  border-radius: 999px;
+  object-fit: cover;
+  border: 3px solid #fff;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+.nameBlock h1 {
+  font-family: "Montserrat", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-size: clamp(22px, 3.2vw, 34px);
+  font-weight: 800;
+  margin: 0 0 2px;
+  color: #2b2b2b;
+}
+.nameBlock .subtle {
+  color: #6e6e6e;
+  font-size: 14px;
+}
+
+/* Stats row — desktop friendly spacing */
+.stats {
+  display: flex;
+  gap: 28px;
+  padding: 10px 0 4px;
+}
+.stat h3 {
+  margin: 0;
+  font-weight: 800;
+  font-size: 22px;
+  color: #2b2b2b;
+  line-height: 1.1;
+}
+.stat small {
+  color: #747b78;
+}
+
+/* Section headers */
+.sectionTitle {
+  margin: 18px 0 10px;
+  font-weight: 800;
+  color: #2b2b2b;
+  font-size: 18px;
+}
+
+/* Chips — flatter, tighter for web */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 12px;
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-weight: 700;
+  border: 1px solid #e9ecea;
+}
+.num {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+}
+.chipPrimary { background: #ffd348; color: #2b2b2b; }
+.chipPrimary .num { background: #fff; }
+.chipSecondary { background: #13c191; color: #fff; }
+.chipSecondary .num { background: #fff; color: #2b2b2b; }
+
+/* Info grid */
+.infoGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 8px;
+}
+@media (max-width: 520px) {
+  .infoGrid { grid-template-columns: 1fr; }
+}
+.infoBlock {
+  background: #f8faf9;
+  border: 1px solid #e9ecea;
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+.infoLabel { font-weight: 700; color: #2b2b2b; margin-bottom: 2px; }
+.infoValue { color: #565e5a; }
+
+/* Actions */
+.actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+.btn {
+  flex: 1;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.primary { background: #13c191; color: #fff; }
+.danger { background: #e54949; color: #fff; }
+
+/* Modal (reuse your logic, style here) */
+.modalBackdrop {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: grid; place-items: center;
+  z-index: 50;
+}
+.modalCard {
+  background: #fff;
+  width: 100%; max-width: 560px;
+  border-radius: 14px;
+  padding: 18px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+}
