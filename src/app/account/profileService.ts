@@ -11,6 +11,7 @@ interface Profile {
   interests: string;
   following: UserProfile[];
   followers: UserProfile[];
+  bio?: string
   community: { id: number; community_name: string }[];
 }
 
@@ -19,8 +20,9 @@ interface UserProfile {
   firstName: string;
   lastName: string;
   email: string;
-  birthDate: string;
-  interests: string;
+  birthDate?: string;
+  interests?: string;
+  bio: string
 }
 
 interface ProfileData extends UserProfile {
