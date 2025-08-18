@@ -3,11 +3,27 @@
 @tailwind utilities;  
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+@import 'antd/dist/reset.css';
 
 html, body {
   overflow-x: hidden;
 }
 
+/* CSS Variables - Define your color palette */
+:root {
+  --secondary-color: #0FBC71;
+  --white: #fff;
+  --apple-blue: #007AFF;
+  --main-color: #22DFA7;
+  --light-green: #ebfdf7;
+  --light-red: #ffeae9;
+  --dark-red: #9b160d;
+  --yellow: #eec229;
+  --ranked-color: #dba32a;
+  --red-pin: #f86f63;
+  --orange: #e89b46;
+
+}
 /* Custom styles for the AG-Grid */
 .ag-theme-modern {
     --ag-border-color: #060606; /* Soft border color */
