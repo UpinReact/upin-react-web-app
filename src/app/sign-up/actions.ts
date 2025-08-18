@@ -1,7 +1,11 @@
 'use server';
-import supabase  from "utils/supabase/supabase";
+import { createClient } from "utils/supabase/server"; // ✅ Change this
+
 
 export async function signup(formData: FormData) {
+    const supabase = await createClient(); // ✅ Add this line
+
+    
   const data = {
     email: formData.get("email") as string,
     firstName: formData.get("firstName") as string,
