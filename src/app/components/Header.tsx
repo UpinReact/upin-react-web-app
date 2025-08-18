@@ -1,171 +1,293 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import dynamic from "next/dynamic";
-import { motion } from "framer-motion";
-import { useRouter } from "next/navigation";
-import supabase from "utils/supabase/supabase";
-import { logout } from "../login/actions";
-import locationLottie from "../../../public/locationLottie.json";
+import { useEffect, useState, useRef } from "react";
+import { logout } from "@/app/login/actions";
+import HeaderLottie from "./HeaderLottie";
+import { createClient } from "utils/supabase/client";
+import {
+  Layout,
+  Button,
+  Space,
+  Typography,
+  Dropdown,
+  Avatar,
+  Badge,
+  Menu,
+} from "antd";
+import {
+  UserOutlined,
+  LogoutOutlined,
+  SettingOutlined,
+  BellOutlined,
+  DownloadOutlined,
+} from "@ant-design/icons";
 
-const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
+const { Header: AntHeader } = Layout;
+const { Text } = Typography;
 
-// ---------- DEBUG LOGGER ----------
-const HLOG = (...args: any[]) =>
-  console.log(`[Header:${new Date().toISOString()}]`, ...args);
-// ----------------------------------
-
-interface HeaderProps {
-  initialSession?: any;
+interface UserData {
+  id: string;
+  firstName: string;
+  profilePhotoURL?: string;
 }
 
-const Header = ({ initialSession }: HeaderProps) => {
-  const router = useRouter();
-
-  const hasInitial = initialSession != null;
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(!!initialSession);
-  const [isLoading, setIsLoading] = useState<boolean>(!hasInitial);
-
-  HLOG("mount-start", { hasInitial, initialSessionUser: initialSession?.user?.id ?? null });
+export default function Header() {
+  const [user, setUser] = useState<any>(null);
+  const [userData, setUserData] = useState<UserData | null>(null);
+  const [loading, setLoading] = useState(true);
+  
+  // Use a ref instead of document.getElementById
+  const logoutButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    let isMounted = true;
+    const supabase = createClient();
 
-    // 1) Prime state with real client session on first paint
-    const prime = async () => {
-      HLOG("prime:getSession:start");
-      const { data, error } = await supabase.auth.getSession();
-      HLOG("prime:getSession:result", {
-        error: error?.message ?? null,
-        hasSession: !!data?.session,
-        userId: data?.session?.user?.id ?? null,
-      });
-      if (!isMounted) return;
-      setIsLoggedIn(!!data?.session);
-      setIsLoading(false);
+    // Check current session and force refresh to sync with server
+    const checkAuth = async () => {
+      // Always refresh session on mount to sync client with server
+      const { data: refreshData } = await supabase.auth.refreshSession();
+      const session = refreshData.session;
+      
+      setUser(session?.user || null);
+      
+      if (session?.user?.email) {
+        // Fetch user data
+        const { data } = await supabase
+          .from("userdata")
+          .select("id, firstName, profilePhotoURL")
+          .eq("email", session.user.email.toLowerCase())
+          .single();
+        setUserData(data);
+      } else {
+        setUserData(null);
+      }
+      
+      setLoading(false);
     };
-    prime();
 
-    // 2) Subscribe to auth changes
-    const { data: sub } = supabase.auth.onAuthStateChange((event, newSession) => {
-      HLOG("onAuthStateChange", {
-        event,
-        hasSession: !!newSession,
-        userId: newSession?.user?.id ?? null,
-      });
+    checkAuth();
 
-      if (!isMounted) return;
-      setIsLoggedIn(!!newSession);
-      setIsLoading(false);
-
-      // 3) Revalidate server components so cookies are re-read
-      if (
-        event === "SIGNED_IN" ||
-        event === "SIGNED_OUT" ||
-        event === "TOKEN_REFRESHED" ||
-        event === "USER_UPDATED"
-      ) {
-        HLOG("router.refresh()", { event });
-        router.refresh();
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setUser(session?.user || null);
+      
+      if (session?.user?.email) {
+        // Fetch user data on login
+        supabase
+          .from("userdata")
+          .select("id, firstName, profilePhotoURL")
+          .eq("email", session.user.email.toLowerCase())
+          .single()
+          .then(({ data }) => setUserData(data));
+      } else {
+        setUserData(null);
       }
     });
 
-    return () => {
-      isMounted = false;
-      sub?.subscription?.unsubscribe();
-      HLOG("unmounted:listener-cleaned");
-    };
-  }, [router]);
+    return () => subscription.unsubscribe();
+  }, []);
 
-  // Extra debug render log
-  HLOG("render", { isLoading, isLoggedIn });
+  const handleLogout = () => {
+    logoutButtonRef.current?.click();
+  };
 
-  if (isLoading) {
-    return (
-      <div className="bg-gradient-to-b from-green-900 to-upinGreen text-white w-full p-5 flex justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500" />
-      </div>
-    );
-  }
+  const userMenuItems = [
+    {
+      key: "profile",
+      icon: <UserOutlined />,
+      label: userData?.id ? (
+        <Link href={`/user/${userData.id}`}>My Profile</Link>
+      ) : (
+        <span>My Profile</span>
+      ),
+      disabled: !userData?.id,
+    },
+    {
+      key: "pins",
+      icon: <SettingOutlined />,
+      label: <Link href="/mypins">My Pins</Link>,
+    },
+    { type: "divider" as const },
+    {
+      key: "logout",
+      icon: <LogoutOutlined />,
+      label: "Sign Out",
+      danger: true,
+      onClick: handleLogout,
+    },
+  ];
 
   return (
-    <nav className="bg-gradient-to-b from-green-900 to-upinGreen text-white w-full p-5 flex flex-wrap items-center justify-between shadow-md z-50">
-      <div className="flex items-center space-x-3">
-        <div className="w-16 h-16">
-          <Lottie animationData={locationLottie} style={{ width: "100%", height: "100%" }} />
-        </div>
-        <div className="text-center">
-          <h1 className="text-3xl md:text-4xl font-montserrat font-bold">
-            <Link href="/">Upin</Link>
-          </h1>
-          <p className="text-sm md:text-base font-light">Create. Join. Connect.</p>
+    <AntHeader
+      style={{
+        background: "linear-gradient(135deg, #064e3b 0%, #059669 50%, #10b981 100%)",
+        padding: "0 24px",
+        height: "80px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        position: "sticky",
+        top: 0,
+        zIndex: 1000,
+        boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
+        borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
+      }}
+    >
+      {/* Left - Logo */}
+      <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+        <HeaderLottie className="w-12 h-12" />
+        <div>
+          <Link href="/" style={{ textDecoration: "none" }}>
+            <Text
+              style={{
+                fontSize: "28px",
+                fontWeight: "bold",
+                color: "white",
+                lineHeight: 1,
+                display: "block",
+              }}
+            >
+              Upin
+            </Text>
+          </Link>
+          <Text
+            style={{
+              fontSize: "12px",
+              color: "rgba(255, 255, 255, 0.8)",
+              fontWeight: 500,
+            }}
+          >
+            Create. Join. Connect.
+          </Text>
         </div>
       </div>
 
-      <div className="flex flex-wrap justify-center gap-4 mt-3 md:mt-0">
-        <ul className="flex space-x-4 items-center">
-          <li className="hover:text-yellow-300 text-lg font-montserrat">
-            <Link href="/about-us">About</Link>
-          </li>
-          <li className="hover:text-yellow-300 text-lg font-montserrat">
-            <Link href="/team">Team</Link>
-          </li>
-        </ul>
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          className="bg-upinComplimentaryColor text-white px-5 py-2 rounded-full font-semibold shadow-lg hover:shadow-xl hover:bg-blue-700"
-        >
-          <Link href="/get-the-app">Get the App</Link>
-        </motion.button>
+      {/* Center - Nav */}
+      <div style={{ display: "flex", alignItems: "center", gap: "24px" }}>
+        <Link href="/about-us">
+          <Button
+            type="text"
+            style={{ color: "white", fontWeight: 500, height: "40px", borderRadius: "8px" }}
+            className="hover:bg-white/10"
+          >
+            About
+          </Button>
+        </Link>
+        <Link href="/team">
+          <Button
+            type="text"
+            style={{ color: "white", fontWeight: 500, height: "40px", borderRadius: "8px" }}
+            className="hover:bg-white/10"
+          >
+            Team
+          </Button>
+        </Link>
+        <Link href="/get-the-app">
+          <Button
+            type="primary"
+            icon={<DownloadOutlined />}
+            style={{
+              background: "linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)",
+              border: "none",
+              borderRadius: "12px",
+              height: "40px",
+              fontWeight: 600,
+              boxShadow: "0 4px 12px rgba(59, 130, 246, 0.3)",
+            }}
+            className="hover:shadow-lg transition-all duration-200"
+          >
+            Get the App
+          </Button>
+        </Link>
       </div>
 
-      <div className="flex items-center gap-4 mt-3 md:mt-0">
-        {isLoggedIn ? (
-          <div className="flex space-x-4">
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              className="text-white bg-upinBlue hover:bg-blue-600 px-4 py-2 rounded-full shadow-md"
-            >
-              <Link href="/private">Go to account</Link>
-            </motion.button>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              className="text-white bg-upinBlue hover:bg-blue-600 px-4 py-2 rounded-full shadow-md"
-            >
-              <Link href="/private/check-pins">Go to my Pins</Link>
-            </motion.button>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              className="text-white bg-red-600 hover:bg-red-700 px-4 py-2 rounded-full shadow-md"
-             onClick={async () => {
-  HLOG('logout:clicked');
-  const { error } = await supabase.auth.signOut(); // client: clears localStorage + fires SIGNED_OUT
-  HLOG('logout:client-signOut:done', { err: error?.message ?? null });
+      {/* Right - User Actions */}
+      <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+        {loading ? (
+          <Button loading type="text" style={{ color: "white" }}>
+            Loading
+          </Button>
+        ) : user ? (
+          <Space size="large">
+            <Badge count={0} showZero={false}>
+              <Button
+                aria-label="Notifications"
+                type="text"
+                icon={<BellOutlined />}
+                style={{
+                  color: "white",
+                  fontSize: "18px",
+                  width: "40px",
+                  height: "40px",
+                  borderRadius: "10px",
+                }}
+                className="hover:bg-white/10"
+              />
+            </Badge>
 
-  setIsLoggedIn(false); // immediate UI
-  router.refresh();     // re-read SSR bits
-  await logout();       // server: clears httpOnly cookies + redirect('/login')
-}}
-
-
-            >
-              Sign Out
-            </motion.button>
-          </div>
+            <Dropdown menu={{ items: userMenuItems }} placement="bottomRight" trigger={["click"]} arrow>
+              <Button
+                type="text"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  height: "40px",
+                  padding: "0 12px",
+                  borderRadius: "10px",
+                  color: "white",
+                }}
+                className="hover:bg-white/10"
+              >
+                <Avatar
+                  size={32}
+                  src={userData?.profilePhotoURL || undefined}
+                  icon={<UserOutlined />}
+                  style={{ border: "2px solid white", boxShadow: "0 2px 8px rgba(0,0,0,0.1)" }}
+                />
+                <Text style={{ color: "white", fontWeight: 500 }}>
+                  {userData?.firstName || "Account"}
+                </Text>
+              </Button>
+            </Dropdown>
+          </Space>
         ) : (
-          <ul className="flex space-x-4">
-            <li className="hover:text-yellow-300">
-              <Link href="/login">Log In</Link>
-            </li>
-            <li className="hover:text-yellow-300">
-              <Link href="/sign-up">Sign Up</Link>
-            </li>
-          </ul>
+          <Space>
+            <Link href="/login">
+              <Button
+                type="text"
+                style={{ color: "white", fontWeight: 500, height: "40px", borderRadius: "8px" }}
+                className="hover:bg-white/10"
+              >
+                Log In
+              </Button>
+            </Link>
+            <Link href="/sign-up">
+              <Button
+                type="primary"
+                style={{
+                  background: "rgba(255, 255, 255, 0.15)",
+                  borderColor: "rgba(255, 255, 255, 0.3)",
+                  color: "white",
+                  fontWeight: 600,
+                  height: "40px",
+                  borderRadius: "8px",
+                  backdropFilter: "blur(10px)",
+                }}
+                className="hover:bg-white/20 transition-all duration-200"
+              >
+                Sign Up
+              </Button>
+            </Link>
+          </Space>
         )}
       </div>
-    </nav>
-  );
-};
 
-export default Header;
+      {/* Hidden logout form */}
+      <form action={logout} style={{ display: "none" }} id="logout-form">
+        <button type="submit" ref={logoutButtonRef} />
+      </form>
+    </AntHeader>
+  );
+}
