@@ -18,7 +18,7 @@ export default async function getFollowing(user_id: number | null): Promise<User
   }
 
   const supabase = createClient();
-  console.log('Fetching following for user ID:', user_id);
+// console.log('Fetching following for user ID:', user_id);
 
   try {
     // Fetch followed IDs from the 'followers' table where 'follower_id' is the given user's ID

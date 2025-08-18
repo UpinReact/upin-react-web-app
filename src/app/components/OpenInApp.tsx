@@ -31,7 +31,7 @@ const OpenInAppBanner = ({link}) => {
   
   getUserId().then(userId => {
     setUser_id(userId);
-    console.log('User ID:', userId)
+  //  console.log('User ID:', userId)
   })
 
   const handleOpenApp = () => {
