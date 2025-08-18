@@ -1,0 +1,220 @@
+/* aboutus.module.css */
+
+.container {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #10b981, #059669);
+  overflow: hidden;
+}
+
+.backgroundImage {
+  mix-blend-mode: overlay;
+  opacity: 0.15;
+  transition: opacity 0.3s ease;
+}
+
+.content {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #000;
+  padding: 0 1rem;
+  animation: fadeInUp 1s ease-out;
+}
+
+.titleSection {
+  display: flex;
+  justify-content: center;
+  padding-top: 4rem;
+  margin-bottom: 2rem;
+}
+
+.title {
+  font-family: serif;
+  font-size: 4rem;
+  margin-right: 0.75rem;
+  font-weight: 800;
+  color: #000;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  animation: slideInFromLeft 0.8s ease-out;
+}
+
+.subtitleSection {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.25rem;
+  margin-bottom: 2rem;
+  padding: 0 2rem;
+}
+
+.subtitle {
+  font-size: 1.75rem;
+  text-align: center;
+  font-family: 'Montserrat', sans-serif;
+  border: 1px solid rgba(17, 24, 39, 0.8);
+  background: rgba(17, 24, 39, 0.85);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  backdrop-filter: blur(16px);
+  color: white;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.subtitle:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.contentCard {
+  display: flex;
+  justify-content: center;
+  padding: 0 2rem;
+  margin-bottom: 2rem;
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.card {
+  background: rgba(17, 24, 39, 0.85);
+  border: 1px solid rgba(17, 24, 39, 0.8);
+  border-radius: 1rem;
+  backdrop-filter: blur(16px);
+  padding: 2rem;
+  max-width: 900px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3);
+}
+
+.cardText {
+  font-family: serif;
+  font-size: 1.5rem;
+  color: white;
+  line-height: 1.8;
+  margin: 0;
+}
+
+.cardTitle {
+  font-weight: 700;
+  color: #10b981;
+  text-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+}
+
+.underlineText {
+  text-decoration: underline;
+  color: #10b981;
+  transition: color 0.3s ease;
+}
+
+.underlineText:hover {
+  color: #34d399;
+}
+
+.iconSection {
+  display: flex;
+  justify-content: center;
+  margin: 2rem 0;
+}
+
+.icon {
+  width: 5rem !important;
+  height: 5rem !important;
+  color: rgba(17, 24, 39, 0.8);
+  animation: bounce 2s infinite;
+  transition: color 0.3s ease;
+}
+
+.icon:hover {
+  color: rgba(17, 24, 39, 1);
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes bounce {
+  0%, 20%, 53%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40%, 43% {
+    transform: translateY(-15px);
+  }
+  70% {
+    transform: translateY(-10px);
+  }
+  90% {
+    transform: translateY(-4px);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .title {
+    font-size: 3rem;
+  }
+  
+  .subtitle {
+    font-size: 1.8rem;
+    padding: 1rem;
+  }
+  
+  .cardText {
+    font-size: 1.25rem;
+  }
+  
+  .card {
+    padding: 1.5rem;
+  }
+  
+  .content {
+    padding: 0 0.5rem;
+  }
+  
+  .subtitleSection, .contentCard {
+    padding: 0 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .title {
+    font-size: 2.5rem;
+  }
+  
+  .subtitle {
+    font-size: 1.5rem;
+  }
+  
+  .cardText {
+    font-size: 1.1rem;
+  }
+  
+  .titleSection {
+    padding-top: 2rem;
+  }
+}
