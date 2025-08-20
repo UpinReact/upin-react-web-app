@@ -1,12 +1,7 @@
 // app/pin/PinActions.ts
 import axios from 'axios';
-import { createClient } from 'utils/supabase/server';
-//import { handleEndPin, fetchKeyValue } from '../../utils/config';
-//import { insertSharedPin } from './PinFunctions';
-//import { insertPinJoinPress, fetchJoinedUsers, insertPinRequestPress, addLogRecord} from '../../utils/functions';
-//import { getPinRequestID } from './PinFunctions';
-// Note: You'll need to install and configure Amplitude for web
-// import { track } from '@amplitude/analytics-browser';
+import { createClient } from 'utils/supabase/client';
+
 
 const MAX_PIN_DISTANCE = 300; // in miles
 const MAX_TIME_TO_JOIN = 5; // in hours
@@ -85,251 +80,198 @@ const shareLink = async (message: string) => {
   }
 };
 
-// export const handleEndPinNow = async ({
-//   pinId,
-//   setHasEnded,
-//   getPinDetails,
-// }: HandleEndPinNowProps) => {
-//   console.log('handleEndPinNow received props:', { pinId });
-  
-//   showAlert(
-//     "Confirm End Pin",
-//     "Are you sure you want to end your pin? This cannot be undone.",
-//     [
-//       {
-//         text: "Cancel",
-//         style: "cancel",
-//       },
-//       {
-//         text: "OK",
-//         onPress: async () => {
-//           try {
-//             console.log('Alert OK pressed with pinId:', pinId);
-//             await handleEndPin(pinId);
-//             setHasEnded(true);
-//             showAlert("Success", "Pin ended successfully!");
-//             getPinDetails();
-//           } catch (error: any) {
-//             showAlert("Error", error.message);
-//           }
-//         },
-//       },
-//     ]
-//   );
-// };
 
-interface HandleShareLinkProps {
-  pinId: string;
-  pinDetails: { meetupname: string };
-  useUniversalLink?: boolean;
-  userId: string;
+
+// Handle leaving a pin
+export async function handleLeavePin(userId: string, pinId: string) {
+  const supabase = createClient();
+  
+  try {
+    const { data, error } = await supabase
+      .rpc('handle_leave_pin', { user_id_param: userId, pin_id: pinId });
+
+    if (error) {
+      console.error("Error leaving pin:", error.message);
+      return { success: false, message: error.message };
+    }
+
+    return data;
+  } catch (error: any) {
+    console.error("Unexpected error:", error.message);
+    return { success: false, message: error.message };
+  }
 }
 
-// export const handleShareLink = async ({ 
-//   pinId, 
-//   pinDetails, 
-//   useUniversalLink = true, 
-//   userId 
-// }: HandleShareLinkProps) => {
-//   try {
-//     let finalLink;
+// Get pin invitation id based on userid and pinid where user is invited
+export async function fetchPinInviteId(userId: string, pinId: string) {
+  const supabase = createClient();
+  
+  try {
+    const { data, error } = await supabase
+      .from("pininvites")
+      .select("id, *")
+      .eq("invitee_id", userId)
+      .eq("pin_id", pinId)
+      .eq("status", "invited")
+      .single();
+
+    if (error) {
+      console.error("Error fetching invite details:", error.message);
+      return { success: false, message: error.message };
+    }
+
+    return { success: true, data };
+  } catch (error: any) {
+    console.error("Unexpected error:", error.message);
+    return { success: false, message: error.message };
+  }
+}
+
+// Accept pin invite
+export async function acceptPinInvite(invitationId: string, pinId: string, userId: string) {
+  const supabase = createClient();
+  
+  try {
+    const { data, error } = await supabase.rpc("accept_pin_invite", {
+      invitation_id: invitationId,
+      pin_id: pinId,
+      user_accepting_invite: userId,
+    });
+
+    if (error) {
+      console.error("Error accepting invite to join pin:", error.message);
+      return { success: false, message: error.message };
+    }
+
+    return { success: true, data };
+  } catch (error: any) {
+    console.error("Unexpected error:", error.message);
+    return { success: false, message: error.message };
+  }
+}
+
+// Handle leave pin press (web version)
+export async function handleLeavePress(userId: string, pinId: string, onSuccess?: () => void) {
+  const confirmed = window.confirm("Are you sure you want to leave this pin?");
+  
+  if (!confirmed) {
+    console.log("Leave cancelled");
+    return;
+  }
+
+  try {
+    const result = await handleLeavePin(userId, pinId);
+
+    if (!result.success) {
+      console.error("Error leaving pin:", result.message);
+      return;
+    }
     
-//     if (!useUniversalLink) {
-//       // Create deep link and shorten it
-//       const deepLinkUrl = `upin://pin/${pinId}`;
-//       const response = await axios.get(
-//         `https://tinyurl.com/api-create.php?url=${encodeURIComponent(deepLinkUrl)}`
-//       );
-//       finalLink = response.data;
-//     } else {
-//       // Use universal link (better for web)
-//       finalLink = `https://upinlinks.co/pin/${pinId}`;
-//     }
+    if (onSuccess) onSuccess();
+    // await calculateAwardedPointstoRemove('joinedpin', userId) // Add when you have this function
+  } catch (error: any) {
+    console.error("Unexpected error leaving:", error.message);
+  }
+}
 
-//     const message = `${finalLink}`;
+// Handle invited press (web version)
+export async function handleInvitedPress(userid: string, pin_id: string, getPinDetails: () => void) {
+  try {
+    const fetchResponse = await fetchPinInviteId(userid, pin_id);
 
-//     await shareLink(message);
+    // const notification_id = await fetchInvitedNotificationByPin(pin_id, userid) // Add when available
 
-//     // Record the share in shared_pins
-//     const insertResult = await insertSharedPin(userId, pinId);
-//     if (!insertResult.success) {
-//       console.error("Failed to record shared pin:", insertResult.error);
-//     }
+    if (!fetchResponse.success) {
+      console.error("Error fetching invite details:", fetchResponse.message);
+      return;
+    }
 
-//   } catch (error: any) {
-//     console.error('Error opening share dialog:', error.message);
-//     showAlert('Error', 'Failed to generate share link.');
-//   }
-// };
+    const response = await acceptPinInvite(
+      fetchResponse.data.id,
+      pin_id,
+      userid
+    );
 
-// export const handleJoinPress = async ({
-//   pinId,
-//   pinDetails,
-//   userId,
-//   setJoinedUsers,
-//   setUserStatus,
-//   getPinDetails,
-//   distancetoPin
-// }: HandleJoinPressProps) => {
-//   try {
-//     // Convert distance to a number (in case it's a string)
-//     const distance = Number(distancetoPin);
+    if (!response.success) {
+      console.error("Error accepting invite to join pin:", response.message);
+      return;
+    }
 
-//     // Ensure pin start date is valid
-//     const currentTime = new Date();
-//     const pinStartTime = new Date(pinDetails.start_date); 
+    // if(notification_id) {
+    //   await markNotificationAsSeen(notification_id) // Add when available
+    // }
 
-//     let differenceInHours = 0;
+    alert("Invite accepted!");
+    getPinDetails();
+  } catch (error: any) {
+    console.error("Unexpected error accepting invite:", error.message);
+  }
+}
 
-//     if (!isNaN(pinStartTime.getTime())) {
-//       differenceInHours = Math.floor((pinStartTime.getTime() - currentTime.getTime()) / (1000 * 60 * 60));
-//     }
+// Calculate distance to pin (web version - basic haversine formula)
+export function calculateDistanceToPin(
+  pinLatitude: number, 
+  pinLongitude: number, 
+  userLocation: { latitude: number; longitude: number }
+) {
+  if (!userLocation) {
+    console.log('Error: userLocation is undefined.');
+    return '0';
+  }
 
-//     // Prevent joining if the event starts in 5 hours or sooner AND the user is more than 300 units away
-//     if (differenceInHours <= MAX_TIME_TO_JOIN && distance > MAX_PIN_DISTANCE) {
-//       showAlert(
-//         "Ineligible to join",
-//         "You must be within a 300 mile range to join a pin within a 5 hour starting time."
-//       );
-//       return; // Stop execution
-//     }
+  // Haversine formula for distance calculation
+  const R = 3959; // Earth's radius in miles
+  const dLat = (userLocation.latitude - pinLatitude) * Math.PI / 180;
+  const dLon = (userLocation.longitude - pinLongitude) * Math.PI / 180;
+  const a = 
+    Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(pinLatitude * Math.PI / 180) * Math.cos(userLocation.latitude * Math.PI / 180) * 
+    Math.sin(dLon/2) * Math.sin(dLon/2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  const distance = R * c;
 
-//     const result: PinJoinPressResult = await insertPinJoinPress(
-//       pinId,
-//       pinDetails.host_id,
-//       userId,
-//       fetchJoinedUsers,
-//       pinDetails.pin_type,
-//       pinDetails.is_community_hosted,
-//       pinDetails.isgooglesearch
-//     );
+  return distance.toFixed(2).toString();
+}
 
-//     if (result.success) {
-//       // Track User joins pin (uncomment when Amplitude is set up)
-//       // track('Pin joined', {
-//       //   user_id: userId,
-//       //   pin_id: pinId,
-//       //   pin_name: pinDetails.meetupname,
-//       //   created_time: new Date().toISOString(),
-//       // });
+// Fetch nearby pins with client-side filtering
+export async function fetchNearbyPins(
+  userLatitude: number, 
+  userLongitude: number, 
+  radiusInMiles: number
+) {
+  const supabase = createClient();
+  
+  // Call the fetch_all_pins RPC to get the pins that start today and up to 3 days from now
+  const { data: pins, error } = await supabase.rpc('fetch_all_pins');
 
-//       if (result.pinType === "Public") {
-//         setJoinedUsers(result.data);
-//         setUserStatus((prev) => ({
-//           ...prev,
-//           userCanViewChat: true,
-//           userCanJoinPin: false,
-//           userIsJoined: true,
-//         }));
-//         getPinDetails(true); // Ensure to refresh details after state update
+  if (error) {
+    console.error('Error fetching pins:', error);
+    return [];
+  }
 
-//         // Show success alert for public pins
-//         showAlert(
-//           "Joined Pin",
-//           "You may view the full pin details in your My Pins section"
-//         );
-//       } else {
-//         showAlert("Success", result.message);
-//         setUserStatus((prev) => ({
-//           ...prev,
-//           userCanJoinPin: false,
-//           userHasRequested: true,
-//         }));
-//       }
-//     } else {
-//       showAlert("Error", result.message);
-//     }
-//   } catch (error) {
-//     showAlert("Error", "Failed to join the pin.");
-//   }
-// };
+  const radiusInMeters = radiusInMiles * 1609.34;
 
-// export const handleRequestPinPress = async ({
-//   pinId,
-//   pinDetails,
-//   userId,
-//   setUserStatus,
-//   getPinDetails,
-// }: HandleJoinPressProps) => {
-//   try {
-//     console.log("Starting handleRequestPinPress...");
-//     console.log("Inputs:", { pinId, pinDetails, userId });
+  // Filter the pins based on the distance to the user's location and pin_type
+  const nearbyPins = pins.filter((pin: any) => {
+    // Haversine formula for distance calculation in meters
+    const R = 6371000; // Earth's radius in meters
+    const dLat = (pin.latitude - userLatitude) * Math.PI / 180;
+    const dLon = (pin.longitude - userLongitude) * Math.PI / 180;
+    const a = 
+      Math.sin(dLat/2) * Math.sin(dLat/2) +
+      Math.cos(userLatitude * Math.PI / 180) * Math.cos(pin.latitude * Math.PI / 180) * 
+      Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    const distance = R * c;
 
-//     // Call the insertPinRequestPress function to handle the request
-//     console.log("Calling insertPinRequestPress with:", {
-//       pinId,
-//       hostId: pinDetails.host_id,
-//       userId,
-//       meetupName: pinDetails.meetupname,
-//     });
+    // Check if the pin is within the desired radius
+    const isDistanceValid = distance <= radiusInMeters;
 
-//     const result = await insertPinRequestPress(
-//       pinId,
-//       pinDetails.host_id,
-//       userId,
-//       pinDetails.meetupname
-//     );
+    // Check if the pin_type is 'Public' or 'Private'
+    const isTypeValid = pin.pin_type === 'Public' || pin.pin_type === 'Private';
 
-//     console.log("insertPinRequestPress result:", result);
+    return isDistanceValid && isTypeValid;
+  });
 
-//     if (result.success) {
-//       console.log("Request was successful. Updating user status...");
-//       // Update user status after a successful request
-//       showAlert("Success", result.message);
-//       setUserStatus((prev) => ({
-//         ...prev,
-//         userCanJoinPin: false,
-//         userHasRequested: true,
-//       }));
-//       console.log("User status updated. Refreshing pin details...");
-//       getPinDetails(true); // Refresh the pin details
-//     } else {
-//       console.error("Request failed with message:", result.message);
-//       // Handle errors by showing an alert
-//       showAlert("Error", result.message);
-//     }
-//   } catch (error) {
-//     console.error("Unexpected error in handleRequestPinPress:", error);
-//     // Handle unexpected errors
-//     showAlert("Error", "Failed to request to join the pin.");
-//   }
-// };
-
-// export const handleUnrequest = async ({
-//   pinId,
-//   userId,
-//   getPinDetails,
-// }: {
-//   pinId: string;
-//   userId: string;
-//   getPinDetails: () => Promise<void>;
-// }) => {
-//   try {
-//     // Get the request ID
-//     const requestID = await getPinRequestID(pinId, userId);
-//     if (!requestID) {
-//       throw new Error("No request ID found");
-//     }
-
-//     // Delete the pin invite using the request ID
-//     const supabase = createClient(); // Create client instance when needed
-//     const { data, error } = await supabase
-//       .from("pininvites")
-//       .delete()
-//       .eq("id", requestID)
-//       .select();
-
-//     if (error) {
-//       throw new Error(`Error removing request: ${error.message}`);
-//     }
-
-//     // Refresh pin details
-//     await getPinDetails();
-//   } catch (error: any) {
-//     console.error("Error in handleUnrequest:", error);
-//     showAlert(
-//       "Error",
-//       error.message || "An unexpected error occurred while removing the request."
-//     );
-//   }
-// };
+  return nearbyPins;
+}
