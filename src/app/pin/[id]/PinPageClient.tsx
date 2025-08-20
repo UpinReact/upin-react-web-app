@@ -10,6 +10,7 @@ import {
 } from '@ant-design/icons';
 import styles from './PinPage.module.css';
 import JoinPinButton from './JoinPinComponent';
+import PinPassDetailsComponent from './PinPassDetailsComponent';
 import MiniMap from '../components/MiniMap';
 import usePinDetails from '../hooks/usePinDetails';
 
@@ -22,11 +23,11 @@ interface PinPageClientProps {
 
 export default function PinPageClient({ pinData, user, hasJoined, pinId }: PinPageClientProps) {
   // Use the hook to get dynamic data like joinedUsers
-  const { joinedUsers, loading: hookLoading, pinPassId } = usePinDetails(pinId);
+  const { joinedUsers, loading: hookLoading, pinPassId, paidPin, publicPin } = usePinDetails(pinId);
 
-  console.log(`pinPassId: ${pinPassId}`)
-  
   const joinedCount = joinedUsers.length;
+
+  // to do: add host part, decrease text size, image size
   
   // Convert serialized date strings back to Date objects
   const startDate = new Date(pinData.start_date);
@@ -150,6 +151,13 @@ export default function PinPageClient({ pinData, user, hasJoined, pinId }: PinPa
               />
             )}
 
+            {/* Pin Pass Section - Add this before Event Link */}
+            {!paidPin && (
+              <div className={styles.pinPassSection}>
+                <PinPassDetailsComponent userId={user?.id} />
+              </div>
+            )}
+
             {/* Event Link */}
             {mockEventLink && (
               <div className={styles.linkSection}>
@@ -178,16 +186,45 @@ export default function PinPageClient({ pinData, user, hasJoined, pinId }: PinPa
                   Event Ended ❌
                 </div>
               </div>
-            ) : user && hasJoined ? (
-              <button className={`${styles.actionButton} ${styles.joinedButton}`} disabled>
-                ✓ You've Joined!
-              </button>
-            ) : user ? (
-              <JoinPinButton pinId={pinId} user={user.id} joinedCount={joinedCount} />
+            ) : paidPin ? (
+              // For paid pins, pricing is now in main content area
+              user ? (
+                <div className={styles.statusSection}>
+                  <div className={styles.paidPinMessage}>
+                    See ticket details below
+                  </div>
+                </div>
+              ) : (
+                <button className={`${styles.baseButton} ${styles.joinButton}`}>
+                  Sign In to Purchase Ticket
+                </button>
+              )
+            ) : publicPin ? (
+              // For public pins, show message to use the app
+              user ? (
+                <div className={styles.statusSection}>
+                  <div className={styles.publicPinMessage}>
+                    Please open your app to join this pin
+                  </div>
+                </div>
+              ) : (
+                <button className={`${styles.baseButton} ${styles.joinButton}`}>
+                  Sign In to Join Event
+                </button>
+              )
             ) : (
-              <button className={`${styles.actionButton} ${styles.joinButton}`}>
-                Sign In to Join Event
-              </button>
+              // For private/invite pins, show message to use the app
+              user ? (
+                <div className={styles.statusSection}>
+                  <div className={styles.publicPinMessage}>
+                    Please open your app to join this pin
+                  </div>
+                </div>
+              ) : (
+                <button className={`${styles.baseButton} ${styles.joinButton}`}>
+                  Sign In to Join Event
+                </button>
+              )
             )}
           </div>
 
