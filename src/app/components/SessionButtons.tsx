@@ -20,7 +20,7 @@ export default function SessionButtons({ session }: { session: any }) {
           whileHover={{ scale: 1.05 }}
           className="text-white bg-upinBlue hover:bg-blue-600 px-4 py-2 rounded-full shadow-md"
         >
-          <Link href="/private/check-pins">Go to my Pins</Link>
+          <Link href="/mypins">Go to my Pins</Link>
         </motion.button>
         <motion.button
           whileHover={{ scale: 1.05 }}
