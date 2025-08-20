@@ -3,6 +3,7 @@
 
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { createClient } from "utils/supabase/client";
+import { useAuthHandler } from "@/context/authHandler";
 
 // !!! DO NOT import from ../PinFunctions here (that file uses server client).
 // import { getPinById, getJoinedUsers, ... } from '../PinFunctions'  // <-- remove
@@ -105,7 +106,6 @@ const usePinDetails = (pinId: string) => {
   const [pinChatID, setPinChatID] = useState('');
   const [privatePin, setPrivatePin] = useState(false);
   const [sharedPinCount, setSharedPinCount] = useState(0);
-  const [userId, setUserId] = useState<string | null>(null);
   const [userStatus, setUserStatus] = useState<UserStatus>({
     isHost: false,
     userCanJoinPin: false,
@@ -120,15 +120,10 @@ const usePinDetails = (pinId: string) => {
   const [attendedUsers, setAttendedUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // current user (client-side auth)
-  useEffect(() => {
-    const getCurrentUser = async () => {
-      const supabase = createClient();
-      const { data: { user } } = await supabase.auth.getUser();
-      setUserId(user?.id || null);
-    };
-    getCurrentUser();
-  }, []);
+    const { userData, isReady } = useAuthHandler();
+  const userId = userData?.id || null;
+
+// console.log('user id in usepindetails', userId)
 
   const extractURL = (description: string) => {
     const urlRegex = /(https?:\/\/[^\s]+|www\.[^\s]+)/g;
