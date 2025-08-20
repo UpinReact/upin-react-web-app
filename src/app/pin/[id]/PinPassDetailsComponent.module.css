@@ -1,0 +1,367 @@
+/* app/pin/components/PinPassDetailsComponent.module.css */
+
+.container {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.container:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Loading and Error States */
+.loadingState,
+.errorState {
+  padding: 2rem;
+  text-align: center;
+  color: #6b7280;
+}
+
+.spinner {
+  width: 24px;
+  height: 24px;
+  border: 2px solid #e5e7eb;
+  border-top: 2px solid #22d0a5;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Compact View */
+.compactView {
+  padding: 1.5rem;
+}
+
+.priceHeader {
+  margin-bottom: 1.5rem;
+}
+
+.priceDisplay {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.priceLabel {
+  font-size: 1rem;
+  color: #374151;
+  font-weight: 500;
+}
+
+.priceAmount {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #22d0a5;
+}
+
+.totalDisplay {
+  text-align: right;
+}
+
+.totalLabel {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 0.75rem;
+  flex-direction: column;
+}
+
+.viewDetailsButton {
+  padding: 0.75rem 1rem;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  color: #374151;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.viewDetailsButton:hover {
+  background: #f3f4f6;
+  border-color: #d1d5db;
+}
+
+.buyNowButton {
+  padding: 0.875rem 1rem;
+  background: #22d0a5;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.buyNowButton:hover {
+  background: #1fb896;
+  transform: translateY(-1px);
+}
+
+/* Expanded View */
+.expandedView {
+  padding: 1.5rem;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #22d0a5;
+  margin: 0;
+}
+
+.collapseButton {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.collapseButton:hover {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+/* Description Section */
+.descriptionSection {
+  margin-bottom: 1.5rem;
+}
+
+.description {
+  color: #6b7280;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Pricing Section */
+.pricingSection {
+  margin-bottom: 1.5rem;
+}
+
+.sectionTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #374151;
+  margin: 0 0 1rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.priceBreakdown {
+  background: #f9fafb;
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.priceRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.priceRow:last-child {
+  margin-bottom: 0;
+}
+
+.priceLabel {
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.priceValue {
+  color: #374151;
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
+.totalDivider {
+  height: 1px;
+  background: #e5e7eb;
+  margin: 0.75rem 0;
+}
+
+.totalRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.totalLabel {
+  font-weight: 600;
+  color: #374151;
+  font-size: 1rem;
+}
+
+.totalValue {
+  font-weight: 700;
+  color: #22d0a5;
+  font-size: 1.125rem;
+}
+
+/* Ticket Info Section */
+.ticketInfoSection {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: #f8fafc;
+  border-radius: 8px;
+}
+
+.infoRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.infoRow:last-child {
+  margin-bottom: 0;
+}
+
+.infoLabel {
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.infoValue {
+  color: #374151;
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
+/* Refund Section */
+.refundSection {
+  margin-bottom: 1.5rem;
+}
+
+.refundText {
+  color: #6b7280;
+  line-height: 1.6;
+  margin: 0 0 0.5rem 0;
+  font-size: 0.875rem;
+}
+
+.refundNote {
+  color: #9ca3af;
+  font-size: 0.8rem;
+  margin: 0;
+  font-style: italic;
+}
+
+/* Checkout Actions */
+.checkoutActions {
+  margin-top: 1.5rem;
+}
+
+.checkoutButton {
+  width: 100%;
+  padding: 1rem;
+  background: #22d0a5;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.checkoutButton:hover {
+  background: #1fb896;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(34, 208, 165, 0.3);
+}
+
+/* Sales Ended Message */
+.salesEndedMessage {
+  text-align: center;
+  padding: 1rem;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  color: #991b1b;
+}
+
+.salesEndedMessage p {
+  margin: 0 0 0.25rem 0;
+  font-weight: 500;
+}
+
+.salesEndedMessage small {
+  color: #b91c1c;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .compactView,
+  .expandedView {
+    padding: 1rem;
+  }
+  
+  .actionButtons {
+    gap: 0.5rem;
+  }
+  
+  .priceDisplay {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+  
+  .totalDisplay {
+    text-align: left;
+    margin-top: 0.5rem;
+  }
+  
+  .header {
+    margin-bottom: 1rem;
+  }
+  
+  .title {
+    font-size: 1.125rem;
+  }
+  
+  .infoRow {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+}
