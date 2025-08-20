@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { signup } from "./actions";
+import { signup, checkEmailExists } from "./actions";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import {
@@ -16,7 +16,6 @@ import {
   Card,
   Row,
   Col,
-  Space,
   message,
   Divider,
 } from "antd";
@@ -24,11 +23,11 @@ import {
   UserOutlined,
   MailOutlined,
   LockOutlined,
-  PhoneOutlined,
   EditOutlined,
   EyeInvisibleOutlined,
   EyeTwoTone,
 } from "@ant-design/icons";
+import { allCountries } from "country-telephone-data";
 import styles from "./SignUp.module.css";
 
 const { Title, Text } = Typography;
@@ -41,8 +40,10 @@ interface SignUpFormData {
   confirmPassword: string;
   firstName: string;
   lastName: string;
+  countryCode: string;
   phone: string;
   gender: string;
+  customGender?: string;
   birthdate: string;
   bio: string;
   interests: string[];
@@ -51,45 +52,86 @@ interface SignUpFormData {
 export default function SignUpPage() {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
+  const [showCustomGender, setShowCustomGender] = useState(false);
   const router = useRouter();
 
+  // Generate country options from library
+  const countryOptions = allCountries.map(country => ({
+    value: country.dialCode,
+    label: `+${country.dialCode} (${country.name})`
+  }));
+
   const interestOptions = [
-    "Music",
-    "Movies",
-    "Gaming",
-    "Chilling",
-    "Literature",
-    "Travel",
-    "Sports",
-    "Art",
-    "Technology",
-    "Food",
+     "Building",
+  "Cars",
+  "Creative Arts",
+  "Gaming",
+  "Literature",
+  "Music",
+  "Business",
+  "Hiking",
+  "Gym",
+  "Chilling",
+  "Fitness",
+  "Health",
+  "Real Estate",
+  "Travel",
+  "Finance",
+  "Food",
   ];
+
+  const handleGenderChange = (value: string) => {
+    if (value === "Other") {
+      setShowCustomGender(true);
+    } else {
+      setShowCustomGender(false);
+      form.setFieldValue("customGender", "");
+    }
+  };
 
   const handleSubmit = async (values: SignUpFormData) => {
     setLoading(true);
-    
-    const submissionData = new FormData();
-    Object.entries(values).forEach(([key, value]) => {
-      if (key === "interests" && Array.isArray(value)) {
-        value.forEach((interest: string) => submissionData.append("interests", interest));
-      } else if (key === "birthdate") {
-        submissionData.append(key, value?.format("YYYY-MM-DD") || "");
-      } else {
-        submissionData.append(key, String(value || ""));
-      }
-    });
 
     try {
-      const result = await signup(submissionData);
-      if (result.success) {
-        message.success("Account created successfully!");
-        router.push("/private");
+      // Check if email already exists
+      const emailExists = await checkEmailExists(values.email);
+      
+      if (emailExists) {
+        message.error("This email is already registered. Please use a different email or try logging in.");
+        setLoading(false);
+        return;
+      }
+
+      // Generate OTP and send via Textbelt
+      const fullPhoneNumber = `+${values.countryCode}${values.phone}`;
+      const otpCode = Math.floor(100000 + Math.random() * 900000);
+
+      const response = await fetch('/api/send-otp', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          phone: fullPhoneNumber,
+          message: `Your Upin verification code is ${otpCode}`,
+        }),
+      });
+
+      const data = await response.json();
+      
+      if (data.success) {
+        // Store form data and OTP in localStorage for OTP screen
+        localStorage.setItem('signupFormData', JSON.stringify(values));
+        localStorage.setItem('generatedOtp', otpCode.toString());
+        
+        message.success("Verification code sent to your phone!");
+        router.push("/sign-up/otp-entry");
       } else {
-        message.error(result.message || "An error occurred");
+        message.error("Failed to send verification code. Please check your phone number.");
       }
     } catch (error) {
-      message.error("Unexpected error occurred");
+      message.error("Error processing signup. Please try again.");
+      console.error('Error in signup:', error);
     } finally {
       setLoading(false);
     }
@@ -219,20 +261,44 @@ export default function SignUpPage() {
               </Col>
             </Row>
 
-            <Row gutter={[16, 0]}>
-              <Col xs={24} sm={12}>
+            <Form.Item
+              label="Phone Number"
+              required
+              className={styles.phoneNumberSection}
+            >
+              <Input.Group compact>
+                <Form.Item
+                  name="countryCode"
+                  noStyle
+                  initialValue="1"
+                  rules={[{ required: true, message: "Please select your country code" }]}
+                >
+                  <Select
+                    style={{ width: '120px' }}
+                    className={styles.countryCodeSelect}
+                    showSearch
+                    placeholder="1"
+                    options={countryOptions}
+                    filterOption={(input, option) =>
+                      String(option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+                    }
+                  />
+                </Form.Item>
                 <Form.Item
                   name="phone"
-                  label="Phone Number"
+                  noStyle
                   rules={[{ required: true, message: "Please enter your phone number" }]}
                 >
                   <Input
-                    prefix={<PhoneOutlined />}
+                    style={{ width: 'calc(100% - 120px)' }}
                     placeholder="Enter your phone number"
-                    className={styles.input}
+                    className={styles.phoneInput}
                   />
                 </Form.Item>
-              </Col>
+              </Input.Group>
+            </Form.Item>
+
+            <Row gutter={[16, 0]}>
               <Col xs={24} sm={12}>
                 <Form.Item
                   name="birthdate"
@@ -246,19 +312,38 @@ export default function SignUpPage() {
                   />
                 </Form.Item>
               </Col>
+              <Col xs={24} sm={12}>
+                <Form.Item
+                  name="gender"
+                  label="Gender"
+                  rules={[{ required: true, message: "Please select your gender" }]}
+                >
+                  <Select 
+                    placeholder="Select your gender" 
+                    className={styles.select}
+                    onChange={handleGenderChange}
+                  >
+                    <Option value="Male">Male</Option>
+                    <Option value="Female">Female</Option>
+                    <Option value="Other">Other</Option>
+                  </Select>
+                </Form.Item>
+              </Col>
             </Row>
 
-            <Form.Item
-              name="gender"
-              label="Gender"
-              rules={[{ required: true, message: "Please select your gender" }]}
-            >
-              <Select placeholder="Select your gender" className={styles.select}>
-                <Option value="male">Male</Option>
-                <Option value="female">Female</Option>
-                <Option value="prefer not to say">Prefer not to say</Option>
-              </Select>
-            </Form.Item>
+            {showCustomGender && (
+              <Form.Item
+                name="customGender"
+                label="Please specify"
+                rules={[{ required: true, message: "Please specify your gender" }]}
+              >
+                <Input
+                  prefix={<EditOutlined />}
+                  placeholder="Enter your gender"
+                  className={styles.input}
+                />
+              </Form.Item>
+            )}
 
             <Form.Item name="interests" label="Interests">
               <Checkbox.Group className={styles.interestGroup}>
