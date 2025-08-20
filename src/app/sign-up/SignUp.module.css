@@ -186,6 +186,66 @@
   background: rgba(255, 255, 255, 1) !important;
 }
 
+/* Phone number styling */
+.phoneNumberSection .ant-input-group {
+  display: flex !important;
+  align-items: stretch !important;
+}
+
+.countryCodeSelect .ant-select-selector {
+  border-radius: 12px 0 0 12px !important;
+  border-right: none !important;
+  border: 2px solid #e8e8e8 !important;
+  padding: 8px 12px !important;
+  height: 48px !important;
+  min-height: 48px !important;
+  display: flex !important;
+  align-items: center !important;
+  transition: all 0.3s ease !important;
+  background: rgba(255, 255, 255, 0.8) !important;
+}
+
+.countryCodeSelect:hover .ant-select-selector {
+  border-color: #d4d4d8 !important;
+  background: rgba(255, 255, 255, 0.9) !important;
+}
+
+.countryCodeSelect.ant-select-focused .ant-select-selector {
+  border-color: #667eea !important;
+  box-shadow: none !important;
+  background: rgba(255, 255, 255, 1) !important;
+}
+
+.phoneInput {
+  border-radius: 0 12px 12px 0 !important;
+  border-left: none !important;
+  border: 2px solid #e8e8e8 !important;
+  padding: 12px 16px !important;
+  font-size: 16px !important;
+  height: 48px !important;
+  transition: all 0.3s ease !important;
+  background: rgba(255, 255, 255, 0.8) !important;
+}
+
+.phoneInput:hover {
+  border-color: #d4d4d8 !important;
+  background: rgba(255, 255, 255, 0.9) !important;
+}
+
+.phoneInput:focus,
+.phoneInput:focus-within {
+  border-color: #667eea !important;
+  box-shadow: none !important;
+  background: rgba(255, 255, 255, 1) !important;
+}
+
+/* Ensure both inputs focus together */
+.phoneNumberSection .ant-input-group:focus-within .countryCodeSelect .ant-select-selector,
+.phoneNumberSection .ant-input-group:focus-within .phoneInput {
+  border-color: #667eea !important;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1) !important;
+}
+
 .interestGroup {
   width: 100%;
 }
@@ -284,6 +344,15 @@
   .subtitle {
     font-size: 1rem;
   }
+  
+  /* Make country code select wider on mobile */
+  .countryCodeSelect {
+    width: 140px !important;
+  }
+  
+  .phoneInput {
+    width: calc(100% - 140px) !important;
+  }
 }
 
 @media (max-width: 480px) {
@@ -297,5 +366,27 @@
   
   .interestCheckbox {
     margin-bottom: 8px;
+  }
+  
+  /* Stack phone inputs on very small screens */
+  .phoneNumberSection .ant-input-group {
+    flex-direction: column !important;
+  }
+  
+  .countryCodeSelect {
+    width: 100% !important;
+  }
+  
+  .countryCodeSelect .ant-select-selector {
+    border-radius: 12px 12px 0 0 !important;
+    border-right: 2px solid #e8e8e8 !important;
+    border-bottom: none !important;
+  }
+  
+  .phoneInput {
+    width: 100% !important;
+    border-radius: 0 0 12px 12px !important;
+    border-left: 2px solid #e8e8e8 !important;
+    border-top: none !important;
   }
 }
