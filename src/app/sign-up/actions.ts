@@ -94,3 +94,20 @@ export async function signup(formData: FormData) {
     return { success: false, message: "An unexpected error occurred during signup." };
   }
 }
+
+
+export async function checkEmailExists(email: string): Promise<boolean> {
+  const supabase = await createClient();
+  
+  const { data, error } = await supabase
+    .from('userdata')
+    .select('email')
+    .eq('email', email.toLowerCase())
+    .single();
+
+  if (error && error.code !== 'PGRST116') {
+    throw new Error('Database error checking email');
+  }
+
+  return !!data;
+}
