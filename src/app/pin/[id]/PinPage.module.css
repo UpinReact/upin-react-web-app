@@ -385,6 +385,62 @@
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
 
+/* Base button style - shared properties */
+.baseButton {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  padding: 10px 20px;
+  width: 220px;
+  align-self: center;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  transition: opacity 0.2s ease;
+}
+
+.baseButton:hover {
+  opacity: 0.9;
+}
+
+/* Join button specific styling */
+.joinButton {
+  background-color: var(--main-color);
+  color: white;
+}
+
+.pinPassSection {
+  margin: 2rem 0;
+  border-top: 1px solid #e5e7eb;
+  padding-top: 2rem;
+}
+
+.paidPinMessage {
+  text-align: center;
+  color: #6b7280;
+  font-size: 14px;
+  padding: 1rem;
+  background: #f9fafb;
+  border-radius: 8px;
+}
+
+
+.publicPinMessage {
+  text-align: center;
+  padding: 12px;
+  background-color: #f3f4f6;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  color: #374151;
+  font-weight: 500;
+}
+
+
 /* Mobile Responsive */
 @media (max-width: 1024px) {
   .mainContent {
