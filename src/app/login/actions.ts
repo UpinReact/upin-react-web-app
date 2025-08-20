@@ -14,11 +14,25 @@ export async function login(formData: FormData) {
 
   if (!email || !password) return 'Email and password are required.';
 
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  const { error, data } = await supabase.auth.signInWithPassword({ email, password });
   if (error) return error.message;
 
+  // Get user data to find their ID for the redirect
+  const lowerCaseEmail = email.toLowerCase();
+  const { data: userData, error: userError } = await supabase
+    .from('userdata')
+    .select('id')
+    .eq('email', lowerCaseEmail)
+    .single();
+
   revalidatePath('/', 'layout');
-  redirect('/private');
+  
+  // Add a parameter to signal successful login for client-side sync
+  if (userData?.id) {
+    redirect(`/user/${userData.id}?login=success`);
+  } else {
+    redirect('/private?login=success');
+  }
 }
 
 // ---- FETCH ACCOUNT DATA (server) ----
@@ -48,14 +62,25 @@ export async function getAccountData() {
 // ---- LOGOUT (server) ----
 // Clears httpOnly cookies used by RSC/SSR and redirects.
 // NOTE: The client should ALSO call supabase.auth.signOut() before invoking this.
+// ----  (server) ----
 export async function logout() {
-  const supabase = await createClient();
+  try {
+    const supabase = await createClient();
+    
+    // Get current user before signing out (for cleanup if needed)
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    await supabase.auth.signOut(); // clears server cookies
+    console.log('successfully logged out (server)');
 
-  await supabase.auth.signOut(); // clears server cookies
-  console.log('successfully logged out (server)');
-
-  revalidatePath('/', 'layout');
-  redirect('/login');
+    revalidatePath('/', 'layout');
+    redirect('/login');
+  } catch (error) {
+    console.error('Logout error:', error);
+    // Still redirect even if logout fails
+    revalidatePath('/', 'layout');
+    redirect('/login');
+  }
 }
 
 // ---- PASSWORD RESET (server) ----
