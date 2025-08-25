@@ -6,7 +6,7 @@ import PostToCommunity, { CheckIfUserIsInCommunity, fetchCommunityData } from ".
 import bgImg from "public/Screen Shot 2020-03-12 at 9.26.39 AM.png";
 import upin from "public/upin.png";
 import { createClient } from 'utils/supabase/client';
-import { AuthSessionMissingError } from '@supabase/supabase-js';
+// import { AuthSessionMissingError } from '@supabase/supabase-fs';
 import Link from 'next/link';
 import { MdCameraFront } from "react-icons/md";
 import { MdDelete } from "react-icons/md";
@@ -147,17 +147,16 @@ export default function CommunityPage() {
   }
   
   if (!userId) {
-    console.log("this error is authsessionmissionerror" + AuthSessionMissingError);
-    return (
-      <div>
-        <div className='flex justify-center items-center h-screen'>
-          <p className='font-extrabold text-gray-600'>Please Log in to view community posts</p>
-          <div className='m-1'>
-            <Link href={"/login"} className='border-2 bg-upinGreen text-black rounded-2xl p-3'>Login</Link>
-          </div>
+  return (
+    <div>
+      <div className='flex justify-center items-center h-screen'>
+        <p className='font-extrabold text-gray-600'>Please Log in to view community posts</p>
+        <div className='m-1'>
+          <Link href={"/login"} className='border-2 bg-upinGreen text-black rounded-2xl p-3'>Login</Link>
         </div>
       </div>
-    );
+    </div>
+  );
   }
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -220,7 +219,7 @@ export default function CommunityPage() {
 
         {isLoggedIn && (
           <div className="z-20 w-full max-w-3xl mt-6">
-            <form className="bg-white p-4 rounded-lg shadow-lg space-y-4" onSubmit={handleSubmit}>
+            {/* <form className="bg-white p-4 rounded-lg shadow-lg space-y-4" onSubmit={handleSubmit}>
               <label htmlFor="content" className="font-semibold text-lg">Create Post</label>
               <input type="hidden" name="user_id" id="user_id" value={userId} />
 
@@ -250,7 +249,7 @@ export default function CommunityPage() {
               >
                 Post
               </button>
-            </form>
+            </form> */}
           </div>
         )}
 
